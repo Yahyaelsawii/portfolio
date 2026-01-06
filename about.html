@@ -1,0 +1,532 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>About Page - Portfolio</title>
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1fd5f9",
+                        "background-light": "#f5f8f8",
+                        "background-dark": "#0f1f23",
+                        "text-main": "#0d1a1c",
+                        "text-muted": "#47909e",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+                },
+            },
+        }
+    </script>
+    <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+
+<body class="bg-background-light dark:bg-background-dark font-display text-text-main antialiased overflow-x-hidden"
+    data-page="about">
+    <div class="relative flex min-h-screen w-full flex-col group/design-root">
+        <!-- Top Navigation -->
+        <!-- Navbar (injected) -->
+        <div id="site-navbar"></div>
+        <!-- Main Content Wrapper -->
+        <div class="flex-1 flex flex-col items-center w-full">
+            <div class="w-full max-w-[960px] flex flex-col px-4 md:px-0">
+                <!-- Hero Section -->
+                <section class="py-12 md:py-20">
+                    <div class="@container">
+                        <div class="flex flex-col-reverse gap-10 md:gap-16 md:flex-row items-center">
+                            <!-- Hero Text -->
+                            <div class="flex flex-col gap-6 md:w-1/2 items-start">
+                                <div class="flex flex-col gap-4 text-left">
+                                    <h1
+                                        class="text-text-main dark:text-white text-4xl md:text-5xl lg:text-6xl font-black leading-[1.1] tracking-[-0.033em]">
+                                        Designing for <span
+                                            class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-600">Humans</span>,<br />
+                                        Coding for Fun.
+                                    </h1>
+                                    <p
+                                        class="text-text-muted dark:text-gray-400 text-lg md:text-xl font-normal leading-relaxed max-w-[480px]">
+                                        Hi, I’m Yahya. I design and build digital products to solve real
+                                        problems—focusing on clarity, usability, and solutions that actually work.
+                                    </p>
+                                </div>
+                                <div class="flex gap-4 mt-2">
+                                    <button
+                                        class="flex items-center justify-center rounded-xl h-12 px-6 bg-text-main dark:bg-white text-white dark:text-text-main text-base font-bold hover:opacity-90 transition-opacity">
+                                        Download Resume
+                                    </button>
+                                    <button
+                                        class="flex items-center justify-center rounded-xl h-12 px-6 bg-transparent border-2 border-text-main dark:border-white text-text-main dark:text-white text-base font-bold hover:bg-text-main hover:text-white dark:hover:bg-white dark:hover:text-text-main transition-colors">
+                                        View Work
+                                    </button>
+                                </div>
+                                <!-- Playful Stats -->
+                                <div class="flex gap-8 mt-6 pt-6 border-t border-gray-200 dark:border-gray-800 w-full">
+                                    <div>
+                                        <div class="text-2xl font-bold text-text-main dark:text-white">3+</div>
+                                        <div class="text-xs font-medium text-text-muted uppercase tracking-wider">Years
+                                            Exp</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-2xl font-bold text-text-main dark:text-white">10</div>
+                                        <div class="text-xs font-medium text-text-muted uppercase tracking-wider">
+                                            Projects</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-2xl font-bold text-text-main dark:text-white">∞</div>
+                                        <div class="text-xs font-medium text-text-muted uppercase tracking-wider">
+                                            Coffees</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Hero Image -->
+                            <div class="relative md:w-1/2 flex justify-center md:justify-end">
+                                <!-- Abstract decorative blob -->
+                                <div
+                                    class="absolute inset-0 bg-gradient-to-tr from-primary/30 to-purple-400/30 blur-3xl rounded-full transform scale-90 translate-x-4 translate-y-4 -z-10">
+                                </div>
+                                <div
+                                    class="w-full max-w-[400px] aspect-square rounded-2xl overflow-hidden bg-gray-200 relative group">
+                                    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
+                                        data-alt="Portrait of a friendly male designer smiling in a modern office environment"
+                                        style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuC5bgCNeiNTsUI-Wda-v514HpBKhPSb601E83xG5eRqDrzWfcKr3MxJphKDPJvY8sEEU84EJKRn7qI41kLnp4nVaS8dYNHB8ssub-U42v9kNNCOp7JyDU0pjbuKHdCMRx5lz5gATgr2RnEsDA5HBjZl8ZnyQD5Ag0t6xjRHpzevFJ_OzsqspJB25X_bvEpm9FAaF4gKZjJ9is3lura0gbbplgy8xnVrHgyfT27Hnw7J6gtTUS8fB0YwPtRLKO39cl-JVR_yoUIxQtE");'>
+                                    </div>
+                                    <!-- Playful badge -->
+                                    <div
+                                        class="absolute bottom-4 right-4 bg-white/90 dark:bg-background-dark/90 backdrop-blur px-4 py-2 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700">
+                                        <span class="text-sm font-bold flex items-center gap-2">
+                                            <span class="relative flex h-3 w-3">
+                                                <span
+                                                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                                                <span
+                                                    class="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+                                            </span>
+                                            Open to work
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <!-- Philosophy Section -->
+                <section class="py-10 border-t border-gray-100 dark:border-gray-800">
+                    <div class="flex flex-col gap-8">
+                        <div class="flex items-center gap-3">
+                            <span class="h-px w-8 bg-primary"></span>
+                            <h2 class="text-text-main dark:text-white text-2xl font-bold tracking-tight">My Philosophy
+                            </h2>
+                        </div>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <!-- Card 1 -->
+                            <div
+                                class="flex flex-col gap-4 p-6 rounded-2xl border border-[#cee4e9] dark:border-gray-700 bg-white dark:bg-gray-900 transition-all hover:shadow-lg hover:border-primary/50 group">
+                                <div
+                                    class="size-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-text-main transition-colors">
+                                    <span class="material-symbols-outlined text-3xl">analytics</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-text-main dark:text-white text-lg font-bold mb-2">Data-Driven</h3>
+                                    <p class="text-text-muted dark:text-gray-400 text-sm leading-relaxed">
+                                        Decisions backed by analytics and user testing, not just intuition. I believe in
+                                        measuring success.
+                                    </p>
+                                </div>
+                            </div>
+                            <!-- Card 2 -->
+                            <div
+                                class="flex flex-col gap-4 p-6 rounded-2xl border border-[#cee4e9] dark:border-gray-700 bg-white dark:bg-gray-900 transition-all hover:shadow-lg hover:border-primary/50 group">
+                                <div
+                                    class="size-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-text-main transition-colors">
+                                    <span class="material-symbols-outlined text-3xl">favorite</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-text-main dark:text-white text-lg font-bold mb-2">Empathy First</h3>
+                                    <p class="text-text-muted dark:text-gray-400 text-sm leading-relaxed">
+                                        Understanding the user's pain points is the first step to solving them. Design
+                                        is for people.
+                                    </p>
+                                </div>
+                            </div>
+                            <!-- Card 3 -->
+                            <div
+                                class="flex flex-col gap-4 p-6 rounded-2xl border border-[#cee4e9] dark:border-gray-700 bg-white dark:bg-gray-900 transition-all hover:shadow-lg hover:border-primary/50 group">
+                                <div
+                                    class="size-12 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-text-main transition-colors">
+                                    <span class="material-symbols-outlined text-3xl">view_in_ar</span>
+                                </div>
+                                <div>
+                                    <h3 class="text-text-main dark:text-white text-lg font-bold mb-2">Pixel Perfect</h3>
+                                    <p class="text-text-muted dark:text-gray-400 text-sm leading-relaxed">
+                                        Attention to detail is what separates good design from great design. I sweat the
+                                        small stuff.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Experience / Education / Skills (Split Layout) -->
+                <section class="py-10 md:py-16">
+                    <div class="flex flex-col md:flex-row gap-12 md:gap-20">
+
+                        <!-- Left Column: Experience -->
+                        <div class="flex-1 flex flex-col gap-8">
+                            <div class="flex items-center gap-3">
+                                <span class="h-px w-8 bg-primary"></span>
+                                <h2 class="text-text-main dark:text-white text-2xl font-bold tracking-tight">Experience
+                                </h2>
+                            </div>
+
+                            <!-- Timeline -->
+                            <div
+                                class="relative border-l-2 border-gray-200 dark:border-gray-800 ml-3 space-y-10 pl-8 pb-4">
+
+                                <!-- Gift It Internship -->
+                                <div class="relative">
+                                    <span
+                                        class="absolute -left-[41px] top-1 size-5 rounded-full border-4 border-white dark:border-background-dark bg-primary shadow-sm"></span>
+                                    <div class="flex flex-col gap-1 mb-2">
+                                        <span class="text-xs font-bold text-primary tracking-wider uppercase">May 2024 —
+                                            Present</span>
+                                        <h3 class="text-lg font-bold text-text-main dark:text-white">Software &amp; Web
+                                            Developer</h3>
+                                        <span class="text-sm font-medium text-text-muted">Gift It · Dubai, UAE</span>
+                                    </div>
+                                    <p class="text-sm text-text-muted dark:text-gray-400 leading-relaxed">
+                                        Working on production features across web, UX, and databases. Responsible for
+                                        testing, performance
+                                        optimization, database schemas, transactional emails, and collaborating with the
+                                        founder on product direction.
+                                    </p>
+                                </div>
+
+                                <!-- RIT Student App -->
+                                <div class="relative">
+                                    <span
+                                        class="absolute -left-[41px] top-1 size-5 rounded-full border-4 border-white dark:border-background-dark bg-gray-300 dark:bg-gray-600"></span>
+                                    <div class="flex flex-col gap-1 mb-2">
+                                        <span class="text-xs font-bold text-text-muted tracking-wider uppercase">Sep
+                                            2023 — Dec 2023</span>
+                                        <h3 class="text-lg font-bold text-text-main dark:text-white">RIT Student App
+                                            (Capstone-Level Project)</h3>
+                                        <span class="text-sm font-medium text-text-muted">RIT Dubai</span>
+                                    </div>
+                                    <p class="text-sm text-text-muted dark:text-gray-400 leading-relaxed">
+                                        Led the design and development of a student app to replace the existing “Pulse”
+                                        system. Integrated myCourses and SIS,
+                                        improved notifications, accessibility, and overall UX.
+                                    </p>
+                                </div>
+
+                                <!-- NASA Hackathon -->
+                                <div class="relative">
+                                    <span
+                                        class="absolute -left-[41px] top-1 size-5 rounded-full border-4 border-white dark:border-background-dark bg-gray-300 dark:bg-gray-600"></span>
+                                    <div class="flex flex-col gap-1 mb-2">
+                                        <span class="text-xs font-bold text-text-muted tracking-wider uppercase">Oct
+                                            2023</span>
+                                        <h3 class="text-lg font-bold text-text-main dark:text-white">NASA Space Apps
+                                            Hackathon</h3>
+                                        <span class="text-sm font-medium text-text-muted">Dubai, UAE</span>
+                                    </div>
+                                    <p class="text-sm text-text-muted dark:text-gray-400 leading-relaxed">
+                                        Contributed to “Winder,” an open-source project discovery platform using
+                                        swipe-based matching.
+                                        Implemented team-matching logic to support team formation.
+                                    </p>
+                                </div>
+
+                                <!-- Database Project -->
+                                <div class="relative">
+                                    <span
+                                        class="absolute -left-[41px] top-1 size-5 rounded-full border-4 border-white dark:border-background-dark bg-gray-300 dark:bg-gray-600"></span>
+                                    <div class="flex flex-col gap-1 mb-2">
+                                        <span class="text-xs font-bold text-text-muted tracking-wider uppercase">Apr
+                                            2023 — May 2023</span>
+                                        <h3 class="text-lg font-bold text-text-main dark:text-white">Enhancing Data
+                                            Management</h3>
+                                        <span class="text-sm font-medium text-text-muted">RIT Dubai</span>
+                                    </div>
+                                    <p class="text-sm text-text-muted dark:text-gray-400 leading-relaxed">
+                                        Designed a relational database system focusing on data integrity, security, and
+                                        efficient retrieval using normalized schemas.
+                                    </p>
+                                </div>
+
+                                <!-- Web Project -->
+                                <div class="relative">
+                                    <span
+                                        class="absolute -left-[41px] top-1 size-5 rounded-full border-4 border-white dark:border-background-dark bg-gray-300 dark:bg-gray-600"></span>
+                                    <div class="flex flex-col gap-1 mb-2">
+                                        <span class="text-xs font-bold text-text-muted tracking-wider uppercase">Sep
+                                            2022 — Nov 2022</span>
+                                        <h3 class="text-lg font-bold text-text-main dark:text-white">Web Development
+                                            Project (Tekram)</h3>
+                                        <span class="text-sm font-medium text-text-muted">RIT Dubai</span>
+                                    </div>
+                                    <p class="text-sm text-text-muted dark:text-gray-400 leading-relaxed">
+                                        Built a responsive website for a Lebanese restaurant with a focus on UI,
+                                        content, and interaction using HTML, CSS, and JavaScript.
+                                    </p>
+                                </div>
+
+                                <!-- Early Experience -->
+                                <div class="relative">
+                                    <span
+                                        class="absolute -left-[41px] top-1 size-5 rounded-full border-4 border-white dark:border-background-dark bg-gray-300 dark:bg-gray-600"></span>
+                                    <div class="flex flex-col gap-1 mb-2">
+                                        <span class="text-xs font-bold text-text-muted tracking-wider uppercase">2020 —
+                                            2021</span>
+                                        <h3 class="text-lg font-bold text-text-main dark:text-white">Video Editing &amp;
+                                            Early Software Projects</h3>
+                                        <span class="text-sm font-medium text-text-muted">AIS Dubai · Gift It</span>
+                                    </div>
+                                    <p class="text-sm text-text-muted dark:text-gray-400 leading-relaxed">
+                                        Produced large-scale graduation videos, created tutorial videos, and built a
+                                        Python-based virtual assistant with voice recognition and GUI.
+                                    </p>
+                                </div>
+
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Education + Skills -->
+                        <div class="flex-1 flex flex-col gap-12">
+
+                            <!-- Education -->
+                            <div class="flex flex-col gap-6">
+                                <div class="flex items-center gap-3">
+                                    <span class="h-px w-8 bg-primary"></span>
+                                    <h2 class="text-text-main dark:text-white text-2xl font-bold tracking-tight">
+                                        Education</h2>
+                                </div>
+
+                                <div
+                                    class="relative p-6 rounded-2xl border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900">
+                                    <div
+                                        class="flex flex-col md:flex-row md:items-center md:justify-between gap-2 mb-3">
+                                        <h3 class="text-lg font-bold text-text-main dark:text-white">Rochester Institute
+                                            of Technology (RIT), Dubai</h3>
+                                        <span class="text-sm font-bold text-primary tracking-wider uppercase">Sep 2021 —
+                                            Jun 2026</span>
+                                    </div>
+
+                                    <div class="flex flex-col gap-1">
+                                        <p class="text-sm text-text-main dark:text-gray-300 font-medium">Bachelor of
+                                            Computing &amp; Information Technology</p>
+                                        <p class="text-sm text-text-muted dark:text-gray-400">Minor in Business
+                                            Administration</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Skills -->
+                            <div class="flex flex-col gap-8">
+                                <div class="flex items-center gap-3">
+                                    <span class="h-px w-8 bg-primary"></span>
+                                    <h2 class="text-text-main dark:text-white text-2xl font-bold tracking-tight">Tools
+                                        &amp; Skills</h2>
+                                </div>
+
+                                <div class="flex flex-col gap-6">
+
+                                    <!-- Backend & Databases -->
+                                    <div>
+                                        <h4
+                                            class="text-sm font-bold text-text-main dark:text-white mb-3 uppercase tracking-wider">
+                                            Backend &amp; Databases</h4>
+                                        <div class="flex flex-wrap gap-2">
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">Data
+                                                Integrity</span>
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">Database
+                                                Design</span>
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">MySQL</span>
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">Normalization</span>
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">PHP</span>
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">SQL</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Creative -->
+                                    <div>
+                                        <h4
+                                            class="text-sm font-bold text-text-main dark:text-white mb-3 uppercase tracking-wider">
+                                            Creative</h4>
+                                        <div class="flex flex-wrap gap-2">
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">Adobe
+                                                Illustrator</span>
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">Adobe
+                                                Photoshop</span>
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">Adobe
+                                                Premiere Pro</span>
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">Video
+                                                Editing</span>
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">Wondershare
+                                                Filmora</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Design -->
+                                    <div>
+                                        <h4
+                                            class="text-sm font-bold text-text-main dark:text-white mb-3 uppercase tracking-wider">
+                                            Design</h4>
+                                        <div class="flex flex-wrap gap-2">
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">Accessibility
+                                                (A11y)</span>
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">Design
+                                                Systems</span>
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">Figma</span>
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">Prototyping</span>
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">Responsive
+                                                Design</span>
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">Wireframing</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Frontend -->
+                                    <div>
+                                        <h4
+                                            class="text-sm font-bold text-text-main dark:text-white mb-3 uppercase tracking-wider">
+                                            Frontend</h4>
+                                        <div class="flex flex-wrap gap-2">
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">CSS</span>
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">HTML</span>
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">JavaScript</span>
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">React
+                                                Native</span>
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">Tailwind
+                                                CSS</span>
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">Vue.js</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Programming -->
+                                    <div>
+                                        <h4
+                                            class="text-sm font-bold text-text-main dark:text-white mb-3 uppercase tracking-wider">
+                                            Programming</h4>
+                                        <div class="flex flex-wrap gap-2">
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">Bash</span>
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">Java</span>
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">Object-Oriented
+                                                Programming</span>
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">Python</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Testing & Networking -->
+                                    <div>
+                                        <h4
+                                            class="text-sm font-bold text-text-main dark:text-white mb-3 uppercase tracking-wider">
+                                            Testing &amp; Networking</h4>
+                                        <div class="flex flex-wrap gap-2">
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">Bug
+                                                Tracking</span>
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">Cisco
+                                                Packet Tracer</span>
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">TCP/IP
+                                                Basics</span>
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">Test
+                                                Planning</span>
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">Wireshark</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Tools & Platforms -->
+                                    <div>
+                                        <h4
+                                            class="text-sm font-bold text-text-main dark:text-white mb-3 uppercase tracking-wider">
+                                            Tools &amp; Platforms</h4>
+                                        <div class="flex flex-wrap gap-2">
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">AWS</span>
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">BBEdit</span>
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">Git</span>
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">JGrasp</span>
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">Notion</span>
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">PyCharm</span>
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">SendGrid</span>
+                                            <span
+                                                class="px-3 py-1.5 rounded-lg bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 text-sm font-medium">Shopify</span>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <!-- Optional: Testimonial card can stay here if you want -->
+                            <!-- <div>...</div> -->
+
+                        </div>
+
+                    </div>
+                </section>
+
+
+                <!-- Footer (injected) -->
+                <div id="site-footer"></div>
+                <script src="assets/js/main.js" defer></script>
+</body>
+
+</html>
