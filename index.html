@@ -24,6 +24,22 @@
     <!-- Tailwind Config -->
     <script id="tailwind-config">
         tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#1fd5f9",
+                        "background-light": "#f5f8f8",
+                        "background-dark": "#0f1f23",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#162a2f",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
+                },
+            },
         }
     </script>
     <link rel="stylesheet" href="assets/css/styles.css" />
