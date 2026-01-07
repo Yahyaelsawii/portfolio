@@ -13,7 +13,6 @@ async function injectComponent(targetId, url) {
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     mount.innerHTML = await res.text();
   } catch (err) {
-    // graceful fallback so you immediately know why it's missing
     mount.innerHTML = `
       <div class="max-w-[1280px] mx-auto px-6 py-4 text-sm text-red-600">
         Component failed to load: <b>${url}</b>.<br/>
@@ -45,9 +44,101 @@ function setYear() {
   if (el) el.textContent = String(new Date().getFullYear());
 }
 
+/**
+ * Mobile menu (slide down/up) for the navbar version that uses:
+ * #mobileMenuBtn, #mobileMenuIcon, #mobileMenuPanel
+ */
+function initMobileMenu() {
+  const btn = document.getElementById("mobileMenuBtn");
+  const icon = document.getElementById("mobileMenuIcon");
+  const panel = document.getElementById("mobileMenuPanel");
+  const backdrop = document.getElementById("mobileMenuBackdrop");
+
+  if (!btn || !panel || !backdrop) return;
+
+  const open = () => {
+    panel.classList.remove("max-h-0", "opacity-0");
+    panel.classList.add("max-h-screen", "opacity-100");
+
+    backdrop.classList.remove("hidden");
+    backdrop.classList.add("opacity-100");
+
+    btn.setAttribute("aria-expanded", "true");
+    if (icon) icon.textContent = "close";
+  };
+
+  const close = () => {
+    setTimeout(() => backdrop.classList.add("hidden"), 100);
+    panel.classList.add("max-h-0", "opacity-0");
+    panel.classList.remove("max-h-screen", "opacity-100");
+
+    backdrop.classList.add("hidden");
+    backdrop.classList.remove("opacity-100");
+
+    btn.setAttribute("aria-expanded", "false");
+    if (icon) icon.textContent = "menu";
+  };
+
+  btn.addEventListener("click", () => {
+    const isOpen = btn.getAttribute("aria-expanded") === "true";
+    isOpen ? close() : open();
+  });
+
+  // clicking backdrop closes menu
+  backdrop.addEventListener("click", close);
+
+  // links close menu
+  panel.querySelectorAll("a").forEach(a =>
+    a.addEventListener("click", close)
+  );
+
+  // ESC closes
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") close();
+  });
+
+  // resize safety
+  window.addEventListener("resize", () => {
+    if (window.innerWidth >= 768) close();
+  });
+}
+
+function initScrollTopButton() {
+  const btn = document.getElementById("scrollTopBtn");
+  if (!btn) return;
+
+  const show = () => {
+    btn.classList.remove("opacity-0", "pointer-events-none", "translate-y-3", "scale-95");
+    btn.classList.add("opacity-100", "translate-y-0", "scale-100");
+  };
+
+  const hide = () => {
+    btn.classList.add("opacity-0", "pointer-events-none", "translate-y-3", "scale-95");
+    btn.classList.remove("opacity-100", "translate-y-0", "scale-100");
+  };
+
+  const onScroll = () => {
+    if (window.scrollY > 350) show();
+    else hide();
+  };
+
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll(); // run once on load
+
+  btn.addEventListener("click", () => {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  });
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
   await injectComponent("site-navbar", "components/navbar.html");
   await injectComponent("site-footer", "components/footer.html");
+
   setActiveNav();
   setYear();
+
+  // Run after navbar injection
+  initMobileMenu();
+  initScrollTopButton(); // ✅ add this
+
 });
