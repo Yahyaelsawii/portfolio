@@ -1,397 +1,434 @@
 <!DOCTYPE html>
-
 <html class="light" lang="en">
 
 <head>
-    <meta charset="utf-8" />
-    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8" />
+  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
 
   <!-- Favicon -->
   <link rel="icon" type="image/svg+xml" href="assets/favicon/logo.svg" />
-    <title>Portfolio - Selected Work</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Noto+Sans:wght@400;500;700&amp;display=swap"
-        rel="stylesheet" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-        rel="stylesheet" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-        rel="stylesheet" />
-    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: "class",
-            theme: {
-                extend: {
-                    colors: {
-                        "primary": "#1fd5f9",
-                        "primary-dark": "#1bc2e3",
-                        "secondary": "#0d1a1c",
-                        "background-light": "#f8fbfc",
-                        "background-dark": "#0f1f23",
-                        "text-main": "#0d1a1c",
-                        "text-muted": "#47909e",
-                    },
-                    fontFamily: {
-                        "display": ["Space Grotesk", "sans-serif"],
-                        "body": ["Noto Sans", "sans-serif"],
-                    },
-                    borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
-                },
-            },
-        }
-    </script>
-    <link rel="stylesheet" href="assets/css/styles.css" />
+
+  <title>Portfolio - Selected Work</title>
+
+  <!-- Fonts -->
+  <link
+    href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans:wght@400;500;700&display=swap"
+    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+    rel="stylesheet" />
+
+  <!-- Tailwind -->
+  <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script id="tailwind-config">
+    tailwind.config = {
+      darkMode: "class",
+      theme: {
+        extend: {
+          colors: {
+            primary: "#1fd5f9",
+            "primary-dark": "#1bc2e3",
+            secondary: "#0d1a1c",
+            "background-light": "#f8fbfc",
+            "background-dark": "#0f1f23",
+            "text-main": "#0d1a1c",
+            "text-muted": "#47909e",
+          },
+          fontFamily: {
+            display: ["Space Grotesk", "sans-serif"],
+            body: ["Noto Sans", "sans-serif"],
+          },
+          borderRadius: {
+            DEFAULT: "0.5rem",
+            lg: "1rem",
+            xl: "1.5rem",
+            full: "9999px",
+          },
+        },
+      },
+    };
+  </script>
+
+  <link rel="stylesheet" href="assets/css/styles.css" />
 </head>
 
-<body>
-    
-<!-- Under Construction Overlay-->
-<div
-  id="underConstructionOverlay"
-  class="fixed inset-0 z-40 flex items-center justify-center
-         bg-white/60 dark:bg-black/60
-         backdrop-blur-md"
->
-  <div
-    class="max-w-md mx-6 rounded-2xl bg-white/90 dark:bg-background-dark/90
-           backdrop-blur-md border border-[#e6f2f4] dark:border-gray-800
-           p-8 text-center pointer-events-auto"
-  >
-    <span class="material-symbols-outlined text-primary text-5xl mb-4 block">
-      construction
-    </span>
+<body
+  class="bg-background-light dark:bg-background-dark text-text-main font-display antialiased min-h-screen flex flex-col"
+  data-page="work">
+  <!-- Navbar (injected) -->
+  <div id="site-navbar"></div>
 
-    <h2 class="text-2xl font-black text-[#0d1a1c] dark:text-white">
-      Page Under Construction
-    </h2>
+  <main class="flex-grow w-full max-w-[1200px] mx-auto px-6 py-12">
+    <!-- Page Heading -->
+    <section class="mb-12 max-w-3xl">
+      <h2 class="text-5xl md:text-6xl font-bold mb-4 tracking-tighter text-secondary dark:text-white">
+        Selected Work
+      </h2>
+      <p class="text-xl text-text-muted dark:text-gray-400 font-body max-w-2xl leading-relaxed">
+        Crafting digital experiences that solve real problems through rigorous research and playful design.
+      </p>
+    </section>
 
-    <p class="mt-3 text-gray-600 dark:text-gray-400">
-      I’m currently refining this page.<br />
-      Please check my other pages using the Navigation bar, exciting updates are on the way.
-    </p>
+    <!-- Project Grid -->
+    <section class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-20">
+      <!-- Card 1 -->
+      <a href="proj1.html" class="block group" aria-label="Open Gift It — Checkout & E-Invite Flow Redesign project">
+        <article
+          class="relative flex flex-col bg-white dark:bg-white/5 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-primary/20 dark:border-white/5 dark:hover:border-primary/50">
+          <div class="relative aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-800">
+            <div class="absolute top-4 left-4 z-10">
+              <span
+                class="inline-flex items-center px-3 py-1 rounded-full bg-white/90 backdrop-blur text-xs font-bold text-secondary shadow-sm">
+                UX + Growth
+              </span>
+            </div>
+            <div class="w-3/4 h-full bg-contain bg-center bg-no-repeat mx-auto
+         transition-transform duration-700 group-hover:scale-105"
+              style="background-image: url('assets/Pictures/Giftit_logo.png');"></div>
+            <div class="absolute inset-0 bg-secondary/0 group-hover:bg-secondary/10 transition-colors duration-300">
+            </div>
+          </div>
 
-    <a
-      href="contact.html"
-      class="inline-flex items-center justify-center mt-6 h-12 px-6 rounded-xl
-             bg-primary text-[#0d1a1c] font-bold transition hover:opacity-90"
-    >
-      Contact Me
-    </a>
-  </div>
-</div>
-    class="bg-background-light dark:bg-background-dark text-text-main font-display antialiased min-h-screen flex flex-col"
-    data-page="work">
-    <!-- Navigation -->
-    <!-- Navbar (injected) -->
-    <div id="site-navbar"></div>
-    <main class="flex-grow w-full max-w-[1200px] mx-auto px-6 py-12">
-        <!-- Page Heading -->
-        <section class="mb-12 max-w-3xl">
-            <h2 class="text-5xl md:text-6xl font-bold mb-4 tracking-tighter text-secondary dark:text-white">Selected
-                Work</h2>
-            <p class="text-xl text-text-muted dark:text-gray-400 font-body max-w-2xl leading-relaxed">
-                Crafting digital experiences that solve real problems through rigorous research and playful design.
+          <div class="p-6 flex flex-col grow">
+            <div class="flex justify-between items-start mb-2">
+              <div>
+                <p class="text-text-muted dark:text-primary text-sm font-semibold uppercase tracking-wider mb-1">
+                  Gift It
+                </p>
+                <h3
+                  class="text-2xl font-bold text-secondary dark:text-white leading-tight mb-1 group-hover:text-primary transition-colors">
+                  Checkout &amp; E-Invite Flow Redesign
+                </h3>
+              </div>
+              <div
+                class="bg-primary/10 text-primary dark:text-primary p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 duration-300">
+                <span class="material-symbols-outlined">arrow_outward</span>
+              </div>
+            </div>
+
+            <p class="text-base text-gray-600 dark:text-gray-300 font-body mb-6 line-clamp-2">
+              Simplified purchase + gifting steps to reduce drop-offs and improve conversion, with a clearer
+              confirmation + email experience.
             </p>
-        </section>
-        <!-- Filters -->
-        <section class="top-20 z-40 bg-background-light dark:bg-background-dark py-4 mb-8 -mx-6 px-6 overflow-x-auto">
-            <div class="flex gap-3 min-w-max pb-2">
-                <button
-                    class="group flex items-center gap-2 px-5 py-2.5 rounded-full bg-secondary text-white shadow-md transition-all hover:bg-secondary/90 dark:bg-primary dark:text-secondary">
-                    <span class="material-symbols-outlined text-[18px]">grid_view</span>
-                    <span class="text-sm font-bold">All</span>
-                </button>
-                <button
-                    class="group flex items-center gap-2 px-5 py-2.5 rounded-full bg-white border border-[#e6f2f4] text-secondary hover:border-primary/50 hover:bg-primary/5 transition-all dark:bg-white/5 dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/10">
-                    <span class="material-symbols-outlined text-[18px]">language</span>
-                    <span class="text-sm font-medium">Web</span>
-                </button>
-                <button
-                    class="group flex items-center gap-2 px-5 py-2.5 rounded-full bg-white border border-[#e6f2f4] text-secondary hover:border-primary/50 hover:bg-primary/5 transition-all dark:bg-white/5 dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/10">
-                    <span class="material-symbols-outlined text-[18px]">smartphone</span>
-                    <span class="text-sm font-medium">Mobile</span>
-                </button>
-                <button
-                    class="group flex items-center gap-2 px-5 py-2.5 rounded-full bg-white border border-[#e6f2f4] text-secondary hover:border-primary/50 hover:bg-primary/5 transition-all dark:bg-white/5 dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/10">
-                    <span class="material-symbols-outlined text-[18px]">manage_search</span>
-                    <span class="text-sm font-medium">UX Research</span>
-                </button>
-                <button
-                    class="group flex items-center gap-2 px-5 py-2.5 rounded-full bg-white border border-[#e6f2f4] text-secondary hover:border-primary/50 hover:bg-primary/5 transition-all dark:bg-white/5 dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/10">
-                    <span class="material-symbols-outlined text-[18px]">layers</span>
-                    <span class="text-sm font-medium">UI Systems</span>
-                </button>
-                <button
-                    class="group flex items-center gap-2 px-5 py-2.5 rounded-full bg-white border border-[#e6f2f4] text-secondary hover:border-primary/50 hover:bg-primary/5 transition-all dark:bg-white/5 dark:border-white/10 dark:text-gray-300 dark:hover:bg-white/10">
-                    <span class="material-symbols-outlined text-[18px]">bolt</span>
-                    <span class="text-sm font-medium">Prototypes</span>
-                </button>
-            </div>
-        </section>
-        <!-- Project Grid -->
-        <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 mb-20">
-            <!-- Card 1: Fintech -->
-            <article
-                class="group relative flex flex-col bg-white dark:bg-white/5 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-primary/20 dark:border-white/5 dark:hover:border-primary/50">
-                <div class="relative aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-800">
-                    <div class="absolute top-4 left-4 z-10">
-                        <span
-                            class="inline-flex items-center px-3 py-1 rounded-full bg-white/90 backdrop-blur text-xs font-bold text-secondary shadow-sm">
-                            Mobile App
-                        </span>
-                    </div>
-                    <div class="w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-                        data-alt="Modern fintech mobile banking application dashboard on phone screen"
-                        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCwWIcfSyWyaVc0i6XBTamz6YbJ9O34hz_ZbZGrSOb1zLavXkKwWwJCnRWHAKteeVu0aEmE6h5gxGS1qIqfTTOg-T5bhhKwJCtyinNERzp7ey3FuaxD6ykzq7VScygdpo1IebDmG6IaFFitr0AWPI52sml2ufuis0qgdyAbFBGbvcEUbsYw5YTFPK3q2GeUdItS4x-erJA-Jbup27WxfjPCwzTIuP-IDM4VWWqwmi32PvhGChTQxIJ83r7bMeXwoKV2Js0rWlFn7m4');">
-                    </div>
-                    <!-- Hover Overlay -->
-                    <div
-                        class="absolute inset-0 bg-secondary/0 group-hover:bg-secondary/10 transition-colors duration-300">
-                    </div>
-                </div>
-                <div class="p-6 flex flex-col grow">
-                    <div class="flex justify-between items-start mb-2">
-                        <div>
-                            <p
-                                class="text-text-muted dark:text-primary text-sm font-semibold uppercase tracking-wider mb-1">
-                                Fintech</p>
-                            <h3
-                                class="text-2xl font-bold text-secondary dark:text-white leading-tight mb-1 group-hover:text-primary transition-colors">
-                                NeoBank Redesign</h3>
-                        </div>
-                        <div
-                            class="bg-primary/10 text-primary dark:text-primary p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 duration-300">
-                            <span class="material-symbols-outlined">arrow_outward</span>
-                        </div>
-                    </div>
-                    <p class="text-base text-gray-600 dark:text-gray-300 font-body mb-6 line-clamp-2">Complete overhaul
-                        of the mobile banking experience focusing on financial literacy for Gen Z.</p>
-                    <div
-                        class="mt-auto border-t border-gray-100 dark:border-white/10 pt-4 flex flex-wrap gap-y-3 justify-between items-center text-sm">
-                        <div class="flex flex-col">
-                            <span class="text-xs text-gray-400 font-medium">Role</span>
-                            <span class="font-bold text-secondary dark:text-gray-200">Lead Designer</span>
-                        </div>
-                        <div class="h-8 w-px bg-gray-200 dark:bg-white/10 hidden sm:block"></div>
-                        <div class="flex flex-col">
-                            <span class="text-xs text-gray-400 font-medium">Timeline</span>
-                            <span class="font-bold text-secondary dark:text-gray-200">Q3 2023</span>
-                        </div>
-                        <div class="h-8 w-px bg-gray-200 dark:bg-white/10 hidden sm:block"></div>
-                        <div class="flex items-center gap-1.5 bg-primary/10 px-3 py-1.5 rounded-lg">
-                            <span class="material-symbols-outlined text-primary text-[18px]">trending_up</span>
-                            <span class="font-bold text-secondary dark:text-white"><span
-                                    class="text-primary-dark font-extrabold">+45%</span> Retention</span>
-                        </div>
-                    </div>
-                </div>
-            </article>
-            <!-- Card 2: E-commerce -->
-            <article
-                class="group relative flex flex-col bg-white dark:bg-white/5 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-primary/20 dark:border-white/5 dark:hover:border-primary/50">
-                <div class="relative aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-800">
-                    <div class="absolute top-4 left-4 z-10">
-                        <span
-                            class="inline-flex items-center px-3 py-1 rounded-full bg-white/90 backdrop-blur text-xs font-bold text-secondary shadow-sm">
-                            E-commerce
-                        </span>
-                    </div>
-                    <div class="w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-                        data-alt="Clean minimalist e-commerce website interface on laptop"
-                        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuA0oke--8WHYidQmqycY8Uby9Tqqvnqnd-AwFYDeJ7_ksgaqngrTBJbmFW36P4yvTUrgMuPV8I42o7VUyYZErITIFuq0cCI9kmItr5w33xHj8wNXT0T4P07H18YDEwFPdyptF9OFcgO_JboAKQGub9q_B_q_eE8OpfrXvSWCnXjEaLN8Oqyjar_KUuF5RhJLscdttfkqWIiH_EqDuf8B5IHTdkniUVJqnwWf-a4pw-_pYVzZC09fSw5yc-qyULyuwdESk1Y6WvE_jY');">
-                    </div>
-                    <div
-                        class="absolute inset-0 bg-secondary/0 group-hover:bg-secondary/10 transition-colors duration-300">
-                    </div>
-                </div>
-                <div class="p-6 flex flex-col grow">
-                    <div class="flex justify-between items-start mb-2">
-                        <div>
-                            <p
-                                class="text-text-muted dark:text-primary text-sm font-semibold uppercase tracking-wider mb-1">
-                                Retail</p>
-                            <h3
-                                class="text-2xl font-bold text-secondary dark:text-white leading-tight mb-1 group-hover:text-primary transition-colors">
-                                ShopEasy App</h3>
-                        </div>
-                        <div
-                            class="bg-primary/10 text-primary dark:text-primary p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 duration-300">
-                            <span class="material-symbols-outlined">arrow_outward</span>
-                        </div>
-                    </div>
-                    <p class="text-base text-gray-600 dark:text-gray-300 font-body mb-6 line-clamp-2">Streamlined
-                        checkout flow and personalized discovery feed for a major fashion retailer.</p>
-                    <div
-                        class="mt-auto border-t border-gray-100 dark:border-white/10 pt-4 flex flex-wrap gap-y-3 justify-between items-center text-sm">
-                        <div class="flex flex-col">
-                            <span class="text-xs text-gray-400 font-medium">Role</span>
-                            <span class="font-bold text-secondary dark:text-gray-200">UI/UX Designer</span>
-                        </div>
-                        <div class="h-8 w-px bg-gray-200 dark:bg-white/10 hidden sm:block"></div>
-                        <div class="flex flex-col">
-                            <span class="text-xs text-gray-400 font-medium">Timeline</span>
-                            <span class="font-bold text-secondary dark:text-gray-200">4 Weeks</span>
-                        </div>
-                        <div class="h-8 w-px bg-gray-200 dark:bg-white/10 hidden sm:block"></div>
-                        <div class="flex items-center gap-1.5 bg-primary/10 px-3 py-1.5 rounded-lg">
-                            <span class="material-symbols-outlined text-primary text-[18px]">star</span>
-                            <span class="font-bold text-secondary dark:text-white"><span
-                                    class="text-primary-dark font-extrabold">4.8</span> Rating</span>
-                        </div>
-                    </div>
-                </div>
-            </article>
-            <!-- Card 3: SaaS Dashboard -->
-            <article
-                class="group relative flex flex-col bg-white dark:bg-white/5 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-primary/20 dark:border-white/5 dark:hover:border-primary/50">
-                <div class="relative aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-800">
-                    <div class="absolute top-4 left-4 z-10">
-                        <span
-                            class="inline-flex items-center px-3 py-1 rounded-full bg-white/90 backdrop-blur text-xs font-bold text-secondary shadow-sm">
-                            SaaS Platform
-                        </span>
-                    </div>
-                    <div class="w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-                        data-alt="Data visualization dashboard with dark mode charts"
-                        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAcwdDBWR2T9baxi7aNbnpumz8J2i_jNPsqRhCF7Mc57nKcjwNCzTpONmPGyXmIsdN8PRBSnKfMThHhEhi9rrlgTWWkrbXps6RG7k0eXA2Xqr44GAGTtMtWvWQxgqQBdN09siD83RsLO8bp1DtQZa3NNu7pSLat0gWI2pyP0JWJtQX5PNHnRIs6-oouxub-QFG5aceKbnjvcFpYj2uXhEeKgKIXpXovIQ4q6ZMEnKwFqK8dZN9jfROYOk-hPsVz6rHA3iD2JJC6gts');">
-                    </div>
-                    <div
-                        class="absolute inset-0 bg-secondary/0 group-hover:bg-secondary/10 transition-colors duration-300">
-                    </div>
-                </div>
-                <div class="p-6 flex flex-col grow">
-                    <div class="flex justify-between items-start mb-2">
-                        <div>
-                            <p
-                                class="text-text-muted dark:text-primary text-sm font-semibold uppercase tracking-wider mb-1">
-                                Enterprise</p>
-                            <h3
-                                class="text-2xl font-bold text-secondary dark:text-white leading-tight mb-1 group-hover:text-primary transition-colors">
-                                Analytics Pro</h3>
-                        </div>
-                        <div
-                            class="bg-primary/10 text-primary dark:text-primary p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 duration-300">
-                            <span class="material-symbols-outlined">arrow_outward</span>
-                        </div>
-                    </div>
-                    <p class="text-base text-gray-600 dark:text-gray-300 font-body mb-6 line-clamp-2">Designing a
-                        complex data visualization system for enterprise-level marketing teams.</p>
-                    <div
-                        class="mt-auto border-t border-gray-100 dark:border-white/10 pt-4 flex flex-wrap gap-y-3 justify-between items-center text-sm">
-                        <div class="flex flex-col">
-                            <span class="text-xs text-gray-400 font-medium">Role</span>
-                            <span class="font-bold text-secondary dark:text-gray-200">Product Designer</span>
-                        </div>
-                        <div class="h-8 w-px bg-gray-200 dark:bg-white/10 hidden sm:block"></div>
-                        <div class="flex flex-col">
-                            <span class="text-xs text-gray-400 font-medium">Timeline</span>
-                            <span class="font-bold text-secondary dark:text-gray-200">6 Months</span>
-                        </div>
-                        <div class="h-8 w-px bg-gray-200 dark:bg-white/10 hidden sm:block"></div>
-                        <div class="flex items-center gap-1.5 bg-primary/10 px-3 py-1.5 rounded-lg">
-                            <span class="material-symbols-outlined text-primary text-[18px]">timer</span>
-                            <span class="font-bold text-secondary dark:text-white"><span
-                                    class="text-primary-dark font-extrabold">-20%</span> Task Time</span>
-                        </div>
-                    </div>
-                </div>
-            </article>
-            <!-- Card 4: Design System -->
-            <article
-                class="group relative flex flex-col bg-white dark:bg-white/5 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-primary/20 dark:border-white/5 dark:hover:border-primary/50">
-                <div class="relative aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-800">
-                    <div class="absolute top-4 left-4 z-10">
-                        <span
-                            class="inline-flex items-center px-3 py-1 rounded-full bg-white/90 backdrop-blur text-xs font-bold text-secondary shadow-sm">
-                            UI Systems
-                        </span>
-                    </div>
-                    <div class="w-full h-full bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-                        data-alt="Abstract geometric shapes representing design system components"
-                        style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuCo_Er6C0JcRlMjBiccAZheWOq6rGTAydzOOOEvfzMe-bM9-zXMkq7YK6YRHkvq2wXEZU2-up_AvlwQhjImIHP9-ZP-6S14Nb3KjlboPRWNxwFueEOqufCUwq4EtKZb5oSckxPWugwnMm45Uvg9eVVM48zHudh_JBJFLll8eDGmFR8ZPyicdyTNP0a3n74YBASTsE9Lp9XIg9oJkSko4heX1LYjSdXQVBXDNPbH8EyR5fpoPwFqvXvkm5xSZFwCIM4r7QErN14BTsE');">
-                    </div>
-                    <div
-                        class="absolute inset-0 bg-secondary/0 group-hover:bg-secondary/10 transition-colors duration-300">
-                    </div>
-                </div>
-                <div class="p-6 flex flex-col grow">
-                    <div class="flex justify-between items-start mb-2">
-                        <div>
-                            <p
-                                class="text-text-muted dark:text-primary text-sm font-semibold uppercase tracking-wider mb-1">
-                                Internal Tool</p>
-                            <h3
-                                class="text-2xl font-bold text-secondary dark:text-white leading-tight mb-1 group-hover:text-primary transition-colors">
-                                Orbit Design System</h3>
-                        </div>
-                        <div
-                            class="bg-primary/10 text-primary dark:text-primary p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 duration-300">
-                            <span class="material-symbols-outlined">arrow_outward</span>
-                        </div>
-                    </div>
-                    <p class="text-base text-gray-600 dark:text-gray-300 font-body mb-6 line-clamp-2">Established the
-                        foundational UI kit and documentation for a team of 15 designers.</p>
-                    <div
-                        class="mt-auto border-t border-gray-100 dark:border-white/10 pt-4 flex flex-wrap gap-y-3 justify-between items-center text-sm">
-                        <div class="flex flex-col">
-                            <span class="text-xs text-gray-400 font-medium">Role</span>
-                            <span class="font-bold text-secondary dark:text-gray-200">System Lead</span>
-                        </div>
-                        <div class="h-8 w-px bg-gray-200 dark:bg-white/10 hidden sm:block"></div>
-                        <div class="flex flex-col">
-                            <span class="text-xs text-gray-400 font-medium">Timeline</span>
-                            <span class="font-bold text-secondary dark:text-gray-200">Ongoing</span>
-                        </div>
-                        <div class="h-8 w-px bg-gray-200 dark:bg-white/10 hidden sm:block"></div>
-                        <div class="flex items-center gap-1.5 bg-primary/10 px-3 py-1.5 rounded-lg">
-                            <span class="material-symbols-outlined text-primary text-[18px]">speed</span>
-                            <span class="font-bold text-secondary dark:text-white"><span
-                                    class="text-primary-dark font-extrabold">2x</span> Dev Speed</span>
-                        </div>
-                    </div>
-                </div>
-            </article>
-        </section>
-        <!-- Bottom CTA -->
-        <section
-            class="bg-secondary dark:bg-white/5 rounded-3xl p-10 md:p-16 text-center relative overflow-hidden group">
-            <!-- Decorative gradient orb -->
+
             <div
-                class="absolute top-0 right-0 w-64 h-64 bg-primary/20 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2 group-hover:bg-primary/30 transition-all duration-700">
+              class="mt-auto border-t border-gray-100 dark:border-white/10 pt-4 flex flex-wrap gap-y-3 justify-between items-center text-sm">
+              <div class="flex flex-col">
+                <span class="text-xs text-gray-400 font-medium">Role</span>
+                <span class="font-bold text-secondary dark:text-gray-200">Product Designer</span>
+              </div>
+              <div class="h-8 w-px bg-gray-200 dark:bg-white/10 hidden sm:block"></div>
+              <div class="flex flex-col">
+                <span class="text-xs text-gray-400 font-medium">Focus</span>
+                <span class="font-bold text-secondary dark:text-gray-200">Checkout Funnel</span>
+              </div>
+              <div class="h-8 w-px bg-gray-200 dark:bg-white/10 hidden sm:block"></div>
+              <div class="flex items-center gap-1.5 bg-primary/10 px-3 py-1.5 rounded-lg">
+                <span class="material-symbols-outlined text-primary text-[18px]">trending_up</span>
+                <span class="font-bold text-secondary dark:text-white"><span
+                    class="text-primary-dark font-extrabold">A/B</span> Test Idea</span>
+              </div>
             </div>
+          </div>
+        </article>
+      </a>
+
+      <!-- Card 2 -->
+      <a href="proj2.html" class="block group" aria-label="Open RIT Student App 2.0 project">
+        <article
+          class="relative flex flex-col bg-white dark:bg-white/5 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-primary/20 dark:border-white/5 dark:hover:border-primary/50">
+          <div class="relative aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-800">
+            <div class="absolute top-4 left-4 z-10">
+              <span
+                class="inline-flex items-center px-3 py-1 rounded-full bg-white/90 backdrop-blur text-xs font-bold text-secondary shadow-sm">
+                Mobile App
+              </span>
+            </div>
+            <div class="w-3/4 h-full bg-contain bg-center bg-no-repeat mx-auto
+         transition-transform duration-700 group-hover:scale-105"
+              style="background-image: url('assets/Pictures/RIT_logo.png');"></div>
+            <div class="absolute inset-0 bg-secondary/0 group-hover:bg-secondary/10 transition-colors duration-300">
+            </div>
+          </div>
+
+          <div class="p-6 flex flex-col grow">
+            <div class="flex justify-between items-start mb-2">
+              <div>
+                <p class="text-text-muted dark:text-primary text-sm font-semibold uppercase tracking-wider mb-1">
+                  RIT Dubai
+                </p>
+                <h3
+                  class="text-2xl font-bold text-secondary dark:text-white leading-tight mb-1 group-hover:text-primary transition-colors">
+                  RIT Student App 2.0
+                </h3>
+              </div>
+              <div
+                class="bg-primary/10 text-primary dark:text-primary p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 duration-300">
+                <span class="material-symbols-outlined">arrow_outward</span>
+              </div>
+            </div>
+
+            <p class="text-base text-gray-600 dark:text-gray-300 font-body mb-6 line-clamp-2">
+              Reimagined the student experience: fixed sign-in pain, improved notifications, and unified access to
+              myCourses + SIS.
+            </p>
+
             <div
-                class="absolute bottom-0 left-0 w-64 h-64 bg-primary/10 blur-3xl rounded-full -translate-x-1/2 translate-y-1/2 group-hover:bg-primary/20 transition-all duration-700">
+              class="mt-auto border-t border-gray-100 dark:border-white/10 pt-4 flex flex-wrap gap-y-3 justify-between items-center text-sm">
+              <div class="flex flex-col">
+                <span class="text-xs text-gray-400 font-medium">Role</span>
+                <span class="font-bold text-secondary dark:text-gray-200">UX + Product</span>
+              </div>
+              <div class="h-8 w-px bg-gray-200 dark:bg-white/10 hidden sm:block"></div>
+              <div class="flex flex-col">
+                <span class="text-xs text-gray-400 font-medium">Focus</span>
+                <span class="font-bold text-secondary dark:text-gray-200">Student Tasks</span>
+              </div>
+              <div class="h-8 w-px bg-gray-200 dark:bg-white/10 hidden sm:block"></div>
+              <div class="flex items-center gap-1.5 bg-primary/10 px-3 py-1.5 rounded-lg">
+                <span class="material-symbols-outlined text-primary text-[18px]">notifications</span>
+                <span class="font-bold text-secondary dark:text-white"><span
+                    class="text-primary-dark font-extrabold">+</span> Alerts</span>
+              </div>
             </div>
-            <div class="relative z-10 max-w-2xl mx-auto">
-                <h2 class="text-3xl md:text-5xl font-bold text-white mb-6">Want to see more details?</h2>
-                <p class="text-gray-300 text-lg mb-8 font-body">I'm currently open to new opportunities. Let's discuss
-                    how I can help your team build better products.</p>
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-                    <button
-                        class="w-full sm:w-auto px-8 py-3.5 bg-primary text-secondary font-bold text-lg rounded-xl hover:bg-primary-dark transition-transform hover:scale-105 shadow-lg shadow-primary/25">
-                        Start a Project
-                    </button>
-                    <button
-                        class="w-full sm:w-auto px-8 py-3.5 bg-transparent border-2 border-white/20 text-white font-bold text-lg rounded-xl hover:bg-white/10 transition-colors">
-                        Download Resume
-                    </button>
-                </div>
+          </div>
+        </article>
+      </a>
+
+      <!-- Card 3 -->
+      <a href="proj4.html" class="block group" aria-label="Open Login & Signup Redesign (Passwordless) project">
+        <article
+          class="relative flex flex-col bg-white dark:bg-white/5 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-primary/20 dark:border-white/5 dark:hover:border-primary/50">
+          <div class="relative aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-800">
+            <div class="absolute top-4 left-4 z-10">
+              <span
+                class="inline-flex items-center px-3 py-1 rounded-full bg-white/90 backdrop-blur text-xs font-bold text-secondary shadow-sm">
+                Mobile-first
+              </span>
             </div>
-        </section>
-    </main>
-    <button id="scrollTopBtn" aria-label="Scroll to top" class="fixed bottom-6 right-6 z-50 h-12 w-12 rounded-full bg-white text-text-main
-         shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all hover:-translate-y-1
-         opacity-0 pointer-events-none translate-y-3 scale-95
-         transition-[opacity,transform] duration-300 ease-out">
-        <span class="material-symbols-outlined">keyboard_arrow_up</span>
-    </button>
-    <!-- Footer (injected) -->
-    <div id="site-footer"></div>
-    <script src="assets/js/main.js" defer></script>
+            <div class="w-3/4 h-full bg-contain bg-center bg-no-repeat mx-auto
+         transition-transform duration-700 group-hover:scale-105"
+              style="background-image: url('assets/Pictures/Giftit_logo.png');"></div>
+            <div class="absolute inset-0 bg-secondary/0 group-hover:bg-secondary/10 transition-colors duration-300">
+            </div>
+          </div>
+
+          <div class="p-6 flex flex-col grow">
+            <div class="flex justify-between items-start mb-2">
+              <div>
+                <p class="text-text-muted dark:text-primary text-sm font-semibold uppercase tracking-wider mb-1">
+                  GIFT IT
+                </p>
+                <h3
+                  class="text-2xl font-bold text-secondary dark:text-white leading-tight mb-1 group-hover:text-primary transition-colors">
+                  Login &amp; Signup Redesign (Passwordless)
+                </h3>
+              </div>
+              <div
+                class="bg-primary/10 text-primary dark:text-primary p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 duration-300">
+                <span class="material-symbols-outlined">arrow_outward</span>
+              </div>
+            </div>
+
+            <p class="text-base text-gray-600 dark:text-gray-300 font-body mb-6 line-clamp-2">
+              Shortened registration from <b>3–4 min</b> to <b>1–2 min</b>, improved mobile layout, and added email code
+              login (no password).
+            </p>
+
+            <div
+              class="mt-auto border-t border-gray-100 dark:border-white/10 pt-4 flex flex-wrap gap-y-3 justify-between items-center text-sm">
+              <div class="flex flex-col">
+                <span class="text-xs text-gray-400 font-medium">Role</span>
+                <span class="font-bold text-secondary dark:text-gray-200">UX/UI Designer</span>
+              </div>
+              <div class="h-8 w-px bg-gray-200 dark:bg-white/10 hidden sm:block"></div>
+              <div class="flex flex-col">
+                <span class="text-xs text-gray-400 font-medium">Scope</span>
+                <span class="font-bold text-secondary dark:text-gray-200">Design + UX Fixes</span>
+              </div>
+              <div class="h-8 w-px bg-gray-200 dark:bg-white/10 hidden sm:block"></div>
+              <div class="flex items-center gap-1.5 bg-primary/10 px-3 py-1.5 rounded-lg">
+                <span class="material-symbols-outlined text-primary text-[18px]">schedule</span>
+                <span class="font-bold text-secondary dark:text-white"><span
+                    class="text-primary-dark font-extrabold">1–2</span> min</span>
+              </div>
+            </div>
+          </div>
+        </article>
+      </a>
+
+      <!-- Card 4 -->
+      <a href="proj3.html" class="block group" aria-label="Open Vehicle Rental Database System project">
+        <article
+          class="relative flex flex-col bg-white dark:bg-white/5 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-primary/20 dark:border-white/5 dark:hover:border-primary/50">
+          <div class="relative aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-800">
+            <div class="absolute top-4 left-4 z-10">
+              <span
+                class="inline-flex items-center px-3 py-1 rounded-full bg-white/90 backdrop-blur text-xs font-bold text-secondary shadow-sm">
+                Backend / Data
+              </span>
+            </div>
+            <div class="w-3/4 h-full bg-contain bg-center bg-no-repeat mx-auto
+         transition-transform duration-700 group-hover:scale-105"
+              style="background-image: url('assets/Pictures/RIT_logo.png');"></div>
+            <div class="absolute inset-0 bg-secondary/0 group-hover:bg-secondary/10 transition-colors duration-300">
+            </div>
+          </div>
+
+          <div class="p-6 flex flex-col grow">
+            <div class="flex justify-between items-start mb-2">
+              <div>
+                <p class="text-text-muted dark:text-primary text-sm font-semibold uppercase tracking-wider mb-1">
+                  RIT DUBAI
+                </p>
+                <h3
+                  class="text-2xl font-bold text-secondary dark:text-white leading-tight mb-1 group-hover:text-primary transition-colors">
+                  Vehicle Rental Database System
+                </h3>
+              </div>
+              <div
+                class="bg-primary/10 text-primary dark:text-primary p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 duration-300">
+                <span class="material-symbols-outlined">arrow_outward</span>
+              </div>
+            </div>
+
+            <p class="text-base text-gray-600 dark:text-gray-300 font-body mb-6 line-clamp-2">
+              Built the backend foundation: schema + relationships for customers, vehicles, rentals, and
+              maintenance—optimized for reporting and operations.
+            </p>
+
+            <div
+              class="mt-auto border-t border-gray-100 dark:border-white/10 pt-4 flex flex-wrap gap-y-3 justify-between items-center text-sm">
+              <div class="flex flex-col">
+                <span class="text-xs text-gray-400 font-medium">Role</span>
+                <span class="font-bold text-secondary dark:text-gray-200">Database Developer</span>
+              </div>
+              <div class="h-8 w-px bg-gray-200 dark:bg-white/10 hidden sm:block"></div>
+              <div class="flex flex-col">
+                <span class="text-xs text-gray-400 font-medium">Stack</span>
+                <span class="font-bold text-secondary dark:text-gray-200">Oracle SQL</span>
+              </div>
+              <div class="h-8 w-px bg-gray-200 dark:bg-white/10 hidden sm:block"></div>
+              <div class="flex items-center gap-1.5 bg-primary/10 px-3 py-1.5 rounded-lg">
+                <span class="material-symbols-outlined text-primary text-[18px]">schema</span>
+                <span class="font-bold text-secondary dark:text-white"><span
+                    class="text-primary-dark font-extrabold">ERD</span> + DB</span>
+              </div>
+            </div>
+          </div>
+        </article>
+      </a>
+
+      <!-- Card 5 -->
+        <a href="proj5.html" class="block group" aria-label="Open Mood Insights & Stress Alerts app project">
+    <article
+      class="relative flex flex-col bg-white dark:bg-white/5 rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-transparent hover:border-primary/20 dark:border-white/5 dark:hover:border-primary/50"
+    >
+      <div class="relative aspect-[4/3] overflow-hidden bg-gray-100 dark:bg-gray-800">
+        <div class="absolute top-4 left-4 z-10">
+          <span
+            class="inline-flex items-center px-3 py-1 rounded-full bg-white/90 backdrop-blur text-xs font-bold text-secondary shadow-sm"
+          >
+            UX Case Study
+          </span>
+        </div>
+        <div class="w-3/4 h-full bg-contain bg-center bg-no-repeat mx-auto
+         transition-transform duration-700 group-hover:scale-105"
+              style="background-image: url('assets/Pictures/RIT_logo.png');"></div>
+            <div class="absolute inset-0 bg-secondary/0 group-hover:bg-secondary/10 transition-colors duration-300">
+            </div>
+        <div class="absolute inset-0 bg-secondary/0 group-hover:bg-secondary/10 transition-colors duration-300"></div>
+      </div>
+
+      <div class="p-6 flex flex-col grow">
+        <div class="flex justify-between items-start mb-2">
+          <div>
+            <p class="text-text-muted dark:text-primary text-sm font-semibold uppercase tracking-wider mb-1">
+              RIT Dubai
+            </p>
+            <h3
+              class="text-2xl font-bold text-secondary dark:text-white leading-tight mb-1 group-hover:text-primary transition-colors"
+            >
+              Mood Insights & Stress Alerts
+            </h3>
+          </div>
+          <div
+            class="bg-primary/10 text-primary dark:text-primary p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity -translate-x-2 group-hover:translate-x-0 duration-300"
+          >
+            <span class="material-symbols-outlined">arrow_outward</span>
+          </div>
+        </div>
+
+        <p class="text-base text-gray-600 dark:text-gray-300 font-body mb-6 line-clamp-2">
+          Designed an Insights screen with graphs + time filters to visualize mood patterns and highlight recurring stress triggers.
+        </p>
+
+        <div
+          class="mt-auto border-t border-gray-100 dark:border-white/10 pt-4 flex flex-wrap gap-y-3 justify-between items-center text-sm"
+        >
+          <div class="flex flex-col">
+            <span class="text-xs text-gray-400 font-medium">Role</span>
+            <span class="font-bold text-secondary dark:text-gray-200">UX Designer</span>
+          </div>
+          <div class="h-8 w-px bg-gray-200 dark:bg-white/10 hidden sm:block"></div>
+          <div class="flex flex-col">
+            <span class="text-xs text-gray-400 font-medium">Timeline</span>
+            <span class="font-bold text-secondary dark:text-gray-200">Nov 2024</span>
+          </div>
+          <div class="h-8 w-px bg-gray-200 dark:bg-white/10 hidden sm:block"></div>
+          <div class="flex items-center gap-1.5 bg-primary/10 px-3 py-1.5 rounded-lg">
+            <span class="material-symbols-outlined text-primary text-[18px]">insights</span>
+            <span class="font-bold text-secondary dark:text-white"><span class="text-primary-dark font-extrabold">Graphs</span> + Filters</span>
+          </div>
+        </div>
+      </div>
+    </article>
+  </a>
+</section>
+
+
+
+
+
+    <!-- Bottom CTA -->
+    <section class="bg-secondary dark:bg-white/5 rounded-3xl p-10 md:p-16 text-center relative overflow-hidden group">
+      <div
+        class="absolute top-0 right-0 w-64 h-64 bg-primary/20 blur-3xl rounded-full translate-x-1/2 -translate-y-1/2 group-hover:bg-primary/30 transition-all duration-700">
+      </div>
+      <div
+        class="absolute bottom-0 left-0 w-64 h-64 bg-primary/10 blur-3xl rounded-full -translate-x-1/2 translate-y-1/2 group-hover:bg-primary/20 transition-all duration-700">
+      </div>
+
+      <div class="relative z-10 max-w-2xl mx-auto">
+        <h2 class="text-3xl md:text-5xl font-bold text-white mb-6">Want to see more details?</h2>
+        <p class="text-gray-300 text-lg mb-8 font-body">
+          I'm currently open to new opportunities. Let's discuss how I can help your team build better products.
+        </p>
+
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <button
+            class="w-full sm:w-auto px-8 py-3.5 bg-primary text-secondary font-bold text-lg rounded-xl hover:bg-primary-dark transition-transform hover:scale-105 shadow-lg shadow-primary/25"
+            type="button">
+            Start a Project
+          </button>
+          <button
+            class="w-full sm:w-auto px-8 py-3.5 bg-transparent border-2 border-white/20 text-white font-bold text-lg rounded-xl hover:bg-white/10 transition-colors"
+            type="button">
+            Download Resume
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <button id="scrollTopBtn" aria-label="Scroll to top"
+    class="fixed bottom-6 right-6 z-50 h-12 w-12 rounded-full bg-white text-text-main shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all hover:-translate-y-1 opacity-0 pointer-events-none translate-y-3 scale-95 transition-[opacity,transform] duration-300 ease-out">
+    <span class="material-symbols-outlined">keyboard_arrow_up</span>
+  </button>
+
+  <!-- Footer (injected) -->
+  <div id="site-footer"></div>
+
+  <script src="assets/js/main.js" defer></script>
 </body>
 
 </html>

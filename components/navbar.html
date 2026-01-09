@@ -11,44 +11,13 @@
         <h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">Portfolio</h2>
       </a>
 
-      <!-- Desktop Navigation -->
+      <!-- Desktop Navigation (UNCHANGED) -->
       <nav class="hidden md:flex items-center gap-9">
-        <!-- Home (disabled / closed) -->
-        <span
-          class="text-sm font-medium text-gray-400 dark:text-gray-500 cursor-not-allowed inline-flex items-center gap-2 select-none"
-          title="Closed / coming soon"
-          aria-disabled="true"
-        >
-          Home
-          <span class="material-symbols-outlined text-[18px] leading-none">lock</span>
-        </span>
-
-        <!-- Work (disabled / closed) -->
-        <span
-          class="text-sm font-medium text-gray-400 dark:text-gray-500 cursor-not-allowed inline-flex items-center gap-2 select-none"
-          title="Closed / coming soon"
-          aria-disabled="true"
-        >
-          Work
-          <span class="material-symbols-outlined text-[18px] leading-none">lock</span>
-        </span>
-
-        <!-- Active links -->
-        <a
-          data-nav="about"
-          class="text-sm font-medium hover:text-primary transition-colors dark:text-gray-300"
-          href="about.html"
-        >About</a>
-        <a
-          data-nav="resume"
-          class="text-sm font-medium hover:text-primary transition-colors dark:text-gray-300"
-          href="resume.html"
-        >Resume</a>
-        <a
-          data-nav="contact"
-          class="text-sm font-medium hover:text-primary transition-colors dark:text-gray-300"
-          href="contact.html"
-        >Contact</a>
+        <a data-nav="Home" class="text-sm font-medium hover:text-primary transition-colors dark:text-gray-300" href="index.html">Home</a>
+        <a data-nav="work" class="text-sm font-medium hover:text-primary transition-colors dark:text-gray-300" href="work.html">Work</a>
+        <a data-nav="about" class="text-sm font-medium hover:text-primary transition-colors dark:text-gray-300" href="about.html">About</a>
+        <a data-nav="resume" class="text-sm font-medium hover:text-primary transition-colors dark:text-gray-300" href="resume.html">Resume</a>
+        <a data-nav="contact" class="text-sm font-medium hover:text-primary transition-colors dark:text-gray-300" href="contact.html">Contact</a>
       </nav>
 
       <!-- Right side (desktop CTA + mobile hamburger) -->
@@ -65,7 +34,7 @@
           <span id="mobileMenuIcon" class="material-symbols-outlined">menu</span>
         </button>
 
-        <!-- Desktop CTA -->
+        <!-- Desktop CTA (UNCHANGED) -->
         <a
           href="contact.html"
           class="hidden md:flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-primary text-text-main text-sm font-bold shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-shadow"
@@ -77,35 +46,14 @@
   </div>
 
   <!-- Mobile dropdown panel (slides down/up) -->
-  <div
-    id="mobileMenuPanel"
-    class="md:hidden overflow-hidden border-t border-[#e6f2f4] dark:border-gray-800
-           bg-white/90 dark:bg-background-dark/90
-           max-h-0 opacity-0
-           transition-[max-height,opacity] duration-1000 ease-in-out"
-  >
+<div
+  id="mobileMenuPanel"
+  class="md:hidden overflow-hidden border-t border-[#e6f2f4] dark:border-gray-800 bg-white/90 dark:bg-background-dark/90 backdrop-blur-md max-h-0 opacity-0 transition-all duration-300 ease-in-out"
+>
+
     <nav class="px-6 py-5 flex flex-col gap-4">
-      <!-- Home (disabled / closed) -->
-      <span
-        class="text-base font-semibold text-gray-400 dark:text-gray-500 cursor-not-allowed inline-flex items-center gap-2 select-none"
-        title="Closed / coming soon"
-        aria-disabled="true"
-      >
-        Home
-        <span class="material-symbols-outlined text-[20px] leading-none">lock</span>
-      </span>
-
-      <!-- Work (disabled / closed) -->
-      <span
-        class="text-base font-semibold text-gray-400 dark:text-gray-500 cursor-not-allowed inline-flex items-center gap-2 select-none"
-        title="Closed / coming soon"
-        aria-disabled="true"
-      >
-        Work
-        <span class="material-symbols-outlined text-[20px] leading-none">lock</span>
-      </span>
-
-      <!-- Active links -->
+      <a href="index.html" class="text-base font-semibold hover:text-primary dark:text-gray-200">Home</a>
+      <a href="work.html" class="text-base font-semibold hover:text-primary dark:text-gray-200">Work</a>
       <a href="about.html" class="text-base font-semibold hover:text-primary dark:text-gray-200">About</a>
       <a href="resume.html" class="text-base font-semibold hover:text-primary dark:text-gray-200">Resume</a>
       <a href="contact.html" class="text-base font-semibold hover:text-primary dark:text-gray-200">Contact</a>
@@ -120,11 +68,3 @@
     </nav>
   </div>
 </header>
-
-<!-- Full-page blur overlay (blurs main content behind menu) -->
-<div
-  id="mobileMenuBackdrop"
-  class="fixed inset-0 z-40 hidden opacity-0
-         backdrop-blur-md bg-white/30 dark:bg-black/30
-         transition-opacity duration-300"
-></div>

@@ -129,6 +129,56 @@ function initScrollTopButton() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   });
 }
+function initImageLightbox() {
+  const box = document.getElementById("imgLightbox");
+  const img = document.getElementById("imgLightboxImg");
+  const title = document.getElementById("imgLightboxTitle");
+  const openNew = document.getElementById("imgLightboxOpenNew");
+
+  // If the lightbox markup isn't on this page, do nothing safely.
+  if (!box || !img || !title || !openNew) return;
+
+  function openLightbox(src, altText) {
+    img.src = src;
+    img.alt = altText || "Expanded image";
+    title.textContent = altText || "Preview";
+    openNew.href = src;
+
+    box.classList.remove("hidden");
+    box.setAttribute("aria-hidden", "false");
+    document.body.classList.add("overflow-hidden");
+  }
+
+  function closeLightbox() {
+    box.classList.add("hidden");
+    box.setAttribute("aria-hidden", "true");
+    document.body.classList.remove("overflow-hidden");
+
+    img.src = "";
+    img.alt = "";
+  }
+
+  document.addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-expand-img]");
+    if (btn) {
+      const src = btn.getAttribute("data-src");
+      const altText = btn.getAttribute("data-alt") || "Preview";
+      if (src) openLightbox(src, altText);
+      return;
+    }
+
+    if (e.target.closest("[data-close]")) {
+      closeLightbox();
+    }
+  });
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && !box.classList.contains("hidden")) {
+      closeLightbox();
+    }
+  });
+}
+
 
 document.addEventListener("DOMContentLoaded", async () => {
   await injectComponent("site-navbar", "components/navbar.html");
@@ -137,8 +187,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   setActiveNav();
   setYear();
 
-  // Run after navbar injection
   initMobileMenu();
-  initScrollTopButton(); // ✅ add this
+  initScrollTopButton();
 
+  initImageLightbox(); // ✅ add this
 });

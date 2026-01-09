@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/favicon/logo.svg" />
+
+    <title>Case Study – Mood Insights & Stress Alerts</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans:wght@400;500;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700&display=swap"
+        rel="stylesheet" />
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#1fd5f9",
+                        "background-light": "#f5f8f8",
+                        "background-dark": "#0f1f23",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#162a2f",
+                        "text-main": "#0d1a1c",
+                        "text-muted": "#47909e",
+                    },
+                    fontFamily: {
+                        display: ["Space Grotesk", "sans-serif"],
+                        body: ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.5rem",
+                        lg: "1rem",
+                        xl: "1.5rem",
+                        "2xl": "2rem",
+                        full: "9999px",
+                    },
+                },
+            },
+        };
+    </script>
+
+    <!-- Site CSS -->
+    <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-text-main dark:text-white font-body antialiased overflow-x-hidden"
+    data-page="work">
+    <div class="relative flex min-h-screen flex-col">
+        <!-- NAVBAR (INJECTED) -->
+        <div id="site-navbar"></div>
+
+        <!-- PAGE CONTENT -->
+        <main class="relative">
+            <!-- Hero -->
+            <section class="relative pt-12 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+                <div class="flex flex-col lg:flex-row gap-12 items-start">
+                    <!-- Hero Text -->
+                    <div class="flex-1 max-w-2xl pt-4">
+                        <div
+                            class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 dark:text-primary text-xs font-bold uppercase tracking-wider mb-6">
+                            <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                            Case Study 05
+                        </div>
+
+                        <h1
+                            class="font-display font-bold text-5xl md:text-6xl lg:text-7xl leading-[1.1] mb-6 tracking-tight">
+                            Mood Insights <br />
+                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-600">&amp;
+                                Stress Alerts</span>
+                        </h1>
+
+                        <p class="text-lg md:text-xl text-text-muted dark:text-slate-400 mb-8 leading-relaxed max-w-lg">
+                            A mental health companion concept where users can track mood, detect stress patterns, and
+                            view trends
+                            through a clean Insights dashboard with graphs and time filters.
+                        </p>
+
+                        <div class="flex flex-wrap gap-4">
+                            <a href="#problem"
+                                class="flex items-center gap-2 bg-text-main dark:bg-white text-white dark:text-text-main px-6 py-3 rounded-xl font-bold transition-transform hover:scale-105 active:scale-95">
+                                <span>Read the Case</span>
+                                <span class="material-symbols-outlined text-sm">arrow_downward</span>
+                            </a>
+
+                            <a href="#screens"
+                                class="flex items-center gap-2 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 px-6 py-3 rounded-xl font-bold hover:bg-slate-50 dark:hover:bg-white/10 transition-colors">
+                                <span>View Screens</span>
+                                <span class="material-symbols-outlined text-sm">devices</span>
+                            </a>
+                            <a href="https://www.figma.com/design/pzCPmk9lmXVHZouLufMmeq/Project?node-id=0-1&t=TyhRfx1zaCJkChR0-1"
+                                target="_blank" rel="noopener noreferrer"
+                                class="flex items-center gap-2 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 px-6 py-3 rounded-xl font-bold hover:bg-slate-50 dark:hover:bg-white/10 transition-colors">
+                                <span>View Figma</span>
+                                <span class="material-symbols-outlined text-sm">open_in_new</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Hero Image -->
+                    <div class="relative flex-1 w-full lg:w-auto">
+                        <div
+                            class="relative rounded-2xl overflow-hidden shadow-2xl aspect-[4/3] group bg-slate-100 dark:bg-white/5">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                            </div>
+
+                            <!-- Replace with your own image later -->
+                           <img src="assets/Pictures/RIT_logo.png" alt="RIT Student App preview"
+                class="w-full h-full object-contain p-10 md:p-14 transform group-hover:scale-105 transition-transform duration-700" />
+            </div>
+
+                        <!-- Floating Stat Card -->
+                        <div
+                            class="absolute -bottom-6 -left-6 md:left-6 bg-surface-light dark:bg-surface-dark p-4 rounded-xl shadow-xl border border-slate-100 dark:border-white/5 flex gap-4 items-center animate-[bounce_3s_infinite]">
+                            <div
+                                class="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300 p-2 rounded-lg">
+                                <span class="material-symbols-outlined">insights</span>
+                            </div>
+                            <div>
+                                <p class="text-xs text-text-muted uppercase font-bold">Focus</p>
+                                <p class="font-display font-bold text-xl">Insights UX</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- At a Glance -->
+            <section class="border-y border-slate-200 dark:border-white/5 bg-white dark:bg-surface-dark/50">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div
+                        class="grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-slate-200 dark:divide-white/5">
+                        <div class="p-6 flex flex-col gap-2">
+                            <div class="flex items-center gap-2 text-primary">
+                                <span class="material-symbols-outlined text-[20px]">person</span>
+                                <span class="text-xs font-bold uppercase tracking-wider">Role</span>
+                            </div>
+                            <p class="font-display font-bold text-lg">UX Designer</p>
+                        </div>
+
+                        <div class="p-6 flex flex-col gap-2">
+                            <div class="flex items-center gap-2 text-primary">
+                                <span class="material-symbols-outlined text-[20px]">schedule</span>
+                                <span class="text-xs font-bold uppercase tracking-wider">Timeline</span>
+                            </div>
+                            <p class="font-display font-bold text-lg">Nov 2024</p>
+                        </div>
+
+                        <div class="p-6 flex flex-col gap-2">
+                            <div class="flex items-center gap-2 text-primary">
+                                <span class="material-symbols-outlined text-[20px]">monitoring</span>
+                                <span class="text-xs font-bold uppercase tracking-wider">Core</span>
+                            </div>
+                            <p class="font-display font-bold text-lg">Graphs + Filters</p>
+                        </div>
+
+                        <div class="p-6 flex flex-col gap-2">
+                            <div class="flex items-center gap-2 text-primary">
+                                <span class="material-symbols-outlined text-[20px]">bolt</span>
+                                <span class="text-xs font-bold uppercase tracking-wider">Outcome</span>
+                            </div>
+                            <p class="font-display font-bold text-lg">Clearer patterns</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Main Content -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                    <!-- Sticky Sidebar -->
+                    <aside class="hidden lg:block lg:col-span-3">
+                        <div class="sticky top-32 space-y-8">
+                            <div>
+                                <h3
+                                    class="font-display font-bold text-sm uppercase tracking-widest text-text-muted mb-4">
+                                    Contents</h3>
+                                <ul class="space-y-3 border-l-2 border-slate-200 dark:border-white/10 pl-4">
+                                    <li><a class="text-sm font-medium hover:text-primary block transition-colors"
+                                            href="#problem">01. The Problem</a></li>
+                                    <li><a class="text-sm font-medium hover:text-primary block transition-colors"
+                                            href="#research">02. Research &amp; Goals</a></li>
+                                    <li><a class="text-sm font-medium hover:text-primary block transition-colors"
+                                            href="#solution">03. The Solution</a></li>
+                                    <li><a class="text-sm font-medium hover:text-primary block transition-colors"
+                                            href="#screens">04. Key Screens</a></li>
+                                    <li><a class="text-sm font-medium hover:text-primary block transition-colors"
+                                            href="#outcomes">05. Outcomes</a></li>
+                                </ul>
+                            </div>
+
+                            <div
+                                class="p-6 rounded-2xl bg-gradient-to-br from-primary/10 to-transparent border border-primary/20">
+                                <p class="font-display font-bold text-lg mb-2">Want the prototype?</p>
+                                <p class="text-sm text-slate-600 dark:text-slate-300 mb-4">
+                                    I can share a walkthrough video or Figma file on request.
+                                </p>
+                                <a class="inline-flex items-center gap-1 text-sm font-bold text-primary hover:underline"
+                                    href="contact.html">
+                                    Drop me a line <span
+                                        class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                                </a>
+                            </div>
+                        </div>
+                    </aside>
+
+                    <!-- Main Content -->
+                    <div class="col-span-1 lg:col-span-9 space-y-24">
+                        <!-- 01 Problem -->
+                        <section class="scroll-mt-32" id="problem">
+                            <div class="flex items-center gap-4 mb-6">
+                                <span
+                                    class="font-display font-bold text-6xl text-slate-200 dark:text-slate-800">01</span>
+                                <h2 class="font-display font-bold text-3xl">The Problem</h2>
+                            </div>
+
+                            <div class="prose prose-lg dark:prose-invert max-w-none text-slate-600 dark:text-slate-300">
+                                <p class="text-xl font-medium text-text-main dark:text-white leading-relaxed mb-6">
+                                    People often track their mood inconsistently and struggle to understand <b>what
+                                        causes stress</b> over time.
+                                    The app needed a way to make patterns obvious without overwhelming users.
+                                </p>
+                                <p>
+                                    The biggest UX challenge: turning daily check-ins into meaningful insights using
+                                    simple visuals and clear time filters.
+                                </p>
+                            </div>
+
+                            <div
+                                class="mt-10 rounded-2xl overflow-hidden bg-slate-100 dark:bg-white/5 p-8 md:p-12 relative">
+                                <div
+                                    class="absolute inset-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:16px_16px] opacity-30">
+                                </div>
+                                <div class="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                                    <div>
+                                        <div
+                                            class="text-4xl font-display font-bold text-text-main dark:text-white mb-2">
+                                            Mood</div>
+                                        <div class="text-sm uppercase tracking-widest text-text-muted">Hard to see
+                                            trends</div>
+                                    </div>
+                                    <div>
+                                        <div
+                                            class="text-4xl font-display font-bold text-text-main dark:text-white mb-2">
+                                            Stress</div>
+                                        <div class="text-sm uppercase tracking-widest text-text-muted">Triggers unclear
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div
+                                            class="text-4xl font-display font-bold text-text-main dark:text-white mb-2">
+                                            Insights</div>
+                                        <div class="text-sm uppercase tracking-widest text-text-muted">Too complex</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- 02 Research -->
+                        <section class="scroll-mt-32" id="research">
+                            <div class="flex items-center gap-4 mb-6">
+                                <span
+                                    class="font-display font-bold text-6xl text-slate-200 dark:text-slate-800">02</span>
+                                <h2 class="font-display font-bold text-3xl">Research &amp; Goals</h2>
+                            </div>
+
+                            <p class="text-lg text-slate-600 dark:text-slate-300 mb-10">
+                                We focused on what users actually want from mental health tracking: clarity, not
+                                complexity.
+                            </p>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div
+                                    class="hover-lift bg-white dark:bg-surface-dark p-8 rounded-2xl border border-slate-100 dark:border-white/5 shadow-sm">
+                                    <div
+                                        class="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-700 mb-6">
+                                        <span class="material-symbols-outlined">visibility</span>
+                                    </div>
+                                    <h3 class="font-display font-bold text-xl mb-3">Make patterns visible</h3>
+                                    <p class="text-slate-600 dark:text-slate-400">
+                                        Users should instantly notice “good weeks vs bad weeks” without digging.
+                                    </p>
+                                </div>
+
+                                <div
+                                    class="hover-lift bg-white dark:bg-surface-dark p-8 rounded-2xl border border-slate-100 dark:border-white/5 shadow-sm">
+                                    <div
+                                        class="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 mb-6">
+                                        <span class="material-symbols-outlined">tune</span>
+                                    </div>
+                                    <h3 class="font-display font-bold text-xl mb-3">Filters that feel natural</h3>
+                                    <p class="text-slate-600 dark:text-slate-400">
+                                        Day / Week / Month toggles should reduce noise, not add friction.
+                                    </p>
+                                </div>
+
+                                <div
+                                    class="hover-lift bg-white dark:bg-surface-dark p-8 rounded-2xl border border-slate-100 dark:border-white/5 shadow-sm md:col-span-2">
+                                    <div class="flex flex-col md:flex-row gap-6 items-start">
+                                        <div
+                                            class="w-12 h-12 shrink-0 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600">
+                                            <span class="material-symbols-outlined">notifications_active</span>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-display font-bold text-xl mb-3">Support, not overwhelm</h3>
+                                            <p class="text-slate-600 dark:text-slate-400 mb-4">
+                                                Stress alerts should be gentle and actionable—suggesting coping steps
+                                                rather than “warning” users.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- 03 Solution -->
+                        <section class="scroll-mt-32" id="solution">
+                            <div class="flex items-center gap-4 mb-6">
+                                <span
+                                    class="font-display font-bold text-6xl text-slate-200 dark:text-slate-800">03</span>
+                                <h2 class="font-display font-bold text-3xl">The Solution</h2>
+                            </div>
+
+                            <p class="text-lg text-slate-600 dark:text-slate-300 mb-10">
+                                A clean Insights dashboard that turns daily mood check-ins into understandable
+                                visuals—paired with stress patterns and gentle nudges.
+                            </p>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div
+                                    class="bg-white dark:bg-surface-dark p-6 rounded-2xl border border-slate-100 dark:border-white/5">
+                                    <p class="text-xs font-bold uppercase tracking-widest text-text-muted mb-2">Feature
+                                    </p>
+                                    <h3 class="font-display font-bold text-xl mb-2">Mood trend graph</h3>
+                                    <p class="text-slate-600 dark:text-slate-400">Spot changes across day/week/month.
+                                    </p>
+                                </div>
+
+                                <div
+                                    class="bg-white dark:bg-surface-dark p-6 rounded-2xl border border-slate-100 dark:border-white/5">
+                                    <p class="text-xs font-bold uppercase tracking-widest text-text-muted mb-2">Feature
+                                    </p>
+                                    <h3 class="font-display font-bold text-xl mb-2">Filters</h3>
+                                    <p class="text-slate-600 dark:text-slate-400">One tap to switch time range and
+                                        reduce noise.</p>
+                                </div>
+
+                                <div
+                                    class="bg-white dark:bg-surface-dark p-6 rounded-2xl border border-slate-100 dark:border-white/5">
+                                    <p class="text-xs font-bold uppercase tracking-widest text-text-muted mb-2">Feature
+                                    </p>
+                                    <h3 class="font-display font-bold text-xl mb-2">Stress alerts</h3>
+                                    <p class="text-slate-600 dark:text-slate-400">Supportive prompts based on patterns.
+                                    </p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- 04 Screens -->
+                        <section class="scroll-mt-32" id="screens">
+                            <div class="flex items-center gap-4 mb-6">
+                                <span
+                                    class="font-display font-bold text-6xl text-slate-200 dark:text-slate-800">04</span>
+                                <h2 class="font-display font-bold text-3xl">Final UI</h2>
+                            </div>
+
+                            <p class="text-lg text-slate-600 dark:text-slate-300 mb-10">
+                                The UI focuses on readability first: charts that are clear, filters that are obvious,
+                                and insights that feel personal.
+                                                        </p>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+                                <!-- 01 Checkout Step -->
+                                <div class="flex flex-col items-center">
+                                    <div class="relative aspect-[9/19] w-full">
+                                        <img src="assets/Pictures/Home_screen.png" alt="Checkout step screen"
+                                            class="w-full h-full object-contain" />
+                                    </div>
+                                    <p class="mt-4 text-center text-sm font-bold text-slate-500">
+                                        01. Homescreen
+                                    </p>
+                                </div>
+
+                                <!-- 02 E-Invite -->
+                                <div class="flex flex-col items-center">
+                                    <div class="relative aspect-[9/19] w-full">
+                                        <img src="assets/Pictures/Daily_checkins.png" alt="E-invite customization screen"
+                                            class="w-full h-full object-contain" />
+                                    </div>
+                                    <p class="mt-4 text-center text-sm font-bold text-slate-500">
+                                        02. Daily check-ins
+                                    </p>
+                                </div>
+
+                                <!-- 03 Confirmation -->
+                                <div class="flex flex-col items-center">
+                                    <div class="relative aspect-[9/19] w-full">
+                                        <img src="assets/Pictures/Mood_avg.png" alt="Confirmation success state"
+                                            class="w-full h-full object-contain" />
+                                    </div>
+                                    <p class="mt-4 text-center text-sm font-bold text-slate-500">
+                                        03. Mood average 
+                                        </p>
+                                </div>
+
+                            </div>
+                        </section>
+
+                        <!-- 05 Outcomes -->
+                        <section class="scroll-mt-32" id="outcomes">
+                            <div class="bg-primary rounded-3xl p-8 md:p-12 text-text-main relative overflow-hidden">
+                                <div
+                                    class="absolute top-0 right-0 w-64 h-64 bg-white/20 rounded-full blur-3xl -mr-32 -mt-32">
+                                </div>
+                                <div
+                                    class="absolute bottom-0 left-0 w-64 h-64 bg-white/20 rounded-full blur-3xl -ml-32 -mb-32">
+                                </div>
+
+                                <div class="relative z-10">
+                                    <div class="flex items-center gap-4 mb-8">
+                                        <span class="font-display font-bold text-6xl opacity-50">05</span>
+                                        <h2 class="font-display font-bold text-3xl">Outcomes</h2>
+                                    </div>
+
+                                    <p class="text-xl font-medium mb-12 max-w-2xl">
+                                        A calmer, clearer “Insights” experience: users can spot trends quickly, compare
+                                        time ranges, and
+                                        get gentle support when stress patterns repeat.
+                                    </p>
+
+                                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                                        <div class="bg-white/90 backdrop-blur p-6 rounded-2xl">
+                                            <div class="text-4xl font-display font-bold mb-2">See</div>
+                                            <div class="text-sm font-bold uppercase tracking-wide opacity-70">Mood
+                                                trends</div>
+                                        </div>
+                                        <div class="bg-white/90 backdrop-blur p-6 rounded-2xl">
+                                            <div class="text-4xl font-display font-bold mb-2">Filter</div>
+                                            <div class="text-sm font-bold uppercase tracking-wide opacity-70">Day / week
+                                                / month</div>
+                                        </div>
+                                        <div class="bg-white/90 backdrop-blur p-6 rounded-2xl">
+                                            <div class="text-4xl font-display font-bold mb-2">Support</div>
+                                            <div class="text-sm font-bold uppercase tracking-wide opacity-70">Stress
+                                                nudges</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Scroll Top -->
+        <button id="scrollTopBtn" aria-label="Scroll to top" class="fixed bottom-6 right-6 z-50 h-12 w-12 rounded-full bg-white text-text-main
+        shadow-lg shadow-primary/30 hover:shadow-primary/50 hover:-translate-y-1
+        opacity-0 pointer-events-none translate-y-3 scale-95
+        transition-[opacity,transform] duration-300 ease-out">
+            <span class="material-symbols-outlined">keyboard_arrow_up</span>
+        </button>
+
+        <!-- FOOTER (INJECTED) -->
+        <div id="site-footer"></div>
+    </div>
+
+    <script src="assets/js/main.js" defer></script>
+</body>
+
+</html>

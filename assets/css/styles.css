@@ -21,4 +21,5 @@
 /* Optional: prevent layout shift when scrollbar appears */
 html {
     scrollbar-gutter: stable;
+    scroll-behavior: smooth;
 }

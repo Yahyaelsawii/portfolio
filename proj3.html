@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/favicon/logo.svg" />
+
+    <title>Case Study – Vehicle Rental Ops Dashboard (Data → UI)</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans:wght@400;500;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700&display=swap"
+        rel="stylesheet" />
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#1fd5f9",
+                        "background-light": "#f5f8f8",
+                        "background-dark": "#0f1f23",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#162a2f",
+                        "text-main": "#0d1a1c",
+                        "text-muted": "#47909e",
+                    },
+                    fontFamily: {
+                        display: ["Space Grotesk", "sans-serif"],
+                        body: ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.5rem",
+                        lg: "1rem",
+                        xl: "1.5rem",
+                        "2xl": "2rem",
+                        full: "9999px",
+                    },
+                },
+            },
+        };
+    </script>
+
+    <!-- Site CSS -->
+    <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-text-main dark:text-white font-body antialiased overflow-x-hidden"
+    data-page="work">
+    <div class="relative flex min-h-screen flex-col">
+        <!-- NAVBAR (INJECTED) -->
+        <div id="site-navbar"></div>
+
+        <!-- PAGE CONTENT -->
+        <main class="relative">
+            <!-- Hero -->
+            <section class="relative pt-12 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+                <div class="flex flex-col lg:flex-row gap-12 items-start">
+                    <!-- Hero Text -->
+                    <div class="flex-1 max-w-2xl pt-4">
+                        <div
+                            class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 dark:text-primary text-xs font-bold uppercase tracking-wider mb-6">
+                            <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                            Case Study 05
+                        </div>
+
+                        <h1
+                            class="font-display font-bold text-5xl md:text-6xl lg:text-7xl leading-[1.1] mb-6 tracking-tight">
+                            Vehicle Rental <br />
+                            <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-600">
+                                Ops Dashboard
+                            </span>
+                        </h1>
+
+                        <p class="text-lg md:text-xl text-text-muted dark:text-slate-400 mb-8 leading-relaxed max-w-lg">
+                            Turning a full backend database project into a product story: how the schema, roles,
+                            transactions, and
+                            queries power an operations dashboard for customers, vehicles, rentals, and maintenance.
+                        </p>
+
+                        <div class="flex flex-wrap gap-4">
+                            <a href="#problem"
+                                class="flex items-center gap-2 bg-text-main dark:bg-white text-white dark:text-text-main px-6 py-3 rounded-xl font-bold transition-transform hover:scale-105 active:scale-95">
+                                <span>Read the Case</span>
+                                <span class="material-symbols-outlined text-sm">arrow_downward</span>
+                            </a>
+
+                            <a href="#dashboard"
+                                class="flex items-center gap-2 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 px-6 py-3 rounded-xl font-bold hover:bg-slate-50 dark:hover:bg-white/10 transition-colors">
+                                <span>Dashboard Concept</span>
+                                <span class="material-symbols-outlined text-sm">dashboard</span>
+                            </a>
+                        </div>
+
+                        <p class="mt-6 text-sm text-slate-500 dark:text-slate-400">
+                            Note: This project shipped backend + database operations. UI screens below are a
+                            <b>concept</b> to show how
+                            the data would be used in a real product.
+                        </p>
+                    </div>
+
+                    <!-- Hero Visual -->
+                    <div class="relative flex-1 w-full lg:w-auto">
+                        <div
+                            class="relative rounded-2xl overflow-hidden shadow-2xl aspect-[4/3] group bg-slate-100 dark:bg-white/5">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                            </div>
+
+                            <!-- Optional: replace with your ERD or any project image -->
+        <img src="assets/Pictures/RIT_logo.png" alt="RIT Student App preview"
+                class="w-full h-full object-contain p-10 md:p-14 transform group-hover:scale-105 transition-transform duration-700" />
+                        </div>
+
+                        <!-- Floating Stat Card -->
+                        <div
+                            class="absolute -bottom-6 -left-6 md:left-6 bg-surface-light dark:bg-surface-dark p-4 rounded-xl shadow-xl border border-slate-100 dark:border-white/5 flex gap-4 items-center animate-[bounce_3s_infinite]">
+                            <div
+                                class="bg-emerald-100 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 p-2 rounded-lg">
+                                <span class="material-symbols-outlined">database</span>
+                            </div>
+                            <div>
+                                <p class="text-xs text-text-muted uppercase font-bold">Built</p>
+                                <p class="font-display font-bold text-xl">Oracle DB</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- At a Glance -->
+            <section class="border-y border-slate-200 dark:border-white/5 bg-white dark:bg-surface-dark/50">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div
+                        class="grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-slate-200 dark:divide-white/5">
+                        <div class="p-6 flex flex-col gap-2">
+                            <div class="flex items-center gap-2 text-primary">
+                                <span class="material-symbols-outlined text-[20px]">person</span>
+                                <span class="text-xs font-bold uppercase tracking-wider">Role</span>
+                            </div>
+                            <p class="font-display font-bold text-lg">DB Developer</p>
+                        </div>
+
+                        <div class="p-6 flex flex-col gap-2">
+                            <div class="flex items-center gap-2 text-primary">
+                                <span class="material-symbols-outlined text-[20px]">apartment</span>
+                                <span class="text-xs font-bold uppercase tracking-wider">Domain</span>
+                            </div>
+                            <p class="font-display font-bold text-lg">Car Rental Ops</p>
+                        </div>
+
+                        <div class="p-6 flex flex-col gap-2">
+                            <div class="flex items-center gap-2 text-primary">
+                                <span class="material-symbols-outlined text-[20px]">security</span>
+                                <span class="text-xs font-bold uppercase tracking-wider">Security</span>
+                            </div>
+                            <p class="font-display font-bold text-lg">Roles + Privileges</p>
+                        </div>
+
+                        <div class="p-6 flex flex-col gap-2">
+                            <div class="flex items-center gap-2 text-primary">
+                                <span class="material-symbols-outlined text-[20px]">backup</span>
+                                <span class="text-xs font-bold uppercase tracking-wider">Reliability</span>
+                            </div>
+                            <p class="font-display font-bold text-lg">Cold Backup → S3</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Main Content -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                    <!-- Sticky Sidebar -->
+                    <aside class="hidden lg:block lg:col-span-3">
+                        <div class="sticky top-32 space-y-8">
+                            <div>
+                                <h3
+                                    class="font-display font-bold text-sm uppercase tracking-widest text-text-muted mb-4">
+                                    Contents</h3>
+                                <ul class="space-y-3 border-l-2 border-slate-200 dark:border-white/10 pl-4">
+                                    <li><a class="text-sm font-medium hover:text-primary block transition-colors"
+                                            href="#problem">01. The Problem</a></li>
+                                    <li><a class="text-sm font-medium hover:text-primary block transition-colors"
+                                            href="#schema">02. Schema Snapshot</a></li>
+                                    <li><a class="text-sm font-medium hover:text-primary block transition-colors"
+                                            href="#tasks">03. User Tasks</a></li>
+                                    <li><a class="text-sm font-medium hover:text-primary block transition-colors"
+                                            href="#dashboard">04. Dashboard Concept</a></li>
+                                    <li><a class="text-sm font-medium hover:text-primary block transition-colors"
+                                            href="#backend">05. Backend Highlights</a></li>
+                                    <li><a class="text-sm font-medium hover:text-primary block transition-colors"
+                                            href="#outcome">06. Outcome</a></li>
+                                </ul>
+                            </div>
+
+                            <div
+                                class="p-6 rounded-2xl bg-gradient-to-br from-primary/10 to-transparent border border-primary/20">
+                                <p class="font-display font-bold text-lg mb-2">Want the report?</p>
+                                <p class="text-sm text-slate-600 dark:text-slate-300 mb-4">
+                                    I can share the database report + ERD screenshots on request.
+                                </p>
+                                <a class="inline-flex items-center gap-1 text-sm font-bold text-primary hover:underline"
+                                    href="contact.html">
+                                    Drop me a line <span
+                                        class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                                </a>
+                            </div>
+                        </div>
+                    </aside>
+
+                    <!-- Main Content -->
+                    <div class="col-span-1 lg:col-span-9 space-y-24">
+                        <!-- 01 Problem -->
+                        <section class="scroll-mt-32" id="problem">
+                            <div class="flex items-center gap-4 mb-6">
+                                <span
+                                    class="font-display font-bold text-6xl text-slate-200 dark:text-slate-800">01</span>
+                                <h2 class="font-display font-bold text-3xl">The Problem</h2>
+                            </div>
+
+                            <div class="prose prose-lg dark:prose-invert max-w-none text-slate-600 dark:text-slate-300">
+                                <p class="text-xl font-medium text-text-main dark:text-white leading-relaxed mb-6">
+                                    Car rental operations need a single source of truth for <b>customers</b>,
+                                    <b>vehicles</b>, <b>rentals</b>,
+                                    and <b>maintenance</b>—with accurate availability + cost tracking.
+                                </p>
+                                <p>
+                                    We designed and implemented an Oracle relational database to support these workflows
+                                    and enable
+                                    real-time operational visibility through queries and views.
+                                </p>
+                            </div>
+
+                            <div
+                                class="mt-10 rounded-2xl overflow-hidden bg-slate-100 dark:bg-white/5 p-8 md:p-12 relative">
+                                <div
+                                    class="absolute inset-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:16px_16px] opacity-30">
+                                </div>
+                                <div class="relative z-10 grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+                                    <div>
+                                        <div
+                                            class="text-5xl font-display font-bold text-text-main dark:text-white mb-2">
+                                            4</div>
+                                        <div class="text-sm uppercase tracking-widest text-text-muted">Core Areas</div>
+                                        <div class="text-xs mt-1 text-slate-500 dark:text-slate-400">Customers /
+                                            Vehicles / Rentals / Maintenance</div>
+                                    </div>
+                                    <div>
+                                        <div
+                                            class="text-5xl font-display font-bold text-text-main dark:text-white mb-2">
+                                            Roles</div>
+                                        <div class="text-sm uppercase tracking-widest text-text-muted">Access Control
+                                        </div>
+                                        <div class="text-xs mt-1 text-slate-500 dark:text-slate-400">Different users,
+                                            different privileges</div>
+                                    </div>
+                                    <div>
+                                        <div
+                                            class="text-5xl font-display font-bold text-text-main dark:text-white mb-2">
+                                            Backup</div>
+                                        <div class="text-sm uppercase tracking-widest text-text-muted">Reliability</div>
+                                        <div class="text-xs mt-1 text-slate-500 dark:text-slate-400">Cold backup
+                                            strategy</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- 02 Schema -->
+                        <section class="scroll-mt-32" id="schema">
+                            <div class="flex items-center gap-4 mb-6">
+                                <span
+                                    class="font-display font-bold text-6xl text-slate-200 dark:text-slate-800">02</span>
+                                <h2 class="font-display font-bold text-3xl">Schema Snapshot</h2>
+                            </div>
+
+                            <p class="text-lg text-slate-600 dark:text-slate-300 mb-10">
+                                The ERD models the real business: rentals connect customers + vehicles + employees, with
+                                maintenance history
+                                and daily cost tracking as supporting entities.
+                            </p>
+
+                            <div
+                                class="bg-surface-light dark:bg-surface-dark p-4 rounded-2xl border border-slate-200 dark:border-white/10 overflow-hidden">
+                                <div class="flex items-center justify-between mb-4">
+                                    <h3 class="font-display font-bold text-xl flex items-center gap-2">
+                                        <span class="w-2 h-6 bg-primary rounded-full"></span>
+                                        ERD / Schema Visual
+                                    </h3>
+                                </div>
+
+                                <div class="rounded-xl bg-slate-100 dark:bg-white/5 p-8">
+                                    <img class="w-full h-auto rounded-xl"
+                                        src="assets/Pictures/ERD.png"
+                                        alt="Schema snapshot" />
+                                </div>
+
+
+                                <div class="mt-8 grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div
+                                        class="bg-white dark:bg-surface-dark p-6 rounded-2xl border border-slate-100 dark:border-white/5">
+                                        <p class="text-xs font-bold uppercase tracking-widest text-text-muted mb-2">Core
+                                            entities</p>
+                                        <p class="font-display font-bold text-lg">Customer • Vehicle • Rental •
+                                            Maintenance</p>
+                                        <p class="text-slate-600 dark:text-slate-400 mt-2">
+                                            Built to track availability, scheduling, and cost per day.
+                                        </p>
+                                    </div>
+
+                                    <div
+                                        class="bg-white dark:bg-surface-dark p-6 rounded-2xl border border-slate-100 dark:border-white/5">
+                                        <p class="text-xs font-bold uppercase tracking-widest text-text-muted mb-2">
+                                            Supporting entities</p>
+                                        <p class="font-display font-bold text-lg">Employee • AvgDailyCost</p>
+                                        <p class="text-slate-600 dark:text-slate-400 mt-2">
+                                            Used for operational ownership + pricing trends.
+                                        </p>
+                                    </div>
+                                </div>
+                        </section>
+
+                        <!-- 03 Tasks -->
+                        <section class="scroll-mt-32" id="tasks">
+                            <div class="flex items-center gap-4 mb-6">
+                                <span
+                                    class="font-display font-bold text-6xl text-slate-200 dark:text-slate-800">03</span>
+                                <h2 class="font-display font-bold text-3xl">User Tasks (What the Ops Team Needs)</h2>
+                            </div>
+
+                            <p class="text-lg text-slate-600 dark:text-slate-300 mb-10">
+                                We translated database capabilities into real operational tasks a dashboard would
+                                support.
+                            </p>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div
+                                    class="hover-lift bg-white dark:bg-surface-dark p-8 rounded-2xl border border-slate-100 dark:border-white/5 shadow-sm">
+                                    <div
+                                        class="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 mb-6">
+                                        <span class="material-symbols-outlined">car_rental</span>
+                                    </div>
+                                    <h3 class="font-display font-bold text-xl mb-3">Create a rental</h3>
+                                    <p class="text-slate-600 dark:text-slate-400">
+                                        Find available vehicles, create a rental record, and calculate total cost based
+                                        on date range.
+                                    </p>
+                                </div>
+
+                                <div
+                                    class="hover-lift bg-white dark:bg-surface-dark p-8 rounded-2xl border border-slate-100 dark:border-white/5 shadow-sm">
+                                    <div
+                                        class="w-12 h-12 rounded-full bg-emerald-100 dark:bg-emerald-900/30 flex items-center justify-center text-emerald-600 mb-6">
+                                        <span class="material-symbols-outlined">engineering</span>
+                                    </div>
+                                    <h3 class="font-display font-bold text-xl mb-3">Track maintenance</h3>
+                                    <p class="text-slate-600 dark:text-slate-400">
+                                        Log maintenance events and keep a full history per vehicle.
+                                    </p>
+                                </div>
+
+                                <div
+                                    class="hover-lift bg-white dark:bg-surface-dark p-8 rounded-2xl border border-slate-100 dark:border-white/5 shadow-sm">
+                                    <div
+                                        class="w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 mb-6">
+                                        <span class="material-symbols-outlined">query_stats</span>
+                                    </div>
+                                    <h3 class="font-display font-bold text-xl mb-3">Revenue &amp; ops reporting</h3>
+                                    <p class="text-slate-600 dark:text-slate-400">
+                                        Summarize rentals, average costs, and totals using queries and views.
+                                    </p>
+                                </div>
+
+                                <div
+                                    class="hover-lift bg-white dark:bg-surface-dark p-8 rounded-2xl border border-slate-100 dark:border-white/5 shadow-sm">
+                                    <div
+                                        class="w-12 h-12 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600 mb-6">
+                                        <span class="material-symbols-outlined">admin_panel_settings</span>
+                                    </div>
+                                    <h3 class="font-display font-bold text-xl mb-3">Role-based access</h3>
+                                    <p class="text-slate-600 dark:text-slate-400">
+                                        Customers view-only, employees insert rentals, supervisors create views for
+                                        reporting.
+                                    </p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- 04 Dashboard concept -->
+                        <section class="scroll-mt-32" id="dashboard">
+                            <div class="flex items-center gap-4 mb-6">
+                                <span
+                                    class="font-display font-bold text-6xl text-slate-200 dark:text-slate-800">04</span>
+                                <h2 class="font-display font-bold text-3xl">Dashboard Concept (From Data → UI)</h2>
+                            </div>
+
+                            <p class="text-lg text-slate-600 dark:text-slate-300 mb-10">
+                                Even though the deliverable was backend, here’s the UI concept the database supports: a
+                                single ops
+                                dashboard with the exact data the schema + queries expose.
+                            </p>
+
+                            <!-- Concept blocks (no “fake UI”, just honest concept cards) -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+                                <div
+                                    class="bg-white dark:bg-surface-dark p-6 rounded-2xl border border-slate-100 dark:border-white/5">
+                                    <p class="text-xs font-bold uppercase tracking-widest text-text-muted mb-2">Widget
+                                    </p>
+                                    <h3 class="font-display font-bold text-xl mb-2">Fleet Status</h3>
+                                    <p class="text-slate-600 dark:text-slate-400">
+                                        Available / Rented / Maintenance counts (Vehicle.Status).
+                                    </p>
+                                </div>
+
+                                <div
+                                    class="bg-white dark:bg-surface-dark p-6 rounded-2xl border border-slate-100 dark:border-white/5">
+                                    <p class="text-xs font-bold uppercase tracking-widest text-text-muted mb-2">Widget
+                                    </p>
+                                    <h3 class="font-display font-bold text-xl mb-2">Active Rentals</h3>
+                                    <p class="text-slate-600 dark:text-slate-400">
+                                        Current rentals with customer + date range + total cost.
+                                    </p>
+                                </div>
+
+                                <div
+                                    class="bg-white dark:bg-surface-dark p-6 rounded-2xl border border-slate-100 dark:border-white/5">
+                                    <p class="text-xs font-bold uppercase tracking-widest text-text-muted mb-2">Widget
+                                    </p>
+                                    <h3 class="font-display font-bold text-xl mb-2">Maintenance Queue</h3>
+                                    <p class="text-slate-600 dark:text-slate-400">
+                                        Recent maintenance entries with cost + description.
+                                    </p>
+                                </div>
+                        </section>
+
+                        <!-- 05 Backend highlights -->
+                        <section class="scroll-mt-32" id="backend">
+                            <div class="flex items-center gap-4 mb-6">
+                                <span
+                                    class="font-display font-bold text-6xl text-slate-200 dark:text-slate-800">05</span>
+                                <h2 class="font-display font-bold text-3xl">Backend Highlights</h2>
+                            </div>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div
+                                    class="bg-white dark:bg-surface-dark p-8 rounded-2xl border border-slate-100 dark:border-white/5">
+                                    <div class="flex items-center gap-3 mb-4 text-primary">
+                                        <span class="material-symbols-outlined">badge</span>
+                                        <span class="text-xs font-bold uppercase tracking-wider">Users &
+                                            Privileges</span>
+                                    </div>
+                                    <p class="text-slate-600 dark:text-slate-400">
+                                        We created multiple DB users with realistic permissions (SYS, DEV_USER,
+                                        CUSTOMER_USER, EMPLOYEE_USER,
+                                        SUPERVISOR_USER) to enforce least-privilege access.
+                                    </p>
+                                </div>
+
+                                <div
+                                    class="bg-white dark:bg-surface-dark p-8 rounded-2xl border border-slate-100 dark:border-white/5">
+                                    <div class="flex items-center gap-3 mb-4 text-primary">
+                                        <span class="material-symbols-outlined">lan</span>
+                                        <span class="text-xs font-bold uppercase tracking-wider">Remote
+                                            Connections</span>
+                                    </div>
+                                    <p class="text-slate-600 dark:text-slate-400">
+                                        Verified secure remote access for different users while keeping permission
+                                        boundaries intact.
+                                    </p>
+                                </div>
+
+                                <div
+                                    class="bg-white dark:bg-surface-dark p-8 rounded-2xl border border-slate-100 dark:border-white/5">
+                                    <div class="flex items-center gap-3 mb-4 text-primary">
+                                        <span class="material-symbols-outlined">code</span>
+                                        <span class="text-xs font-bold uppercase tracking-wider">Queries & Views</span>
+                                    </div>
+                                    <p class="text-slate-600 dark:text-slate-400">
+                                        Built SQL queries for operational reporting (rentals by customer/employee,
+                                        vehicles by price, revenue),
+                                        and created a rental summary view to support dashboard-style reporting.
+                                    </p>
+                                </div>
+
+                                <div
+                                    class="bg-white dark:bg-surface-dark p-8 rounded-2xl border border-slate-100 dark:border-white/5">
+                                    <div class="flex items-center gap-3 mb-4 text-primary">
+                                        <span class="material-symbols-outlined">sync_alt</span>
+                                        <span class="text-xs font-bold uppercase tracking-wider">Transactions</span>
+                                    </div>
+                                    <p class="text-slate-600 dark:text-slate-400">
+                                        Implemented core transactions for renting a vehicle, inserting average daily
+                                        cost records, and logging maintenance events.
+                                    </p>
+                                </div>
+
+                                <div
+                                    class="md:col-span-2 bg-white dark:bg-surface-dark p-8 rounded-2xl border border-slate-100 dark:border-white/5">
+                                    <div class="flex items-center gap-3 mb-4 text-primary">
+                                        <span class="material-symbols-outlined">cloud_upload</span>
+                                        <span class="text-xs font-bold uppercase tracking-wider">Backup Strategy</span>
+                                    </div>
+                                    <p class="text-slate-600 dark:text-slate-400">
+                                        Designed a cold backup approach and automated upload of backups to S3 to support
+                                        recovery and reliability.
+                                    </p>
+                                </div>
+                            </div>
+
+                            <p class="mt-6 text-sm text-slate-500 dark:text-slate-400">
+                                All backend features above are documented in the project report (schema/ERD, users &
+                                privileges, remote access, queries/views, transactions, backup).
+                            </p>
+                        </section>
+
+                        <!-- 06 Outcome -->
+                        <section class="scroll-mt-32" id="outcome">
+                            <div class="bg-primary rounded-3xl p-8 md:p-12 text-text-main relative overflow-hidden">
+                                <div
+                                    class="absolute top-0 right-0 w-64 h-64 bg-white/20 rounded-full blur-3xl -mr-32 -mt-32">
+                                </div>
+                                <div
+                                    class="absolute bottom-0 left-0 w-64 h-64 bg-white/20 rounded-full blur-3xl -ml-32 -mb-32">
+                                </div>
+
+                                <div class="relative z-10">
+                                    <div class="flex items-center gap-4 mb-8">
+                                        <span class="font-display font-bold text-6xl opacity-50">06</span>
+                                        <h2 class="font-display font-bold text-3xl">Outcome</h2>
+                                    </div>
+
+                                    <p class="text-xl font-medium mb-12 max-w-2xl">
+                                        A production-style backend foundation for a rental operations product:
+                                        structured schema, controlled access,
+                                        operational queries/views, transaction logic, and a backup plan—ready to power
+                                        an ops dashboard.
+                                    </p>
+
+                                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                                        <div class="bg-white/90 backdrop-blur p-6 rounded-2xl">
+                                            <div class="text-4xl font-display font-bold mb-2">Model</div>
+                                            <div class="text-sm font-bold uppercase tracking-wide opacity-70">Real ops
+                                                entities</div>
+                                        </div>
+                                        <div class="bg-white/90 backdrop-blur p-6 rounded-2xl">
+                                            <div class="text-4xl font-display font-bold mb-2">Secure</div>
+                                            <div class="text-sm font-bold uppercase tracking-wide opacity-70">Role-based
+                                                access</div>
+                                        </div>
+                                        <div class="bg-white/90 backdrop-blur p-6 rounded-2xl">
+                                            <div class="text-4xl font-display font-bold mb-2">Ready</div>
+                                            <div class="text-sm font-bold uppercase tracking-wide opacity-70">Queries →
+                                                dashboard</div>
+                                        </div>
+                                    </div>
+
+                                    <p class="mt-8 text-sm opacity-80">
+                                        If you want, I can also write a “Future Work” block that explains how the UI
+                                        would connect (API endpoints / views / reporting layer)
+                                        without pretending it already exists.
+                                    </p>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Scroll Top -->
+        <button id="scrollTopBtn" aria-label="Scroll to top" class="fixed bottom-6 right-6 z-50 h-12 w-12 rounded-full bg-white text-text-main
+        shadow-lg shadow-primary/30 hover:shadow-primary/50 hover:-translate-y-1
+        opacity-0 pointer-events-none translate-y-3 scale-95
+        transition-[opacity,transform] duration-300 ease-out">
+            <span class="material-symbols-outlined">keyboard_arrow_up</span>
+        </button>
+
+        <!-- FOOTER (INJECTED) -->
+        <div id="site-footer"></div>
+    </div>
+
+    <script src="assets/js/main.js" defer></script>
+</body>
+
+</html>

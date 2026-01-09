@@ -4,12 +4,13 @@
 
 <head>
     <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="assets/favicon/logo.svg" />
-
-  <title>Yahya.Design – Portfolio</title>
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/favicon/logo.svg" />
+    <title>Yahya.Design - Portfolio</title>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect" />
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
@@ -49,43 +50,7 @@
     <link rel="stylesheet" href="assets/css/styles.css" />
 </head>
 
-<body>
-
-<!-- Under Construction Overlay-->
-<div
-  id="underConstructionOverlay"
-  class="fixed inset-0 z-40 flex items-center justify-center
-         bg-white/60 dark:bg-black/60
-         backdrop-blur-md"
->
-  <div
-    class="max-w-md mx-6 rounded-2xl bg-white/90 dark:bg-background-dark/90
-           backdrop-blur-md border border-[#e6f2f4] dark:border-gray-800
-           p-8 text-center pointer-events-auto"
-  >
-    <span class="material-symbols-outlined text-primary text-5xl mb-4 block">
-      construction
-    </span>
-
-    <h2 class="text-2xl font-black text-[#0d1a1c] dark:text-white">
-      Page Under Construction
-    </h2>
-
-    <p class="mt-3 text-gray-600 dark:text-gray-400">
-      I’m currently refining this page.<br />
-      Please check my other pages using the Navigation bar, exciting updates are on the way.
-    </p>
-
-    <a
-      href="contact.html"
-      class="inline-flex items-center justify-center mt-6 h-12 px-6 rounded-xl
-             bg-primary text-[#0d1a1c] font-bold transition hover:opacity-90"
-    >
-      Contact Me
-    </a>
-  </div>
-</div>
-
+<body
     class="font-display bg-background-light dark:bg-background-dark text-[#0d1a1c] dark:text-gray-100 overflow-x-hidden antialiased selection:bg-primary selection:text-black"
     data-page="home">
     <div class="relative flex min-h-screen w-full flex-col group/design-root">
@@ -138,101 +103,117 @@
                 </div>
             </section>
             <!-- Selected Projects -->
-            <section class="w-full px-6 py-16 max-w-7xl" id="work">
-                <div class="flex flex-col gap-2 mb-10">
-                    <h2 class="text-3xl md:text-4xl font-bold text-[#0d1a1c] dark:text-white">Selected Projects</h2>
-                    <p class="text-gray-500 dark:text-gray-400">A showcase of my recent case studies.</p>
-                </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    <!-- Project Card 1 -->
-                    <div class="group flex flex-col gap-4 cursor-pointer">
-                        <div
-                            class="relative w-full aspect-[4/3] overflow-hidden rounded-2xl bg-gray-100 dark:bg-surface-dark shadow-sm group-hover:shadow-xl group-hover:shadow-primary/10 transition-all duration-300">
-                            <div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
-                                data-alt="Modern fintech mobile application dashboard with charts"
-                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBdPsr7WccEnWBaOBPJAYHq1qEea4UYe0aZAAeNWHsA9OmycDgvT-HyPGFk5-0u6ZPNyo601yMX9z4bAh5AKkp7k65r2rtiHjAIt-jb-B9YBJIhSgAQZ0JBZmwbaWLxZalW_3d7Cv4JVFi495xVaHoJCBLss1s1vVmOQbbF-GD_i_ss2bKr2E4jok8UC4AEz3VADk2I_aWqVRw9GvQuVE5dVGKH5R8xwxcNWRCJWf7SoUi6mnYmXnzPoXkYSCRVzg-UfJ-lVg8w0j4");'>
-                            </div>
-                            <div
-                                class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300">
-                            </div>
-                            <div
-                                class="absolute bottom-4 right-4 bg-white/90 dark:bg-black/80 backdrop-blur-sm p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0 duration-300">
-                                <span class="material-symbols-outlined text-primary">arrow_outward</span>
-                            </div>
-                        </div>
-                        <div class="flex flex-col">
-                            <h3
-                                class="text-xl font-bold text-[#0d1a1c] dark:text-white group-hover:text-primary transition-colors">
-                                Gift It UX/Web Work</h3>
-                            <div class="flex items-center gap-2 mt-1">
-                                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Product
-                                    Designer</span>
-                                <span class="size-1 rounded-full bg-gray-300"></span>
-                                <span class="text-sm font-medium text-primary">Website</span>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Project Card 2 -->
-                    <div class="group flex flex-col gap-4 cursor-pointer">
-                        <div
-                            class="relative w-full aspect-[4/3] overflow-hidden rounded-2xl bg-gray-100 dark:bg-surface-dark shadow-sm group-hover:shadow-xl group-hover:shadow-primary/10 transition-all duration-300">
-                            <div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
-                                data-alt="Clean minimal e-commerce dashboard interface on laptop screen"
-                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBZJyrdG6afuDPDA5sIh4pDM4_I2gZS9zS9GAuW6P4-XOlGICdGV6MwDvlsSScGyqBoy9P5Bu2k_zBEXdHe_7hrUz-OEQV_4Qh0K1QN64ncyGCcNj_w3lt4TpcWRfNSqmHw74BPCDFOsy15ZbwlzMwwSXnY1_pMODwJ57geGWVKozw2DsptA9k2Xad5UEGsxQ-cdJUmxbFIbnpc2hdPd4KFZiCvq4FLjlQ0s5Uzz-Se-2nJS3RU1Mtx8gTCqqsaIEOIKaZB3gClJm0");'>
-                            </div>
-                            <div
-                                class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300">
-                            </div>
-                            <div
-                                class="absolute bottom-4 right-4 bg-white/90 dark:bg-black/80 backdrop-blur-sm p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0 duration-300">
-                                <span class="material-symbols-outlined text-primary">arrow_outward</span>
-                            </div>
-                        </div>
-                        <div class="flex flex-col">
-                            <h3
-                                class="text-xl font-bold text-[#0d1a1c] dark:text-white group-hover:text-primary transition-colors">
-                                Enhancing Data Management</h3>
-                            <div class="flex items-center gap-2 mt-1">
-                                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">UX Researcher</span>
-                                <span class="size-1 rounded-full bg-gray-300"></span>
-                                <span class="text-sm font-medium text-primary">SaaS Platform</span>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Project Card 3 -->
-                    <div class="group flex flex-col gap-4 cursor-pointer">
-                        <div
-                            class="relative w-full aspect-[4/3] overflow-hidden rounded-2xl bg-gray-100 dark:bg-surface-dark shadow-sm group-hover:shadow-xl group-hover:shadow-primary/10 transition-all duration-300">
-                            <div class="absolute inset-0 bg-cover bg-center transition-transform duration-500 group-hover:scale-105"
-                                data-alt="Travel booking website landing page with scenic photos"
-                                style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDQ5J_8EqeTgvJL7ERC4rKKgy2C7ImLk-hwjxh4f3dNtUlGEmTrpRHvpAMGuqzMIMG0AgPTAGzm-uekMPRliWVcwA5hWgO2NDsrzn962hoxmys4IChIQsjivagzQwtxk_rFLoei1nUbycPptL7YN2L7T7cT0mXAJX0QjtiJxAT7-g3g09m8E2kdP7xmuMjnRS-XVBi5E9eqTosSNGONdLj_3hE_feSpcjtrdtao83drnustO42mmXopLf0Fn0mmjXSB2G8w61CtD90");'>
-                            </div>
-                            <div
-                                class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300">
-                            </div>
-                            <div
-                                class="absolute bottom-4 right-4 bg-white/90 dark:bg-black/80 backdrop-blur-sm p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0 duration-300">
-                                <span class="material-symbols-outlined text-primary">arrow_outward</span>
-                            </div>
-                        </div>
-                        <div class="flex flex-col">
-                            <h3
-                                class="text-xl font-bold text-[#0d1a1c] dark:text-white group-hover:text-primary transition-colors">
-                                Travel Booking System</h3>
-                            <div class="flex items-center gap-2 mt-1">
-                                <span class="text-sm font-medium text-gray-500 dark:text-gray-400">UI Designer</span>
-                                <span class="size-1 rounded-full bg-gray-300"></span>
-                                <span class="text-sm font-medium text-primary">Web Design</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+<section class="w-full px-6 py-5 max-w-7xl mx-auto" id="work">
+  <div class="flex flex-col gap-2 mb-10">
+    <h2 class="text-3xl md:text-4xl font-bold text-[#0d1a1c] dark:text-white">
+      Selected Projects
+    </h2>
+    <p class="text-gray-500 dark:text-gray-400">
+      A showcase of my recent case studies.
+    </p>
+  </div>
 
-            </section>
-            <a class="flex items-center justify-center h-12 px-8 rounded-xl bg-white dark:bg-transparent border-2 border-[#e6f2f4] dark:border-gray-700 text-[#0d1a1c] dark:text-white text-base font-bold tracking-wide transition-all hover:bg-gray-50 dark:hover:bg-white/5 hover:border-primary dark:hover:border-primary"
-                href="#contact">
-                View more
-            </a>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <!-- Project Card 1 -->
+    <a href="case-study-giftit-checkout.html" class="group flex flex-col gap-4 cursor-pointer">
+      <div
+        class="relative w-full aspect-[4/3] overflow-hidden rounded-2xl bg-gray-100 dark:bg-surface-dark shadow-sm group-hover:shadow-xl group-hover:shadow-primary/10 transition-all duration-300"
+      >
+        <div
+  class="w-3/4 h-full bg-contain bg-center bg-no-repeat mx-auto
+         transition-transform duration-700 group-hover:scale-105"
+  style="background-image: url('assets/Pictures/Giftit_logo.png');"
+></div>
+        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
+        <div
+          class="absolute bottom-4 right-4 bg-white/90 dark:bg-black/80 backdrop-blur-sm p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0 duration-300"
+        >
+          <span class="material-symbols-outlined text-primary">arrow_outward</span>
+        </div>
+      </div>
+      <div class="flex flex-col">
+        <h3 class="text-xl font-bold text-[#0d1a1c] dark:text-white group-hover:text-primary transition-colors">
+          Gift It — Checkout & E-Invite Flow Redesign
+        </h3>
+        <div class="flex items-center gap-2 mt-1">
+          <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Product Designer</span>
+          <span class="size-1 rounded-full bg-gray-300"></span>
+          <span class="text-sm font-medium text-primary">UX + Growth</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Project Card 2 -->
+    <a href="case-study-rit-student-app.html" class="group flex flex-col gap-4 cursor-pointer">
+      <div
+        class="relative w-full aspect-[4/3] overflow-hidden rounded-2xl bg-gray-100 dark:bg-surface-dark shadow-sm group-hover:shadow-xl group-hover:shadow-primary/10 transition-all duration-300"
+      >
+        <div
+  class="w-3/4 h-full bg-contain bg-center bg-no-repeat mx-auto
+         transition-transform duration-700 group-hover:scale-105"
+  style="background-image: url('assets/Pictures/RIT_logo.png');"
+></div>
+        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
+        <div
+          class="absolute bottom-4 right-4 bg-white/90 dark:bg-black/80 backdrop-blur-sm p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0 duration-300"
+        >
+          <span class="material-symbols-outlined text-primary">arrow_outward</span>
+        </div>
+      </div>
+      <div class="flex flex-col">
+        <h3 class="text-xl font-bold text-[#0d1a1c] dark:text-white group-hover:text-primary transition-colors">
+          RIT Student App 2.0
+        </h3>
+        <div class="flex items-center gap-2 mt-1">
+          <span class="text-sm font-medium text-gray-500 dark:text-gray-400">UX + Product</span>
+          <span class="size-1 rounded-full bg-gray-300"></span>
+          <span class="text-sm font-medium text-primary">Mobile App</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- Project Card 3 -->
+    <a href="case-study-auth-redesign.html" class="group flex flex-col gap-4 cursor-pointer">
+      <div
+        class="relative w-full aspect-[4/3] overflow-hidden rounded-2xl bg-gray-100 dark:bg-surface-dark shadow-sm group-hover:shadow-xl group-hover:shadow-primary/10 transition-all duration-300"
+      >
+        <div
+  class="w-3/4 h-full bg-contain bg-center bg-no-repeat mx-auto
+         transition-transform duration-700 group-hover:scale-105"
+  style="background-image: url('assets/Pictures/Giftit_logo.png');"
+></div>
+        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
+        <div
+          class="absolute bottom-4 right-4 bg-white/90 dark:bg-black/80 backdrop-blur-sm p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0 duration-300"
+        >
+          <span class="material-symbols-outlined text-primary">arrow_outward</span>
+        </div>
+      </div>
+      <div class="flex flex-col">
+        <h3 class="text-xl font-bold text-[#0d1a1c] dark:text-white group-hover:text-primary transition-colors">
+          Login & Signup Redesign (Passwordless)
+        </h3>
+        <div class="flex items-center gap-2 mt-1">
+          <span class="text-sm font-medium text-gray-500 dark:text-gray-400">UX/UI Designer</span>
+          <span class="size-1 rounded-full bg-gray-300"></span>
+          <span class="text-sm font-medium text-primary">Mobile-first</span>
+        </div>
+      </div>
+    </a>
+  </div>
+  <div class="flex justify-center mt-1">
+    <a
+      href="work.html"
+      class="inline-flex items-center justify-center h-12 px-8 rounded-xl
+      bg-white dark:bg-transparent border-2 border-[#e6f2f4] dark:border-gray-700
+      text-[#0d1a1c] dark:text-white text-base font-bold tracking-wide
+      transition-all hover:bg-gray-50 dark:hover:bg-white/5 hover:border-primary dark:hover:border-primary"
+    >
+      View more
+    </a>
+  </div>
+</section>
+
 
             <!-- Skills Strip -->
             <section
@@ -290,7 +271,7 @@
                         </div>
                         <div class="relative w-full aspect-[4/5] md:aspect-square rounded-2xl md:rounded-[2rem] overflow-hidden bg-gray-200 dark:bg-gray-800"
                             data-alt="Portrait of Yahya smiling in a professional studio setting"
-                            style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuBEF3CnlqeyRWJNYAeJMTQuuk5VuAdb_eduGMPvT6PQkz4ImCN1S-zApMLY6X4c6d0cORAnZv3EWiq54j1r75rpAlTBfAKA4UUpDMc0NE7u2Il4N-5ZFxzTaaZda8ZBEdZcyjhFW8Ki7WUAB6CjsJ3RP-AkihJ6p8EdtDBF48cO89UKyutX4LXfnb3xaZk_vfZkbNaLMlU3PFKTAmvAEJ-41xB7wpr5swqYWiRg9y491EZivVkZ82BPh7ix93xrrDXBaA0WxaMaMXY"); background-size: cover; background-position: center;'>
+                            style='background-image: url("assets/Pictures/IMG_0352.png"); background-size: cover; background-position: center;'>
                         </div>
                     </div>
                     <div class="flex-1 flex flex-col gap-6 text-left">

@@ -1,0 +1,576 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/svg+xml" href="assets/favicon/logo.svg" />
+
+    <title>Checkout & E-Invite Flow Redesign project</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Noto+Sans:wght@400;500;700&display=swap"
+        rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght@100..700&display=swap"
+        rel="stylesheet" />
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#1fd5f9",
+                        "background-light": "#f5f8f8",
+                        "background-dark": "#0f1f23",
+                        "surface-light": "#ffffff",
+                        "surface-dark": "#162a2f",
+                        "text-main": "#0d1a1c",
+                        "text-muted": "#47909e",
+                    },
+                    fontFamily: {
+                        display: ["Space Grotesk", "sans-serif"],
+                        body: ["Noto Sans", "sans-serif"],
+                    },
+                    borderRadius: {
+                        DEFAULT: "0.5rem",
+                        lg: "1rem",
+                        xl: "1.5rem",
+                        "2xl": "2rem",
+                        full: "9999px",
+                    },
+                },
+            },
+        };
+    </script>
+
+    <!-- Site CSS -->
+    <link rel="stylesheet" href="assets/css/styles.css" />
+</head>
+
+<body
+    class="bg-background-light dark:bg-background-dark text-text-main dark:text-white font-body antialiased overflow-x-hidden"
+    data-page="work">
+    <div class="relative flex min-h-screen flex-col">
+        <!-- NAVBAR (INJECTED) -->
+        <div id="site-navbar"></div>
+
+        <!-- PAGE CONTENT -->
+        <main class="relative">
+            <!-- Hero -->
+            <section class="relative pt-12 pb-20 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+                <div class="flex flex-col lg:flex-row gap-12 items-start">
+                    <div class="flex-1 max-w-2xl pt-4">
+                        <div
+                            class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 dark:text-primary text-xs font-bold uppercase tracking-wider mb-6">
+                            <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                            Case Study 01
+                        </div>
+
+                        <h1
+                            class="font-display font-bold text-5xl md:text-6xl lg:text-7xl leading-[1.1] mb-6 tracking-tight">
+                            Gift It <br />
+                            <span
+                                class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-600">Checkout
+                                &amp; E-Invite Flow Redesign project</span>
+                        </h1>
+
+                        <p class="text-lg md:text-xl text-text-muted dark:text-slate-400 mb-8 leading-relaxed max-w-lg">
+                            Redesigning the purchase flow and e-invite experience to reduce drop-offs, improve trust,
+                            and increase
+                            completion—while strengthening the post-purchase confirmation &amp; transactional email
+                            experience.
+                        </p>
+
+                        <div class="flex flex-wrap gap-4">
+                            <a href="#solution" class="group flex items-center gap-2 
+          bg-text-main dark:bg-white text-white dark:text-text-main 
+          px-6 py-3 rounded-xl font-bold
+          transition-transform duration-300 ease-out
+          hover:translate-x-2 active:translate-x-1">
+                                <span>Jump to Solution</span>
+                                <span class="material-symbols-outlined text-sm 
+               transition-transform duration-300 
+               group-hover:translate-y-1">
+                                    arrow_downward
+                                </span>
+                            </a>
+
+                            <a href="#emails"
+                                class="flex items-center gap-2 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 px-6 py-3 rounded-xl font-bold hover:bg-slate-50 dark:hover:bg-white/10 transition-colors">
+                                <span>See Email UX</span>
+                                <span class="material-symbols-outlined text-sm">mail</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Hero Visual -->
+                    <div class="relative flex-1 w-full lg:w-auto">
+                        <div
+                            class="relative rounded-2xl overflow-hidden shadow-2xl aspect-[4/3] group bg-slate-100 dark:bg-white/5">
+                            <div
+                                class="absolute inset-0 bg-gradient-to-tr from-primary/20 to-transparent z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                            </div>
+
+                            <!-- Replace with your own image later -->
+                            <img alt="Gift It Checkout & E-Invite Flow Redesign project"
+                                class="w-4/5 h-auto mx-auto my-auto object-contain transform group-hover:scale-105 transition-transform duration-700"
+                                src="assets/Pictures/Giftit_logo.png" />
+                        </div>
+
+                        <!-- Floating Stat -->
+                        <div
+                            class="absolute -bottom-6 -left-6 md:left-6 bg-surface-light dark:bg-surface-dark p-4 rounded-xl shadow-xl border border-slate-100 dark:border-white/5 flex gap-4 items-center animate-[bounce_3s_infinite]">
+                            <div
+                                class="bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-400 p-2 rounded-lg">
+                                <span class="material-symbols-outlined">shopping_cart</span>
+                            </div>
+                            <div>
+                                <p class="text-xs text-text-muted uppercase font-bold">Goal</p>
+                                <p class="font-display font-bold text-xl">Reduce drop-off</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- At a glance -->
+            <section class="border-y border-slate-200 dark:border-white/5 bg-white dark:bg-surface-dark/50">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div
+                        class="grid grid-cols-2 md:grid-cols-4 divide-x divide-y md:divide-y-0 divide-slate-200 dark:divide-white/5">
+                        <div class="p-6 flex flex-col gap-2">
+                            <div class="flex items-center gap-2 text-primary">
+                                <span class="material-symbols-outlined text-[20px]">person</span>
+                                <span class="text-xs font-bold uppercase tracking-wider">Role</span>
+                            </div>
+                            <p class="font-display font-bold text-lg">UX / Product (Web)</p>
+                        </div>
+
+                        <div class="p-6 flex flex-col gap-2">
+                            <div class="flex items-center gap-2 text-primary">
+                                <span class="material-symbols-outlined text-[20px]">stacked_line_chart</span>
+                                <span class="text-xs font-bold uppercase tracking-wider">Focus</span>
+                            </div>
+                            <p class="font-display font-bold text-lg">Conversion &amp; Trust</p>
+                        </div>
+
+                        <div class="p-6 flex flex-col gap-2">
+                            <div class="flex items-center gap-2 text-primary">
+                                <span class="material-symbols-outlined text-[20px]">architecture</span>
+                                <span class="text-xs font-bold uppercase tracking-wider">Tools</span>
+                            </div>
+                            <p class="font-display font-bold text-lg">Figma + HTML/CSS</p>
+                        </div>
+
+                        <div class="p-6 flex flex-col gap-2">
+                            <div class="flex items-center gap-2 text-primary">
+                                <span class="material-symbols-outlined text-[20px]">mail</span>
+                                <span class="text-xs font-bold uppercase tracking-wider">Also</span>
+                            </div>
+                            <p class="font-display font-bold text-lg">Transactional Emails</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Content -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-12">
+                    <!-- Sticky TOC -->
+                    <aside class="hidden lg:block lg:col-span-3">
+                        <div class="sticky top-32 space-y-8">
+                            <div>
+                                <h3
+                                    class="font-display font-bold text-sm uppercase tracking-widest text-text-muted mb-4">
+                                    Contents</h3>
+                                <ul class="space-y-3 border-l-2 border-slate-200 dark:border-white/10 pl-4">
+                                    <li>
+                                        <a class="text-sm font-medium hover:text-primary block transition-colors"
+                                            href="#funnel">01. Funnel + Drop-offs</a>
+                                    </li>
+                                    <li>
+                                        <a class="text-sm font-medium hover:text-primary block transition-colors"
+                                            href="#friction">02. Friction Points</a>
+                                    </li>
+                                    <li>
+                                        <a class="text-sm font-medium hover:text-primary block transition-colors"
+                                            href="#solution">03. Redesigned Flow</a>
+                                    </li>
+                                    <li>
+                                        <a class="text-sm font-medium hover:text-primary block transition-colors"
+                                            href="#abtest">04. A/B Test Plan</a>
+                                    </li>
+                                    <li>
+                                        <a class="text-sm font-medium hover:text-primary block transition-colors"
+                                            href="#final">05. Final UI</a>
+                                    </li>
+                                    <li>
+                                        <a class="text-sm font-medium hover:text-primary block transition-colors"
+                                            href="#emails">06. Transaction Emails</a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div
+                                class="p-6 rounded-2xl bg-gradient-to-br from-primary/10 to-transparent border border-primary/20">
+                                <p class="font-display font-bold text-lg mb-2">Want the full deck?</p>
+                                <p class="text-sm text-slate-600 dark:text-slate-300 mb-4">
+                                    I can share a prototype walkthrough + screens on request.
+                                </p>
+                                <a class="inline-flex items-center gap-1 text-sm font-bold text-primary hover:underline"
+                                    href="contact.html">
+                                    Drop me a line <span
+                                        class="material-symbols-outlined text-[16px]">arrow_forward</span>
+                                </a>
+                            </div>
+                        </div>
+                    </aside>
+
+                    <!-- Main -->
+                    <div class="col-span-1 lg:col-span-9 space-y-24">
+                        <!-- 01 Funnel -->
+                        <section class="scroll-mt-32" id="funnel">
+                            <div class="flex items-center gap-4 mb-6">
+                                <span
+                                    class="font-display font-bold text-6xl text-slate-200 dark:text-slate-800">01</span>
+                                <h2 class="font-display font-bold text-3xl">Funnel + Drop-offs</h2>
+                            </div>
+
+                            <div class="prose prose-lg dark:prose-invert max-w-none text-slate-600 dark:text-slate-300">
+                                <p class="text-xl font-medium text-text-main dark:text-white leading-relaxed mb-6">
+                                    The checkout funnel showed the biggest drop-offs around <b>shipping/contact
+                                        details</b>, <b>payment selection</b>, and the
+                                    <b>e-invite setup</b> step. The goal was to reduce friction and improve confidence
+                                    at each step.
+                                </p>
+                                <ul>
+                                    <li><b>Key funnel steps:</b> Product → Amount → Recipient → Payment → Confirmation
+                                    </li>
+                                    <li><b>Hypothesis:</b> unclear steps + trust questions cause abandonment</li>
+                                </ul>
+                            </div>
+
+                        </section>
+
+                        <!-- 02 Friction -->
+                        <section class="scroll-mt-32" id="friction">
+                            <div class="flex items-center gap-4 mb-6">
+                                <span
+                                    class="font-display font-bold text-6xl text-slate-200 dark:text-slate-800">02</span>
+                                <h2 class="font-display font-bold text-3xl">Friction Points</h2>
+                            </div>
+
+                            <p class="text-lg text-slate-600 dark:text-slate-300 mb-10">
+                                After reviewing the flow and support patterns, the biggest friction areas were clarity,
+                                trust, and
+                                unnecessary steps.
+                            </p>
+
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div
+                                    class="hover-lift bg-white dark:bg-surface-dark p-8 rounded-2xl border border-slate-100 dark:border-white/5 shadow-sm">
+                                    <div
+                                        class="w-12 h-12 rounded-full bg-blue-100 dark:bg-blue-900/30 flex items-center justify-center text-blue-600 mb-6">
+                                        <span class="material-symbols-outlined">account_circle</span>
+                                    </div>
+                                    <h3 class="font-display font-bold text-xl mb-3">Too much input</h3>
+                                    <p class="text-slate-600 dark:text-slate-400">
+                                        Too many fields before users understand what happens next (code delivery,
+                                        recipient flow, refund rules).
+                                    </p>
+                                </div>
+
+                                <div
+                                    class="hover-lift bg-white dark:bg-surface-dark p-8 rounded-2xl border border-slate-100 dark:border-white/5 shadow-sm">
+                                    <div
+                                        class="w-12 h-12 rounded-full bg-orange-100 dark:bg-orange-900/30 flex items-center justify-center text-orange-600 mb-6">
+                                        <span class="material-symbols-outlined">shield</span>
+                                    </div>
+                                    <h3 class="font-display font-bold text-xl mb-3">Trust questions</h3>
+                                    <p class="text-slate-600 dark:text-slate-400">
+                                        Users need reassurance: “When do I receive the code?” “Is this legit?” “Can I
+                                        gift it easily?”
+                                    </p>
+                                </div>
+
+                                <div
+                                    class="hover-lift bg-white dark:bg-surface-dark p-8 rounded-2xl border border-slate-100 dark:border-white/5 shadow-sm md:col-span-2">
+                                    <div class="flex flex-col md:flex-row gap-6 items-start">
+                                        <div
+                                            class="w-12 h-12 shrink-0 rounded-full bg-purple-100 dark:bg-purple-900/30 flex items-center justify-center text-purple-600">
+                                            <span class="material-symbols-outlined">mail</span>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-display font-bold text-xl mb-3">Post-purchase gap</h3>
+                                            <p class="text-slate-600 dark:text-slate-400 mb-4">
+                                                Even when checkout succeeds, confusion can happen if the confirmation
+                                                state and transactional emails don’t clearly explain
+                                                order status, delivery, and “who receives what”.
+                                            </p>
+                                            <p class="text-sm text-slate-500 dark:text-slate-400">
+                                                (This ties into your transactional email work: order confirmations +
+                                                e-invites.)
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- 03 Solution -->
+                        <section class="scroll-mt-32" id="solution">
+                            <div class="flex items-center gap-4 mb-6">
+                                <span
+                                    class="font-display font-bold text-6xl text-slate-200 dark:text-slate-800">03</span>
+                                <h2 class="font-display font-bold text-3xl">Redesigned Flow</h2>
+                            </div>
+
+                            <p class="text-lg text-slate-600 dark:text-slate-300 mb-10">
+                                The redesign simplifies steps, adds reassurance at key moments, and makes e-invite feel
+                                intentional—not “extra work”.
+                            </p>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div
+                                    class="bg-white dark:bg-surface-dark p-6 rounded-2xl border border-slate-100 dark:border-white/5">
+                                    <p class="text-xs font-bold uppercase tracking-widest text-text-muted mb-2">Change
+                                        #1</p>
+                                    <h3 class="font-display font-bold text-xl mb-2">Step clarity</h3>
+                                    <p class="text-slate-600 dark:text-slate-400">
+                                        Add a stepper + “What happens next” micro-copy.
+                                    </p>
+                                </div>
+
+                                <div
+                                    class="bg-white dark:bg-surface-dark p-6 rounded-2xl border border-slate-100 dark:border-white/5">
+                                    <p class="text-xs font-bold uppercase tracking-widest text-text-muted mb-2">Change
+                                        #2</p>
+                                    <h3 class="font-display font-bold text-xl mb-2">Trust blocks</h3>
+                                    <p class="text-slate-600 dark:text-slate-400">
+                                        Code delivery + refund policy + support visible early.
+                                    </p>
+                                </div>
+
+                                <div
+                                    class="bg-white dark:bg-surface-dark p-6 rounded-2xl border border-slate-100 dark:border-white/5">
+                                    <p class="text-xs font-bold uppercase tracking-widest text-text-muted mb-2">Change
+                                        #3</p>
+                                    <h3 class="font-display font-bold text-xl mb-2">E-invite defaults</h3>
+                                    <p class="text-slate-600 dark:text-slate-400">
+                                        Smart defaults + optional personalization (message, schedule, preview).
+                                    </p>
+                                </div>
+                            </div>
+
+                            <!-- Placeholder: new flow map -->
+                        </section>
+
+                        <!-- 04 A/B -->
+                        <section class="scroll-mt-32" id="abtest">
+                            <div class="flex items-center gap-4 mb-6">
+                                <span
+                                    class="font-display font-bold text-6xl text-slate-200 dark:text-slate-800">04</span>
+                                <h2 class="font-display font-bold text-3xl">A/B Test Plan</h2>
+                            </div>
+
+                            <div
+                                class="bg-white dark:bg-surface-dark p-8 rounded-2xl border border-slate-100 dark:border-white/5">
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    <div>
+                                        <h3 class="font-display font-bold text-xl mb-3">Primary metrics</h3>
+                                        <ul class="space-y-2 text-slate-600 dark:text-slate-400">
+                                            <li>• Checkout completion rate</li>
+                                            <li>• Payment step completion</li>
+                                            <li>• E-invite completion (if selected)</li>
+                                            <li>• Time to complete purchase</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-display font-bold text-xl mb-3">Secondary metrics</h3>
+                                        <ul class="space-y-2 text-slate-600 dark:text-slate-400">
+                                            <li>• Support tickets “Where is my code?”</li>
+                                            <li>• Email open rate &amp; click rate</li>
+                                            <li>• Refund/dispute rate</li>
+                                            <li>• NPS / post-purchase feedback</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- 05 Final UI -->
+                        <section class="scroll-mt-32" id="final">
+                            <div class="flex items-center gap-4 mb-6">
+                                <span
+                                    class="font-display font-bold text-6xl text-slate-200 dark:text-slate-800">05</span>
+                                <h2 class="font-display font-bold text-3xl">Final UI</h2>
+                            </div>
+
+                            <p class="text-lg text-slate-600 dark:text-slate-300 mb-10">
+                                High-fidelity screens showing the simplified checkout, e-invite setup, and clear
+                                confirmation states.
+                            </p>
+
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+
+                                <!-- 01 Checkout Step -->
+                                <div class="flex flex-col items-center">
+                                    <div class="relative aspect-[9/19] w-full">
+                                        <img src="assets/Pictures/Checkout.png" alt="Checkout step screen"
+                                            class="w-full h-full object-contain" />
+                                    </div>
+                                    <p class="mt-4 text-center text-sm font-bold text-slate-500">
+                                        01. Checkout Step
+                                    </p>
+                                </div>
+
+                                <!-- 02 E-Invite -->
+                                <div class="flex flex-col items-center">
+                                    <div class="relative aspect-[9/19] w-full">
+                                        <img src="assets/Pictures/E_invite_steps.png"
+                                            alt="E-invite customization screen" class="w-full h-full object-contain" />
+                                    </div>
+                                    <p class="mt-4 text-center text-sm font-bold text-slate-500">
+                                        02. E-Invite
+                                    </p>
+                                </div>
+
+                                <!-- 03 Confirmation -->
+                                <div class="flex flex-col items-center">
+                                    <div class="relative aspect-[9/19] w-full">
+                                        <img src="assets/Pictures/E_invite_confirmation.png"
+                                            alt="Confirmation success state" class="w-full h-full object-contain" />
+                                    </div>
+                                    <p class="mt-4 text-center text-sm font-bold text-slate-500">
+                                        03. Confirmation
+                                    </p>
+                                </div>
+
+                            </div>
+                        </section>
+
+
+                        <!-- 06 Emails -->
+                        <section class="scroll-mt-32" id="emails">
+                            <div class="flex items-center gap-4 mb-6">
+                                <span
+                                    class="font-display font-bold text-6xl text-slate-200 dark:text-slate-800">06</span>
+                                <h2 class="font-display font-bold text-3xl">Transaction Emails + Order Confirmation UX
+                                </h2>
+                            </div>
+
+                            <div class="prose prose-lg dark:prose-invert max-w-none text-slate-600 dark:text-slate-300">
+                                <p class="text-xl font-medium text-text-main dark:text-white leading-relaxed mb-6">
+                                    To reduce “Where is my code?” confusion, we treated the confirmation page and emails
+                                    as part of the product—not an afterthought.
+                                </p>
+                                <ul>
+                                    <li><b>Order confirmation:</b> clear status, expected delivery, and next actions.
+                                    </li>
+                                    <li><b>E-invite email:</b> sender/recipient clarity + what happens when opened.</li>
+                                    <li><b>Order updates:</b> payment confirmed → code delivered → resend/support.</li>
+                                </ul>
+                            </div>
+
+                            <div class="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                                <!-- Order Confirmation -->
+                                <div class="mt-4 rounded-xl bg-slate-100 dark:bg-white/5 p-6">
+                                    <img src="assets/Pictures/Order_confirmation0.png" alt="Order Confirmation Email"
+                                        class="w-full h-auto rounded-xl" />
+
+                                    <div class="mt-4 flex justify-end">
+                                        <button type="button"
+                                            class="inline-flex items-center gap-2 rounded-xl px-4 py-2 font-bold text-sm bg-text-main text-white dark:bg-white dark:text-text-main hover:opacity-90 transition"
+                                            data-expand-img data-src="assets/Pictures/Order_confirmation0.png"
+                                            data-alt="Order Confirmation Email">
+                                            <span class="material-symbols-outlined text-[20px]">zoom_in</span>
+                                            Expand
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- E-Invite Email -->
+                                <div class="mt-4 rounded-xl bg-slate-100 dark:bg-white/5 p-6">
+                                    <img src="assets/Pictures/E_invite_payment_confirmation0.png" alt="E-Invite Email"
+                                        class="w-full h-auto rounded-xl" />
+
+                                    <div class="mt-4 flex justify-end">
+                                        <button type="button"
+                                            class="inline-flex items-center gap-2 rounded-xl px-4 py-2 font-bold text-sm bg-text-main text-white dark:bg-white dark:text-text-main hover:opacity-90 transition"
+                                            data-expand-img
+                                            data-src="assets/Pictures/E_invite_payment_confirmation0.png"
+                                            data-alt="E-Invite Email">
+                                            <span class="material-symbols-outlined text-[20px]">zoom_in</span>
+                                            Expand
+                                        </button>
+                                    </div>
+                                </div>
+
+
+                            </div>
+
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Scroll to top -->
+        <button id="scrollTopBtn" aria-label="Scroll to top" class="fixed bottom-6 right-6 z-50 h-12 w-12 rounded-full bg-white text-text-main
+        shadow-lg shadow-primary/30 hover:shadow-primary/50 hover:-translate-y-1
+        opacity-0 pointer-events-none translate-y-3 scale-95
+        transition-[opacity,transform] duration-300 ease-out">
+            <span class="material-symbols-outlined">keyboard_arrow_up</span>
+        </button>
+
+        <div id="site-footer"></div>
+    </div>
+
+    <script src="assets/js/main.js" defer></script>
+    <!-- Image Lightbox (reusable) -->
+    <div id="imgLightbox" class="fixed inset-0 z-[100] hidden" aria-hidden="true">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/70" data-close></div>
+
+        <!-- Panel -->
+        <div class="relative z-[101] mx-auto my-8 max-w-6xl px-4">
+            <div
+                class="rounded-2xl bg-white dark:bg-surface-dark border border-slate-200 dark:border-white/10 shadow-2xl overflow-hidden">
+                <div class="flex items-center justify-between gap-3 p-4 border-b border-slate-200 dark:border-white/10">
+                    <p id="imgLightboxTitle" class="font-display font-bold text-sm md:text-base truncate">
+                        Preview
+                    </p>
+                    <button type="button"
+                        class="inline-flex items-center gap-2 rounded-xl px-3 py-2 font-bold text-sm bg-slate-100 hover:bg-slate-200 dark:bg-white/10 dark:hover:bg-white/20 transition"
+                        data-close>
+                        <span class="material-symbols-outlined text-[20px]">close</span>
+                        Close
+                    </button>
+                </div>
+
+                <div class="p-4 md:p-6 max-h-[80vh] overflow-y-auto">
+                    <img id="imgLightboxImg" src="" alt="" class="w-full h-auto rounded-xl" />
+                </div>
+
+                <div class="px-4 md:px-6 pb-4 md:pb-6 flex items-center justify-end">
+                    <a id="imgLightboxOpenNew" href="#" target="_blank" rel="noopener"
+                        class="text-sm font-bold text-primary hover:underline inline-flex items-center gap-1">
+                        Open in new tab <span class="material-symbols-outlined text-[18px]">open_in_new</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+
+</html>
