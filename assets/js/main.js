@@ -52,28 +52,20 @@ function initMobileMenu() {
   const btn = document.getElementById("mobileMenuBtn");
   const icon = document.getElementById("mobileMenuIcon");
   const panel = document.getElementById("mobileMenuPanel");
-  const backdrop = document.getElementById("mobileMenuBackdrop");
 
-  if (!btn || !panel || !backdrop) return;
+  if (!btn || !panel) return;
 
   const open = () => {
     panel.classList.remove("max-h-0", "opacity-0");
     panel.classList.add("max-h-screen", "opacity-100");
-
-    backdrop.classList.remove("hidden");
-    backdrop.classList.add("opacity-100");
 
     btn.setAttribute("aria-expanded", "true");
     if (icon) icon.textContent = "close";
   };
 
   const close = () => {
-    setTimeout(() => backdrop.classList.add("hidden"), 100);
     panel.classList.add("max-h-0", "opacity-0");
     panel.classList.remove("max-h-screen", "opacity-100");
-
-    backdrop.classList.add("hidden");
-    backdrop.classList.remove("opacity-100");
 
     btn.setAttribute("aria-expanded", "false");
     if (icon) icon.textContent = "menu";
@@ -84,13 +76,8 @@ function initMobileMenu() {
     isOpen ? close() : open();
   });
 
-  // clicking backdrop closes menu
-  backdrop.addEventListener("click", close);
-
   // links close menu
-  panel.querySelectorAll("a").forEach(a =>
-    a.addEventListener("click", close)
-  );
+  panel.querySelectorAll("a").forEach((a) => a.addEventListener("click", close));
 
   // ESC closes
   document.addEventListener("keydown", (e) => {
@@ -178,6 +165,238 @@ function initImageLightbox() {
     }
   });
 }
+function initProjectsAutoScroll() {
+  const track = document.getElementById("projectsTrack");
+  const dotsWrap = document.getElementById("projectsDots");
+  if (!track || !dotsWrap) return;
+
+  const cards = Array.from(track.querySelectorAll(".projectCard"));
+  if (cards.length < 3) return; // needs at least 3 cards to do 1+2 then 2+3
+
+  let index = 0;
+  let timer = null;
+
+  const isMobile = () => window.matchMedia("(max-width: 767px)").matches;
+
+  const getGap = () => {
+    const cs = getComputedStyle(track);
+    // On mobile it's flex, so `gap` is the one we want
+    return parseFloat(cs.gap || "0") || 0;
+  };
+
+  // Build dots = (cards - 1) positions => [0,1] for 3 cards
+  dotsWrap.innerHTML = "";
+  for (let i = 0; i < cards.length - 1; i++) {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className =
+      "h-2.5 w-2.5 rounded-full transition-all " +
+      (i === 0 ? "bg-primary w-6" : "bg-gray-300/70 dark:bg-gray-700");
+
+    btn.addEventListener("click", () => {
+      index = i;
+      render();
+      restart();
+    });
+
+    dotsWrap.appendChild(btn);
+  }
+
+  const render = () => {
+    if (!isMobile()) {
+      // desktop: grid, no translate
+      track.style.transform = "translateX(0px)";
+      return;
+    }
+
+    // recalc each time (safer on load/resize)
+    const step = cards[0].offsetWidth + getGap();
+    track.style.transform = `translateX(-${index * step}px)`;
+
+    [...dotsWrap.children].forEach((dot, i) => {
+      dot.className =
+        "h-2.5 w-2.5 rounded-full transition-all " +
+        (i === index ? "bg-primary w-6" : "bg-gray-300/70 dark:bg-gray-700");
+    });
+  };
+
+  const next = () => {
+    if (!isMobile()) return;
+    index = (index + 1) % (cards.length - 1); // for 3 cards => toggles 0 <-> 1
+    render();
+  };
+
+  const start = () => (timer = setInterval(next, 6000));
+  const stop = () => timer && clearInterval(timer);
+  const restart = () => {
+    stop();
+    start();
+  };
+
+  window.addEventListener("resize", () => {
+    // keep current slide if still mobile; otherwise reset visual
+    if (!isMobile()) index = 0;
+    render();
+    restart();
+  });
+
+  render();
+  start();
+}
+
+function initFinalUiCarousel() {
+  const track = document.getElementById("finalUiTrack");
+  const dotsWrap = document.getElementById("finalUiDots");
+  if (!track || !dotsWrap) return;
+
+  const slides = Array.from(track.querySelectorAll(".finalUiSlide"));
+  if (slides.length < 2) return;
+
+  let index = 0;
+  let timer = null;
+
+  const isMobile = () => window.matchMedia("(max-width: 767px)").matches;
+
+  const getGap = () => {
+    const cs = getComputedStyle(track);
+    return parseFloat(cs.gap || cs.columnGap || "0") || 0;
+  };
+
+  const getStep = () => slides[0].offsetWidth + getGap();
+
+  // Build dots = one per slide (1-at-a-time)
+  dotsWrap.innerHTML = "";
+  slides.forEach((_, i) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className =
+      "h-2.5 w-2.5 rounded-full transition-all " +
+      (i === 0 ? "bg-primary w-6" : "bg-gray-300/70 dark:bg-gray-700");
+
+    btn.addEventListener("click", () => {
+      index = i;
+      render();
+      restart();
+    });
+
+    dotsWrap.appendChild(btn);
+  });
+
+  const render = () => {
+    if (!isMobile()) {
+      track.style.transform = "translateX(0px)";
+      return;
+    }
+
+    const moveX = index * getStep();
+    track.style.transform = `translateX(-${moveX}px)`;
+
+    [...dotsWrap.children].forEach((dot, i) => {
+      dot.className =
+        "h-2.5 w-2.5 rounded-full transition-all " +
+        (i === index ? "bg-primary w-6" : "bg-gray-300/70 dark:bg-gray-700");
+    });
+  };
+
+  const next = () => {
+    if (!isMobile()) return;
+    index = (index + 1) % slides.length;
+    render();
+  };
+
+  const start = () => (timer = setInterval(next, 6000));
+  const stop = () => timer && clearInterval(timer);
+  const restart = () => {
+    stop();
+    start();
+  };
+
+  window.addEventListener("resize", () => {
+    index = 0;
+    render();
+    restart();
+  });
+
+  render();
+  start();
+}
+
+function initEmailsCarousel() {
+  const track = document.getElementById("emailsTrack");
+  const dotsWrap = document.getElementById("emailsDots");
+  if (!track || !dotsWrap) return;
+
+  const slides = Array.from(track.querySelectorAll(".emailSlide"));
+  if (slides.length < 2) return;
+
+  let index = 0;
+  let timer = null;
+
+  const isMobile = () => window.matchMedia("(max-width: 767px)").matches;
+
+  const getGap = () => {
+    const cs = getComputedStyle(track);
+    return parseFloat(cs.gap || cs.columnGap || "0") || 0;
+  };
+
+  const getStep = () => slides[0].offsetWidth + getGap();
+
+  // Dots
+  dotsWrap.innerHTML = "";
+  slides.forEach((_, i) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className =
+      "h-2.5 w-2.5 rounded-full transition-all " +
+      (i === 0 ? "bg-primary w-6" : "bg-gray-300/70 dark:bg-gray-700");
+
+    btn.addEventListener("click", () => {
+      index = i;
+      render();
+      restart();
+    });
+
+    dotsWrap.appendChild(btn);
+  });
+
+  const render = () => {
+    // Desktop: leave as-is
+    if (!isMobile()) {
+      track.style.transform = "translateX(0px)";
+      return;
+    }
+
+    const moveX = index * getStep();
+    track.style.transform = `translateX(-${moveX}px)`;
+
+    [...dotsWrap.children].forEach((dot, i) => {
+      dot.className =
+        "h-2.5 w-2.5 rounded-full transition-all " +
+        (i === index ? "bg-primary w-6" : "bg-gray-300/70 dark:bg-gray-700");
+    });
+  };
+
+  const next = () => {
+    if (!isMobile()) return;
+    index = (index + 1) % slides.length;
+    render();
+  };
+
+  const start = () => (timer = setInterval(next, 6000));
+  const stop = () => timer && clearInterval(timer);
+  const restart = () => { stop(); start(); };
+
+  window.addEventListener("resize", () => {
+    index = 0;
+    render();
+    restart();
+  });
+
+  render();
+  start();
+}
+
+
 
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -189,6 +408,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   initMobileMenu();
   initScrollTopButton();
+  initImageLightbox();
 
-  initImageLightbox(); // ✅ add this
+  initProjectsAutoScroll(); // ✅ call it
+  initFinalUiCarousel();
+  initEmailsCarousel();
+
 });

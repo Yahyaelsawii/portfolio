@@ -73,7 +73,7 @@
                         <div
                             class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 dark:text-primary text-xs font-bold uppercase tracking-wider mb-6">
                             <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
-                            Case Study 06
+                            Case Study 03
                         </div>
 
                         <h1
@@ -102,7 +102,8 @@
                                 <span>View Screens</span>
                                 <span class="material-symbols-outlined text-sm">devices</span>
                             </a>
-                            <a href="https://www.figma.com/design/Hf5el7dkl19VVS7DvtknQK/Gifit?node-id=0-1&t=ozwwADB1MpFvKMTC-1" target="_blank" rel="noopener noreferrer"
+                            <a href="https://www.figma.com/design/Hf5el7dkl19VVS7DvtknQK/Gifit?node-id=0-1&t=ozwwADB1MpFvKMTC-1"
+                                target="_blank" rel="noopener noreferrer"
                                 class="flex items-center gap-2 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 px-6 py-3 rounded-xl font-bold hover:bg-slate-50 dark:hover:bg-white/10 transition-colors">
                                 <span>View Figma</span>
                                 <span class="material-symbols-outlined text-sm">open_in_new</span>
@@ -459,8 +460,7 @@
 
                                     </div>
                                     <div class="rounded-xl bg-slate-100 dark:bg-white/5 p-8">
-                                        <img class="w-full h-auto rounded-xl"
-                                            src="assets/Pictures/flowmap.png"
+                                        <img class="w-full h-auto rounded-xl" src="assets/Pictures/flowmap.png"
                                             alt="Auth flow map" />
                                     </div>
 
@@ -498,74 +498,62 @@
                                 <h2 class="font-display font-bold text-3xl">Final UI</h2>
                             </div>
 
-                            <p class="text-lg text-slate-600 dark:text-slate-300 mb-10">
+                            <p class="text-base sm:text-lg text-slate-600 dark:text-slate-300 mb-10">
                                 Key screens were designed for minimal typing, clear progression, and predictable
                                 feedback.
                             </p>
+                            <!-- ✅ Mobile carousel / Desktop grid -->
+                            <div class="relative">
+                                <!-- Viewport -->
+                                <div class="overflow-hidden md:overflow-visible">
+                                    <!-- Track -->
+                                    <div id="finalUiTrack" class="flex gap-6 transition-transform duration-500 ease-in-out
+             md:grid md:grid-cols-3 md:gap-8">
+                                        <!-- Slide 1 -->
+                                        <div class="finalUiSlide flex-none w-full md:w-auto flex flex-col items-center">
+                                            <div
+                                                class="relative aspect-[9/19] w-full max-w-[220px] sm:max-w-[260px] md:max-w-none">
+                                                <img src="assets/Pictures/Login_giftiti.png" alt="Login screen"
+                                                    class="w-full h-full object-contain" />
+                                            </div>
+                                            <p class="mt-4 text-center text-xs sm:text-sm font-bold text-slate-500">
+                                                01. Login Screen
+                                            </p>
+                                        </div>
 
-                            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                                        <!-- Slide 2 -->
+                                        <div class="finalUiSlide flex-none w-full md:w-auto flex flex-col items-center">
+                                            <div
+                                                class="relative aspect-[9/19] w-full max-w-[220px] sm:max-w-[260px] md:max-w-none">
+                                                <img src="assets/Pictures/Sign_up_giftit.png" alt="Registration screen"
+                                                    class="w-full h-full object-contain" />
+                                            </div>
+                                            <p class="mt-4 text-center text-xs sm:text-sm font-bold text-slate-500">
+                                                02. Registration
+                                            </p>
+                                        </div>
 
-                                <!-- 01 Checkout Step -->
-                                <div class="flex flex-col items-center">
-                                    <div class="relative aspect-[9/19] w-full">
-                                        <img src="assets/Pictures/Login_giftiti.png" alt="Checkout step screen"
-                                            class="w-full h-full object-contain" />
+                                        <!-- Slide 3 -->
+                                        <div class="finalUiSlide flex-none w-full md:w-auto flex flex-col items-center">
+                                            <div
+                                                class="relative aspect-[9/19] w-full max-w-[220px] sm:max-w-[260px] md:max-w-none">
+                                                <img src="assets/Pictures/Verification.png" alt="Verification screen"
+                                                    class="w-full h-full object-contain" />
+                                            </div>
+                                            <p class="mt-4 text-center text-xs sm:text-sm font-bold text-slate-500">
+                                                03. Verification
+                                            </p>
+                                        </div>
                                     </div>
-                                    <p class="mt-4 text-center text-sm font-bold text-slate-500">
-                                        01. Login Screen
-                                    </p>
+                                    <!-- ✅ END Track -->
                                 </div>
+                                <!-- ✅ END Viewport -->
 
-                                <!-- 02 E-Invite -->
-                                <div class="flex flex-col items-center">
-                                    <div class="relative aspect-[9/19] w-full">
-                                        <img src="assets/Pictures/Sign_up_giftit.png"
-                                            alt="E-invite customization screen" class="w-full h-full object-contain" />
-                                    </div>
-                                    <p class="mt-4 text-center text-sm font-bold text-slate-500">
-                                        02. Registration
-                                    </p>
-                                </div>
+                                <!-- Dots -->
+                                <div id="finalUiDots" class="mt-6 flex justify-center gap-2 md:hidden"></div>
+                            </div> <!-- end .relative (carousel wrapper) -->
+                        </section> <!-- ✅ CLOSE #screens -->
 
-                                <!-- 03 Confirmation -->
-                                <div class="flex flex-col items-center">
-                                    <div class="relative aspect-[9/19] w-full">
-                                        <img src="assets/Pictures/Verification.png" alt="Confirmation success state"
-                                            class="w-full h-full object-contain" />
-                                    </div>
-                                    <p class="mt-4 text-center text-sm font-bold text-slate-500">
-                                        03. verification
-                                    </p>
-                                </div>
-
-                            </div>
-
-                            <div class="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div
-                                    class="bg-white dark:bg-surface-dark p-6 rounded-2xl border border-slate-100 dark:border-white/5">
-                                    <p class="text-xs font-bold uppercase tracking-widest text-text-muted mb-2">State
-                                        examples</p>
-                                    <p class="font-display font-bold text-lg mb-2">Resend timer, captcha, validation</p>
-                                    <p class="text-slate-600 dark:text-slate-400">
-                                        Designed clear “what to do next” feedback for resend timing, invalid input, and
-                                        captcha requirements.
-                                    </p>
-                                </div>
-
-                                <div
-                                    class="bg-white dark:bg-surface-dark p-6 rounded-2xl border border-slate-100 dark:border-white/5">
-                                    <p class="text-xs font-bold uppercase tracking-widest text-text-muted mb-2">Handoff
-                                    </p>
-                                    <p class="font-display font-bold text-lg mb-2">Specs + states list</p>
-                                    <p class="text-slate-600 dark:text-slate-400">
-                                        Provided a full set of screen states and rules so implementation would match the
-                                        UX across web and mobile.
-                                    </p>
-                                </div>
-                            </div>
-                        </section>
-
-                        <!-- 06 Impact -->
                         <section class="scroll-mt-32" id="impact">
                             <div class="bg-primary rounded-3xl p-8 md:p-12 text-text-main relative overflow-hidden">
                                 <div
@@ -574,18 +562,14 @@
                                 <div
                                     class="absolute bottom-0 left-0 w-64 h-64 bg-white/20 rounded-full blur-3xl -ml-32 -mb-32">
                                 </div>
-
                                 <div class="relative z-10">
-                                    <div class="flex items-center gap-4 mb-8">
-                                        <span class="font-display font-bold text-6xl opacity-50">06</span>
+                                    <div class="flex items-center gap-4 mb-8"> <span
+                                            class="font-display font-bold text-6xl opacity-50">06</span>
                                         <h2 class="font-display font-bold text-3xl">Impact</h2>
                                     </div>
-
-                                    <p class="text-xl font-medium mb-12 max-w-2xl">
-                                        The redesign reduced registration time and simplified authentication while
-                                        improving consistency across platforms.
-                                    </p>
-
+                                    <p class="text-xl font-medium mb-12 max-w-2xl"> The redesign reduced
+                                        registration time and simplified authentication while improving consistency
+                                        across platforms. </p>
                                     <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
                                         <div class="bg-white/90 backdrop-blur p-6 rounded-2xl">
                                             <div class="text-4xl font-display font-bold mb-2">1–2m</div>
@@ -603,15 +587,12 @@
                                                 mobile aligned</div>
                                         </div>
                                     </div>
-
-                                    <p class="mt-8 text-sm opacity-80">
-                                        The “old design” is not shown in this case study. This page focuses on the new
-                                        experience and the reasoning behind it.
+                                    <p class="mt-8 text-sm opacity-80"> The “old design” is not shown in this case
+                                        study. This page focuses on the new experience and the reasoning behind it.
                                     </p>
                                 </div>
                             </div>
                         </section>
-
                         <!-- 07 Notes & Learnings -->
                         <section class="scroll-mt-32" id="notes">
                             <div class="flex items-center gap-4 mb-6">
@@ -629,7 +610,8 @@
                                     <div>
                                         <h4 class="font-bold text-lg mb-2">Simplicity is a feature</h4>
                                         <p class="text-slate-600 dark:text-slate-400">
-                                            Cutting steps and making states obvious improves both speed and confidence —
+                                            Cutting steps and making states obvious improves both speed and
+                                            confidence —
                                             especially on mobile.
                                         </p>
                                     </div>
@@ -643,7 +625,8 @@
                                     <div>
                                         <h4 class="font-bold text-lg mb-2">Consistency reduces bugs</h4>
                                         <p class="text-slate-600 dark:text-slate-400">
-                                            Aligning web and mobile on the same API supports predictable UX and reduces
+                                            Aligning web and mobile on the same API supports predictable UX and
+                                            reduces
                                             edge-case inconsistencies.
                                         </p>
                                     </div>

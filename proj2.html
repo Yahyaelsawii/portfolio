@@ -354,92 +354,119 @@
               </div>
             </section>
 
-            <!-- 04 Screens -->
-            <section class="scroll-mt-32" id="final">
-              <div class="flex items-center gap-4 mb-6">
-                <span class="font-display font-bold text-6xl text-slate-200 dark:text-slate-800">04</span>
-                <h2 class="font-display font-bold text-3xl">Final UI</h2>
-              </div>
+          <!-- 04 Screens -->
+<section class="scroll-mt-32" id="final">
+  <div class="flex items-center gap-4 mb-6">
+    <span class="font-display font-bold text-6xl text-slate-200 dark:text-slate-800">04</span>
+    <h2 class="font-display font-bold text-3xl">Final UI</h2>
+  </div>
 
-              <p class="text-lg text-slate-600 dark:text-slate-300 mb-10">
-                Core screens designed for speed, clarity, and daily use.
-              </p>
+  <p class="text-base sm:text-lg text-slate-600 dark:text-slate-300 mb-10">
+    Core screens designed for speed, clarity, and daily use.
+  </p>
 
-              <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+  <!-- Carousel wrapper -->
+  <div class="relative">
 
-                <!-- 01 Checkout Step -->
-                <div class="flex flex-col items-center">
-                  <div class="relative aspect-[9/19] w-full">
-                    <img src="assets/Pictures/Login.png" alt="Checkout step screen"
-                      class="w-full h-full object-contain" />
-                  </div>
-                  <p class="mt-4 text-center text-sm font-bold text-slate-500">
-                    01. Reliable Sign-in
-                  </p>
-                </div>
+    <!-- Viewport -->
+    <div class="overflow-hidden md:overflow-visible">
 
-                <!-- 02 E-Invite -->
-                <div class="flex flex-col items-center">
-                  <div class="relative aspect-[9/19] w-full">
-                    <img src="assets/Pictures/Homescreen.png" alt="E-invite customization screen"
-                      class="w-full h-full object-contain" />
-                  </div>
-                  <p class="mt-4 text-center text-sm font-bold text-slate-500">
-                    02. Home Hub
-                  </p>
-                </div>
+      <!-- Track -->
+      <div
+        id="finalUiTrack"
+        class="flex gap-6 transition-transform duration-500 ease-in-out
+               md:grid md:grid-cols-3 md:gap-8"
+      >
 
-                <!-- 03 Confirmation -->
-                <div class="flex flex-col items-center">
-                  <div class="relative aspect-[9/19] w-full">
-                    <img src="assets/Pictures/Notifications.png" alt="Confirmation success state"
-                      class="w-full h-full object-contain" />
-                  </div>
-                  <p class="mt-4 text-center text-sm font-bold text-slate-500">
-                    03. Notifications
-                  </p>
-                </div>
+        <!-- Slide 1 -->
+        <div class="finalUiSlide flex-none w-full md:w-auto flex flex-col items-center">
+          <div class="relative aspect-[9/19] w-full max-w-[240px] sm:max-w-none">
+            <img src="assets/Pictures/Login.png"
+              alt="Checkout step screen"
+              class="w-full h-full object-contain" />
+          </div>
+          <p class="mt-4 text-center text-xs sm:text-sm font-bold text-slate-500">
+            01. Reliable Sign-in
+          </p>
+        </div>
 
-              </div>
-            </section>
+        <!-- Slide 2 -->
+        <div class="finalUiSlide flex-none w-full md:w-auto flex flex-col items-center">
+          <div class="relative aspect-[9/19] w-full max-w-[240px] sm:max-w-none">
+            <img src="assets/Pictures/Homescreen.png"
+              alt="Home screen"
+              class="w-full h-full object-contain" />
+          </div>
+          <p class="mt-4 text-center text-xs sm:text-sm font-bold text-slate-500">
+            02. Home Hub
+          </p>
+        </div>
 
-            <!-- 05 Outcomes -->
-            <section class="scroll-mt-32" id="outcomes">
-              <div class="bg-primary rounded-3xl p-8 md:p-12 text-text-main relative overflow-hidden">
-                <div class="absolute top-0 right-0 w-64 h-64 bg-white/20 rounded-full blur-3xl -mr-32 -mt-32"></div>
-                <div class="absolute bottom-0 left-0 w-64 h-64 bg-white/20 rounded-full blur-3xl -ml-32 -mb-32"></div>
+        <!-- Slide 3 -->
+        <div class="finalUiSlide flex-none w-full md:w-auto flex flex-col items-center">
+          <div class="relative aspect-[9/19] w-full max-w-[240px] sm:max-w-none">
+            <img src="assets/Pictures/Notifications.png"
+              alt="Notification screen"
+              class="w-full h-full object-contain" />
+          </div>
+          <p class="mt-4 text-center text-xs sm:text-sm font-bold text-slate-500">
+            03. Notifications
+          </p>
+        </div>
 
-                <div class="relative z-10">
-                  <div class="flex items-center gap-4 mb-8">
-                    <span class="font-display font-bold text-6xl opacity-50">05</span>
-                    <h2 class="font-display font-bold text-3xl">Outcomes</h2>
-                  </div>
+      </div>
+    </div>
 
-                  <p class="text-xl font-medium mb-12 max-w-2xl">
-                    A more reliable and unified student experience: fewer sign-in failures, clearer navigation, and
-                    streamlined access to myCourses and SIS—designed around real student tasks.
-                  </p>
+    <!-- Dots -->
+    <div id="finalUiDots" class="mt-6 flex justify-center gap-2 md:hidden"></div>
+  </div>
+</section>
 
-                  <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
-                    <div class="bg-white/90 backdrop-blur p-6 rounded-2xl">
-                      <div class="text-4xl font-display font-bold mb-2">Fix</div>
-                      <div class="text-sm font-bold uppercase tracking-wide opacity-70">Sign-in reliability</div>
-                    </div>
-                    <div class="bg-white/90 backdrop-blur p-6 rounded-2xl">
-                      <div class="text-4xl font-display font-bold mb-2">Unify</div>
-                      <div class="text-sm font-bold uppercase tracking-wide opacity-70">myCourses + SIS access</div>
-                    </div>
-                    <div class="bg-white/90 backdrop-blur p-6 rounded-2xl">
-                      <div class="text-4xl font-display font-bold mb-2">Improve</div>
-                      <div class="text-sm font-bold uppercase tracking-wide opacity-70">Notifications &amp; updates
-                      </div>
-                    </div>
-                  </div>
 
-                  <p class="mt-8 text-sm opacity-80">                  </p>
-                </div>
-              </div>
-            </section>
+<!-- 05 Outcomes -->
+<section class="scroll-mt-32" id="outcomes">
+  <div class="bg-primary rounded-3xl p-6 sm:p-8 md:p-12 text-text-main relative overflow-hidden">
+    <div class="absolute top-0 right-0 w-64 h-64 bg-white/20 rounded-full blur-3xl -mr-32 -mt-32"></div>
+    <div class="absolute bottom-0 left-0 w-64 h-64 bg-white/20 rounded-full blur-3xl -ml-32 -mb-32"></div>
+
+    <div class="relative z-10">
+      <div class="flex items-center gap-4 mb-6 sm:mb-8">
+        <span class="font-display font-bold text-5xl sm:text-6xl opacity-50">05</span>
+        <h2 class="font-display font-bold text-2xl sm:text-3xl">Outcomes</h2>
+      </div>
+
+      <!-- Smaller on mobile -->
+      <p class="text-base sm:text-xl font-medium mb-10 max-w-2xl">
+        A more reliable and unified student experience: fewer sign-in failures, clearer navigation,
+        and streamlined access to myCourses and SIS—designed around real student tasks.
+      </p>
+
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6">
+        <div class="bg-white/90 backdrop-blur p-5 sm:p-6 rounded-2xl">
+          <div class="text-3xl sm:text-4xl font-display font-bold mb-2">Fix</div>
+          <div class="text-xs sm:text-sm font-bold uppercase tracking-wide opacity-70">
+            Sign-in reliability
+          </div>
+        </div>
+
+        <div class="bg-white/90 backdrop-blur p-5 sm:p-6 rounded-2xl">
+          <div class="text-3xl sm:text-4xl font-display font-bold mb-2">Unify</div>
+          <div class="text-xs sm:text-sm font-bold uppercase tracking-wide opacity-70">
+            myCourses + SIS access
+          </div>
+        </div>
+
+        <div class="bg-white/90 backdrop-blur p-5 sm:p-6 rounded-2xl">
+          <div class="text-3xl sm:text-4xl font-display font-bold mb-2">Improve</div>
+          <div class="text-xs sm:text-sm font-bold uppercase tracking-wide opacity-70">
+            Notifications & updates
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
           </div>
         </div>
       </div>
