@@ -5,11 +5,10 @@
 <head>
   <meta charset="utf-8" />
   <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
 
   <!-- Favicon -->
-  <link rel="icon" type="image/svg+xml" href="assets/favicon/logo.svg" />
+  <link href="assets/favicon/logo.svg" rel="icon" type="image/svg+xml" />
   <title>Yahya.Design - Portfolio</title>
   <!-- Fonts -->
   <link href="https://fonts.googleapis.com" rel="preconnect" />
@@ -18,39 +17,26 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
     rel="stylesheet" />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
-    rel="stylesheet" />
-
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+  <script src="assets/js/tailwind-config.js"></script>
   <!-- Tailwind Config -->
-  <script id="tailwind-config">
-    tailwind.config = {
-      darkMode: "class",
-      theme: {
-        extend: {
-          colors: {
-            "primary": "#1fd5f9",
-            "background-light": "#f5f8f8",
-            "background-dark": "#0f1f23",
-            "surface-light": "#ffffff",
-            "surface-dark": "#162a2f",
-          },
-          fontFamily: {
-            "display": ["Space Grotesk", "sans-serif"]
-          },
-          borderRadius: { "DEFAULT": "0.5rem", "lg": "1rem", "xl": "1.5rem", "full": "9999px" },
-        },
-      },
-    }
-  </script>
-  <link rel="stylesheet" href="assets/css/styles.css" />
+
+  <link href="assets/css/styles.css" rel="stylesheet" />
+  <meta content="Yahya’s UX/UI design portfolio—case studies, product design work, and projects." name="description" />
+  <meta content="index,follow" name="robots" />
+  <meta content="light" name="color-scheme" />
+  <meta content="#f5f8f8" name="theme-color" />
+  <meta content="Yahya.Design - Portfolio" property="og:title" />
+  <meta content="Yahya’s UX/UI design portfolio—case studies, product design work, and projects."
+    property="og:description" />
+  <meta content="website" property="og:type" />
+  <meta content="summary" name="twitter:card" />
 </head>
 
 <body
-  class="font-display bg-background-light dark:bg-background-dark text-[#0d1a1c] dark:text-gray-100 overflow-x-hidden antialiased selection:bg-primary selection:text-black"
+  class="font-display bg-background-light text-[#0d1a1c] overflow-x-hidden antialiased selection:bg-primary selection:text-black"
   data-page="home">
   <div class="relative flex min-h-screen w-full flex-col group/design-root">
     <!-- Navigation -->
@@ -65,31 +51,31 @@
         </div>
         <div class="max-w-4xl w-full flex flex-col items-center text-center gap-8 z-10">
           <div
-            class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white dark:bg-surface-dark border border-gray-200 dark:border-gray-700 shadow-sm animate-fade-in-up">
+            class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-gray-200 shadow-sm animate-fade-in-up">
             <span class="relative flex h-2 w-2">
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
               <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
             </span>
-            <span class="text-xs font-semibold text-gray-600 dark:text-gray-300 uppercase tracking-wider">Available
+            <span class="text-xs font-semibold text-gray-600 uppercase tracking-wider">Available
               for work</span>
           </div>
-          <h1 class="text-5xl md:text-7xl font-black leading-[1.1] tracking-tight text-[#0d1a1c] dark:text-white">
+          <h1 class="text-5xl md:text-7xl font-black leading-[1.1] tracking-tight text-[#0d1a1c]">
             Designing Human <br />
             <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary to-blue-500">Experiences</span>
             for Digital Worlds.
           </h1>
-          <p class="text-lg md:text-xl text-gray-600 dark:text-gray-400 max-w-2xl font-normal leading-relaxed">
+          <p class="text-lg md:text-xl text-gray-600 max-w-2xl font-normal leading-relaxed">
             I’m Yahya El‑Sawi, a UI &amp; UX Designer (RIT Dubai, CIT) who loves turning messy problems
             into clean, usable interfaces.
             I mix design thinking with hands-on implementation to deliver user-first results.
           </p>
-          </p>
+
           <div class="flex flex-wrap gap-4 justify-center mt-4">
             <a class="flex items-center justify-center h-12 px-8 rounded-xl bg-primary text-[#0d1a1c] text-base font-bold tracking-wide transition-all hover:scale-105 hover:shadow-lg hover:shadow-primary/25"
               href="#work">
               View Work
             </a>
-            <a class="flex items-center justify-center h-12 px-8 rounded-xl bg-white dark:bg-transparent border-2 border-[#e6f2f4] dark:border-gray-700 text-[#0d1a1c] dark:text-white text-base font-bold tracking-wide transition-all hover:bg-gray-50 dark:hover:bg-white/5 hover:border-primary dark:hover:border-primary"
+            <a class="flex items-center justify-center h-12 px-8 rounded-xl bg-white border-2 border-[#e6f2f4] text-[#0d1a1c] text-base font-bold tracking-wide transition-all hover:bg-gray-50 hover:border-primary"
               href="contact.html">
               Contact Me
             </a>
@@ -97,241 +83,197 @@
         </div>
       </section>
       <!-- Selected Projects -->
-<section class="w-full px-6 py-5 max-w-7xl mx-auto" id="work">
-  <div class="flex flex-col gap-2 mb-10">
-    <h2 class="text-3xl md:text-4xl font-bold text-[#0d1a1c] dark:text-white">
-      Selected Projects
-    </h2>
-    <p class="text-gray-500 dark:text-gray-400">
-      A showcase of my recent case studies.
-    </p>
-  </div>
-
-  <!-- ✅ Mobile carousel (2 cards visible) + ✅ Desktop grid (3 cards, no scroll) -->
-  <div class="relative">
-    <div class="overflow-hidden md:overflow-visible">
-      <div
-        id="projectsTrack"
-        class="flex gap-6 transition-transform duration-500 ease-in-out
-               md:grid md:grid-cols-3 md:gap-8"
-      >
-        <!-- Card 1 -->
-        <a
-          href="proj1.html"
-          class="projectCard flex-none w-[calc(50%-12px)] md:w-auto group flex flex-col gap-4"
-        >
-          <div
-            class="relative w-full aspect-[4/3] overflow-hidden rounded-2xl bg-gray-100 dark:bg-surface-dark shadow-sm
-                   group-hover:shadow-xl group-hover:shadow-primary/10 transition-all duration-300"
-          >
-            <div
-              class="w-3/4 h-full bg-contain bg-center bg-no-repeat mx-auto transition-transform duration-700 group-hover:scale-105"
-              style="background-image: url('assets/Pictures/Giftit_logo.png');"
-            ></div>
-            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
-            <div
-              class="absolute bottom-4 right-4 bg-white/90 dark:bg-black/80 backdrop-blur-sm p-2 rounded-full opacity-0
-                     group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0 duration-300"
-            >
-              <span class="material-symbols-outlined text-primary">arrow_outward</span>
+      <section class="w-full px-6 py-5 max-w-7xl mx-auto" id="work">
+        <div class="flex flex-col gap-2 mb-10">
+          <h2 class="text-3xl md:text-4xl font-bold text-[#0d1a1c]">
+            Selected Projects
+          </h2>
+          <p class="text-gray-500">
+            A showcase of my recent case studies.
+          </p>
+        </div>
+        <!-- ✅ Mobile carousel (2 cards visible) + ✅ Desktop grid (3 cards, no scroll) -->
+        <div class="relative">
+          <div class="overflow-hidden md:overflow-visible">
+            <div class="flex gap-6 transition-transform duration-500 ease-in-out md:grid md:grid-cols-3 md:gap-8"
+              id="projectsTrack">
+              <!-- Card 1 -->
+              <a class="projectCard flex-none w-[calc(50%-12px)] md:w-auto group flex flex-col gap-4" href="proj1.html">
+                <div
+                  class="relative w-full aspect-[4/3] overflow-hidden rounded-2xl bg-gray-100 shadow-sm group-hover:shadow-xl group-hover:shadow-primary/10 transition-all duration-300">
+                  <div
+                    class="w-3/4 h-full bg-contain bg-center bg-no-repeat mx-auto transition-transform duration-700 group-hover:scale-105"
+                    style="background-image: url('assets/pictures/Giftit_logo.webp');"></div>
+                  <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
+                  <div
+                    class="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0 duration-300">
+                    <span class="material-symbols-outlined text-primary">arrow_outward</span>
+                  </div>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <h3 class="text-xl font-bold text-[#0d1a1c] group-hover:text-primary transition-colors">
+                    Checkout &amp; Flow Redesign
+                  </h3>
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-medium text-gray-500">Product Designer</span>
+                    <span class="size-1 rounded-full bg-gray-300"></span>
+                    <span class="text-sm font-medium text-primary">UX + Growth</span>
+                  </div>
+                </div>
+              </a>
+              <!-- Card 2 -->
+              <a class="projectCard flex-none w-[calc(50%-12px)] md:w-auto group flex flex-col gap-4" href="proj2.html">
+                <div
+                  class="relative w-full aspect-[4/3] overflow-hidden rounded-2xl bg-gray-100 shadow-sm group-hover:shadow-xl group-hover:shadow-primary/10 transition-all duration-300">
+                  <div
+                    class="w-3/4 h-full bg-contain bg-center bg-no-repeat mx-auto transition-transform duration-700 group-hover:scale-105"
+                    style="background-image: url('assets/pictures/RIT_logo.webp');"></div>
+                  <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
+                  <div
+                    class="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0 duration-300">
+                    <span class="material-symbols-outlined text-primary">arrow_outward</span>
+                  </div>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <h3 class="text-xl font-bold text-[#0d1a1c] group-hover:text-primary transition-colors">
+                    RIT Student App 2.0
+                  </h3>
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-medium text-gray-500">UX + Product</span>
+                    <span class="size-1 rounded-full bg-gray-300"></span>
+                    <span class="text-sm font-medium text-primary">Mobile App</span>
+                  </div>
+                </div>
+              </a>
+              <!-- Card 3 -->
+              <a class="projectCard flex-none w-[calc(50%-12px)] md:w-auto group flex flex-col gap-4" href="proj4.html">
+                <div
+                  class="relative w-full aspect-[4/3] overflow-hidden rounded-2xl bg-gray-100 shadow-sm group-hover:shadow-xl group-hover:shadow-primary/10 transition-all duration-300">
+                  <div
+                    class="w-3/4 h-full bg-contain bg-center bg-no-repeat mx-auto transition-transform duration-700 group-hover:scale-105"
+                    style="background-image: url('assets/pictures/Giftit_logo.webp');"></div>
+                  <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
+                  <div
+                    class="absolute bottom-4 right-4 bg-white/90 backdrop-blur-sm p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0 duration-300">
+                    <span class="material-symbols-outlined text-primary">arrow_outward</span>
+                  </div>
+                </div>
+                <div class="flex flex-col gap-1">
+                  <h3 class="text-xl font-bold text-[#0d1a1c] group-hover:text-primary transition-colors">
+                    Login &amp; Signup Redesign
+                  </h3>
+                  <div class="flex items-center gap-2">
+                    <span class="text-sm font-medium text-gray-500">UX/UI Designer</span>
+                    <span class="size-1 rounded-full bg-gray-300"></span>
+                    <span class="text-sm font-medium text-primary">Mobile-first</span>
+                  </div>
+                </div>
+              </a>
             </div>
           </div>
-
-          <div class="flex flex-col gap-1">
-            <h3 class="text-xl font-bold text-[#0d1a1c] dark:text-white group-hover:text-primary transition-colors">
-              Checkout & Flow Redesign
+          <!-- ✅ Dots (mobile only) -->
+          <div class="mt-6 flex justify-center gap-2 md:hidden" id="projectsDots"></div>
+        </div>
+        <div class="flex justify-center mt-6">
+          <a class="inline-flex items-center justify-center h-12 px-8 rounded-xl bg-white border-2 border-[#e6f2f4] text-[#0d1a1c] text-base font-bold tracking-wide transition-all hover:bg-gray-50 hover:border-primary"
+            href="work.html">
+            View more
+          </a>
+        </div>
+      </section>
+      <!-- Skills Strip -->
+      <section class="w-full bg-surface-light border-y border-gray-100 py-12" id="skills">
+        <div class="max-w-7xl mx-auto px-6">
+          <div class="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-12">
+            <h3 class="text-lg font-bold whitespace-nowrap text-[#0d1a1c] flex items-center gap-2">
+              <span class="material-symbols-outlined text-primary">build</span>
+              My Toolkit
             </h3>
-            <div class="flex items-center gap-2">
-              <span class="text-sm font-medium text-gray-500 dark:text-gray-400">Product Designer</span>
-              <span class="size-1 rounded-full bg-gray-300"></span>
-              <span class="text-sm font-medium text-primary">UX + Growth</span>
+            <div class="flex flex-wrap gap-3">
+              <div
+                class="flex items-center gap-2 px-4 py-2 rounded-lg bg-background-light border border-gray-200 hover:border-primary transition-colors cursor-default">
+                <span class="material-symbols-outlined text-base text-gray-500">brush</span>
+                <span class="text-sm font-semibold">Figma</span>
+              </div>
+              <div
+                class="flex items-center gap-2 px-4 py-2 rounded-lg bg-background-light border border-gray-200 hover:border-primary transition-colors cursor-default">
+                <span class="material-symbols-outlined text-base text-gray-500">diamond</span>
+                <span class="text-sm font-semibold">Sketch</span>
+              </div>
+              <div
+                class="flex items-center gap-2 px-4 py-2 rounded-lg bg-background-light border border-gray-200 hover:border-primary transition-colors cursor-default">
+                <span class="material-symbols-outlined text-base text-gray-500">code</span>
+                <span class="text-sm font-semibold">React</span>
+              </div>
+              <div
+                class="flex items-center gap-2 px-4 py-2 rounded-lg bg-background-light border border-gray-200 hover:border-primary transition-colors cursor-default">
+                <span class="material-symbols-outlined text-base text-gray-500">palette</span>
+                <span class="text-sm font-semibold">Tailwind CSS</span>
+              </div>
+              <div
+                class="flex items-center gap-2 px-4 py-2 rounded-lg bg-background-light border border-gray-200 hover:border-primary transition-colors cursor-default">
+                <span class="material-symbols-outlined text-base text-gray-500">search</span>
+                <span class="text-sm font-semibold">User Research</span>
+              </div>
+              <div
+                class="flex items-center gap-2 px-4 py-2 rounded-lg bg-background-light border border-gray-200 hover:border-primary transition-colors cursor-default">
+                <span class="material-symbols-outlined text-base text-gray-500">devices</span>
+                <span class="text-sm font-semibold">Prototyping</span>
+              </div>
             </div>
           </div>
-        </a>
-
-        <!-- Card 2 -->
-        <a
-          href="proj2.html"
-          class="projectCard flex-none w-[calc(50%-12px)] md:w-auto group flex flex-col gap-4"
-        >
-          <div
-            class="relative w-full aspect-[4/3] overflow-hidden rounded-2xl bg-gray-100 dark:bg-surface-dark shadow-sm
-                   group-hover:shadow-xl group-hover:shadow-primary/10 transition-all duration-300"
-          >
+        </div>
+      </section>
+      <!-- About Section -->
+      <section class="w-full px-6 py-20 md:py-32 max-w-7xl" id="about">
+        <div class="flex flex-col-reverse md:flex-row items-center gap-12 lg:gap-20">
+          <div class="hidden md:block flex-1 w-full relative group">
+            <!-- Image decoration -->
             <div
-              class="w-3/4 h-full bg-contain bg-center bg-no-repeat mx-auto transition-transform duration-700 group-hover:scale-105"
-              style="background-image: url('assets/Pictures/RIT_logo.png');"
-            ></div>
-            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
+              class="absolute -top-4 -left-4 w-full h-full border-2 border-primary rounded-2xl md:rounded-[2rem] transition-transform duration-300 group-hover:translate-x-2 group-hover:translate-y-2">
+            </div>
             <div
-              class="absolute bottom-4 right-4 bg-white/90 dark:bg-black/80 backdrop-blur-sm p-2 rounded-full opacity-0
-                     group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0 duration-300"
-            >
-              <span class="material-symbols-outlined text-primary">arrow_outward</span>
+              class="relative w-full aspect-[4/5] md:aspect-square rounded-2xl md:rounded-[2rem] overflow-hidden bg-gray-200"
+              data-alt="Portrait of Yahya smiling in a professional studio setting"
+              style='background-image: url("assets/pictures/IMG_0352.webp"); background-size: cover; background-position: center;'>
             </div>
           </div>
-
-          <div class="flex flex-col gap-1">
-            <h3 class="text-xl font-bold text-[#0d1a1c] dark:text-white group-hover:text-primary transition-colors">
-              RIT Student App 2.0
+          <div class="flex-1 flex flex-col gap-6 text-left">
+            <h2 class="text-4xl md:text-5xl font-black text-[#0d1a1c] leading-tight">
+              Hi, I'm Yahya,
+            </h2>
+            <h3 class="text-lg md:text-xl font-medium text-primary">
+              Bridge builder between user needs and business goals.
             </h3>
-            <div class="flex items-center gap-2">
-              <span class="text-sm font-medium text-gray-500 dark:text-gray-400">UX + Product</span>
-              <span class="size-1 rounded-full bg-gray-300"></span>
-              <span class="text-sm font-medium text-primary">Mobile App</span>
+            <p class="text-base md:text-lg text-gray-600 leading-relaxed">
+              Hi, I’m Yahya
+              A UI/UX Designer focused on building intuitive, user-centered digital experiences.
+              With a strong background in computing and business, I bridge user needs with technical and
+              business constraints to design products that are clear, usable, and impactful. My work is
+              driven by research, iteration, and attention to details, because the best design often goes
+              unnoticed.
+              I’m currently based in Dubai and enjoy working on projects that solve real problems, whether
+              through thoughtful interfaces, improved user flows, or scalable systems.
+            </p>
+            <div class="pt-4">
+              <button
+                class="flex items-center gap-2 h-12 px-6 rounded-xl bg-[#e6f2f4] border border-transparent text-[#0d1a1c] text-base font-bold transition-all hover:bg-primary hover:border-primary hover:text-[#0d1a1c]">
+                <span class="material-symbols-outlined text-xl">download</span>
+                <a class="inline-flex items-center justify-center h-11 px-5 rounded-xl text-text-main font-bold hover:opacity-90 transition"
+                  download="" href="assets/pdfs/resume.pdf">
+                  Download resume
+                </a>
+              </button>
             </div>
           </div>
-        </a>
-
-        <!-- Card 3 -->
-        <a
-          href="proj4.html"
-          class="projectCard flex-none w-[calc(50%-12px)] md:w-auto group flex flex-col gap-4"
-        >
-          <div
-            class="relative w-full aspect-[4/3] overflow-hidden rounded-2xl bg-gray-100 dark:bg-surface-dark shadow-sm
-                   group-hover:shadow-xl group-hover:shadow-primary/10 transition-all duration-300"
-          >
-            <div
-              class="w-3/4 h-full bg-contain bg-center bg-no-repeat mx-auto transition-transform duration-700 group-hover:scale-105"
-              style="background-image: url('assets/Pictures/Giftit_logo.png');"
-            ></div>
-            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
-            <div
-              class="absolute bottom-4 right-4 bg-white/90 dark:bg-black/80 backdrop-blur-sm p-2 rounded-full opacity-0
-                     group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0 duration-300"
-            >
-              <span class="material-symbols-outlined text-primary">arrow_outward</span>
-            </div>
-          </div>
-
-          <div class="flex flex-col gap-1">
-            <h3 class="text-xl font-bold text-[#0d1a1c] dark:text-white group-hover:text-primary transition-colors">
-              Login & Signup Redesign
-            </h3>
-            <div class="flex items-center gap-2">
-              <span class="text-sm font-medium text-gray-500 dark:text-gray-400">UX/UI Designer</span>
-              <span class="size-1 rounded-full bg-gray-300"></span>
-              <span class="text-sm font-medium text-primary">Mobile-first</span>
-            </div>
-          </div>
-        </a>
-      </div>
-    </div>
-
-    <!-- ✅ Dots (mobile only) -->
-    <div id="projectsDots" class="mt-6 flex justify-center gap-2 md:hidden"></div>
-  </div>
-
-  <div class="flex justify-center mt-6">
-    <a
-      href="work.html"
-      class="inline-flex items-center justify-center h-12 px-8 rounded-xl
-             bg-white dark:bg-transparent border-2 border-[#e6f2f4] dark:border-gray-700
-             text-[#0d1a1c] dark:text-white text-base font-bold tracking-wide
-             transition-all hover:bg-gray-50 dark:hover:bg-white/5 hover:border-primary dark:hover:border-primary"
-    >
-      View more
-    </a>
-  </div>
-</section>
-
-
-  <!-- Skills Strip -->
-  <section class="w-full bg-surface-light dark:bg-surface-dark border-y border-gray-100 dark:border-white/5 py-12"
-    id="skills">
-    <div class="max-w-7xl mx-auto px-6">
-      <div class="flex flex-col md:flex-row items-start md:items-center gap-6 md:gap-12">
-        <h3 class="text-lg font-bold whitespace-nowrap text-[#0d1a1c] dark:text-white flex items-center gap-2">
-          <span class="material-symbols-outlined text-primary">build</span>
-          My Toolkit
-        </h3>
-        <div class="flex flex-wrap gap-3">
-          <div
-            class="flex items-center gap-2 px-4 py-2 rounded-lg bg-background-light dark:bg-background-dark border border-gray-200 dark:border-gray-700 hover:border-primary transition-colors cursor-default">
-            <span class="material-symbols-outlined text-base text-gray-500">brush</span>
-            <span class="text-sm font-semibold">Figma</span>
-          </div>
-          <div
-            class="flex items-center gap-2 px-4 py-2 rounded-lg bg-background-light dark:bg-background-dark border border-gray-200 dark:border-gray-700 hover:border-primary transition-colors cursor-default">
-            <span class="material-symbols-outlined text-base text-gray-500">diamond</span>
-            <span class="text-sm font-semibold">Sketch</span>
-          </div>
-          <div
-            class="flex items-center gap-2 px-4 py-2 rounded-lg bg-background-light dark:bg-background-dark border border-gray-200 dark:border-gray-700 hover:border-primary transition-colors cursor-default">
-            <span class="material-symbols-outlined text-base text-gray-500">code</span>
-            <span class="text-sm font-semibold">React</span>
-          </div>
-          <div
-            class="flex items-center gap-2 px-4 py-2 rounded-lg bg-background-light dark:bg-background-dark border border-gray-200 dark:border-gray-700 hover:border-primary transition-colors cursor-default">
-            <span class="material-symbols-outlined text-base text-gray-500">palette</span>
-            <span class="text-sm font-semibold">Tailwind CSS</span>
-          </div>
-          <div
-            class="flex items-center gap-2 px-4 py-2 rounded-lg bg-background-light dark:bg-background-dark border border-gray-200 dark:border-gray-700 hover:border-primary transition-colors cursor-default">
-            <span class="material-symbols-outlined text-base text-gray-500">search</span>
-            <span class="text-sm font-semibold">User Research</span>
-          </div>
-          <div
-            class="flex items-center gap-2 px-4 py-2 rounded-lg bg-background-light dark:bg-background-dark border border-gray-200 dark:border-gray-700 hover:border-primary transition-colors cursor-default">
-            <span class="material-symbols-outlined text-base text-gray-500">devices</span>
-            <span class="text-sm font-semibold">Prototyping</span>
-          </div>
         </div>
-      </div>
-    </div>
-  </section>
-  <!-- About Section -->
-  <section class="w-full px-6 py-20 md:py-32 max-w-7xl" id="about">
-    <div class="flex flex-col-reverse md:flex-row items-center gap-12 lg:gap-20">
-      <div class="hidden md:block flex-1 w-full relative group">
-        <!-- Image decoration -->
-        <div
-          class="absolute -top-4 -left-4 w-full h-full border-2 border-primary rounded-2xl md:rounded-[2rem] transition-transform duration-300 group-hover:translate-x-2 group-hover:translate-y-2">
-        </div>
-        <div
-          class="relative w-full aspect-[4/5] md:aspect-square rounded-2xl md:rounded-[2rem] overflow-hidden bg-gray-200 dark:bg-gray-800"
-          data-alt="Portrait of Yahya smiling in a professional studio setting"
-          style='background-image: url("assets/Pictures/IMG_0352.png"); background-size: cover; background-position: center;'>
-        </div>
-      </div>
-      <div class="flex-1 flex flex-col gap-6 text-left">
-        <h2 class="text-4xl md:text-5xl font-black text-[#0d1a1c] dark:text-white leading-tight">
-          Hi, I'm Yahya,
-        </h2>
-        <h3 class="text-lg md:text-xl font-medium text-primary">
-          Bridge builder between user needs and business goals.
-        </h3>
-        <p class="text-base md:text-lg text-gray-600 dark:text-gray-300 leading-relaxed">
-          Hi, I’m Yahya
-          A UI/UX Designer focused on building intuitive, user-centered digital experiences.
-          With a strong background in computing and business, I bridge user needs with technical and
-          business constraints to design products that are clear, usable, and impactful. My work is
-          driven by research, iteration, and attention to details, because the best design often goes
-          unnoticed.
-          I’m currently based in Dubai and enjoy working on projects that solve real problems, whether
-          through thoughtful interfaces, improved user flows, or scalable systems.
-        </p>
-
-        <div class="pt-4">
-          <button
-            class="flex items-center gap-2 h-12 px-6 rounded-xl bg-[#e6f2f4] dark:bg-surface-dark border border-transparent dark:border-gray-700 text-[#0d1a1c] dark:text-white text-base font-bold transition-all hover:bg-primary hover:border-primary hover:text-[#0d1a1c]">
-            <span class="material-symbols-outlined text-xl">download</span>
-            <a href="assets/pdfs/resume.pdf" download
-              class="inline-flex items-center justify-center h-11 px-5 rounded-xl text-text-main font-bold hover:opacity-90 transition">
-              Download resume
-            </a>
-          </button>
-        </div>
-      </div>
-    </div>
-  </section>
-  <!-- Testimonial -->
-  <!-- <section
-                class="w-full px-6 py-20 bg-surface-light dark:bg-surface-dark border-y border-gray-100 dark:border-white/5">
+      </section>
+      <!-- Testimonial -->
+      <!-- <section
+                class="w-full px-6 py-20 bg-surface-light border-y border-gray-100">
                 <div class="max-w-4xl mx-auto flex flex-col items-center text-center gap-8">
                     <span class="material-symbols-outlined text-6xl text-primary/30">format_quote</span>
-                    <blockquote class="text-2xl md:text-4xl font-bold leading-tight text-[#0d1a1c] dark:text-white">
+                    <blockquote class="text-2xl md:text-4xl font-bold leading-tight text-[#0d1a1c]">
                         "Yahya transformed our confusing legacy workflow into a seamless, modern experience. The user
                         satisfaction scores went up by 40% within two months."
                     </blockquote>
@@ -340,45 +282,43 @@
                             style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDRiFdhd3W8DbwJuEl1O-Pm5dpR7EOnSx8z6i9pEkgCzLW9xDXdDs82dse4ppaif_Y7i5gCSrb1AvuWB77TjJLVyKRYW818q4tH9FbieXO-9EM539YJAkk6nwcTuyINkk4maq9uAqhAkyV-QV8rfwRPdMXFKVq8tmCRG6tdtw-epkQjp4IKjQjGOck4Yw8RlWlXrpzjhO8cq-VsPZCnb8IJiyzGjykVta82XcCLRqkQrrZzX740YsbdGavz92jx0Hmr-aZ83mIMsps");'>
                         </div>
                         <div class="flex flex-col text-left">
-                            <div class="text-base font-bold text-[#0d1a1c] dark:text-white">Jane Doe</div>
+                            <div class="text-base font-bold text-[#0d1a1c]">Jane Doe</div>
                             <div class="text-sm text-gray-500">Product Manager at TechCo</div>
                         </div>
                     </div>
                 </div>
             </section> -->
-  <!-- CTA / Contact -->
-  <section class="w-full px-6 py-1 max-w-7xl text-center" id="contact">
-    <div class="bg-primary rounded-3xl p-10 md:p-20 relative overflow-hidden flex flex-col items-center gap-6">
-      <!-- Texture overlay -->
-      <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10">
-      </div>
-      <div class="absolute top-0 right-0 w-64 h-64 bg-white/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2">
-      </div>
-      <h2 class="relative text-3xl md:text-5xl font-black text-[#0d1a1c]">Ready to build something
-        amazing?</h2>
-      <p class="relative text-lg md:text-xl text-[#0d1a1c]/80 max-w-xl">
-        I'm currently open to full-time opportunities.
-      </p>
-      <a href="contact.html"
-        class="relative mt-4 inline-flex items-center justify-center h-14 px-10 rounded-full bg-[#0d1a1c] text-white text-lg font-bold tracking-wide transition-transform hover:scale-105 shadow-xl">
-        Let's Work Together
-      </a>
-
-    </div>
-  </section>
-  </main>
-  <!-- Footer -->
-
+      <!-- CTA / Contact -->
+      <section class="w-full px-6 py-1 max-w-7xl text-center" id="contact">
+        <div class="bg-primary rounded-3xl p-10 md:p-20 relative overflow-hidden flex flex-col items-center gap-6">
+          <!-- Texture overlay -->
+          <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.webp')] opacity-10">
+          </div>
+          <div
+            class="absolute top-0 right-0 w-64 h-64 bg-white/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2">
+          </div>
+          <h2 class="relative text-3xl md:text-5xl font-black text-[#0d1a1c]">Ready to build something
+            amazing?</h2>
+          <p class="relative text-lg md:text-xl text-[#0d1a1c]/80 max-w-xl">
+            I'm currently open to full-time opportunities.
+          </p>
+          <a class="relative mt-4 inline-flex items-center justify-center h-14 px-10 rounded-full bg-[#0d1a1c] text-white text-lg font-bold tracking-wide transition-transform hover:scale-105 shadow-xl"
+            href="contact.html">
+            Let's Work Together
+          </a>
+        </div>
+      </section>
+    </main>
+    <!-- Footer -->
   </div>
-  <button id="scrollTopBtn" aria-label="Scroll to top" class="fixed bottom-6 right-6 z-50 h-12 w-12 rounded-full bg-white text-text-main
-         shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all hover:-translate-y-1
-         opacity-0 pointer-events-none translate-y-3 scale-95
-         transition-[opacity,transform] duration-300 ease-out">
+  <button aria-label="Scroll to top"
+    class="fixed bottom-6 right-6 z-50 h-12 w-12 rounded-full bg-white text-text-main shadow-lg shadow-primary/30 hover:shadow-primary/50 transition-all hover:-translate-y-1 opacity-0 pointer-events-none translate-y-3 scale-95 transition-[opacity,transform] duration-300 ease-out"
+    id="scrollTopBtn">
     <span class="material-symbols-outlined">keyboard_arrow_up</span>
   </button>
   <!-- Footer (injected) -->
   <div id="site-footer"></div>
-  <script src="assets/js/main.js" defer></script>
+  <script defer="" src="assets/js/main.js"></script>
 </body>
 
 </html>

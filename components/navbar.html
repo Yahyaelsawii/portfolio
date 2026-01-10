@@ -1,70 +1,46 @@
-<header
-  class="w-full border-b border-[#e6f2f4] dark:border-gray-800 bg-white/80 dark:bg-background-dark/80 backdrop-blur-md sticky top-0 z-50"
->
-  <div class="layout-container flex justify-center">
-    <div class="w-full max-w-[1280px] px-6 py-3 flex items-center justify-between">
-      <!-- Logo -->
-      <a href="index.html" class="flex items-center gap-4 text-text-main dark:text-white">
-        <div class="size-8 flex items-center justify-center bg-primary rounded-lg text-text-main">
-          <span class="material-symbols-outlined font-bold">design_services</span>
-        </div>
-        <h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">Yahya.Portfolio</h2>
-      </a>
-
-      <!-- Desktop Navigation (UNCHANGED) -->
-      <nav class="hidden md:flex items-center gap-9">
-        <a data-nav="Home" class="text-sm font-medium hover:text-primary transition-colors dark:text-gray-300" href="index.html">Home</a>
-        <a data-nav="work" class="text-sm font-medium hover:text-primary transition-colors dark:text-gray-300" href="work.html">Work</a>
-        <a data-nav="about" class="text-sm font-medium hover:text-primary transition-colors dark:text-gray-300" href="about.html">About</a>
-        <a data-nav="resume" class="text-sm font-medium hover:text-primary transition-colors dark:text-gray-300" href="resume.html">Resume</a>
-        <a data-nav="contact" class="text-sm font-medium hover:text-primary transition-colors dark:text-gray-300" href="contact.html">Contact</a>
-      </nav>
-
-      <!-- Right side (desktop CTA + mobile hamburger) -->
-      <div class="flex items-center gap-3">
-        <!-- Mobile menu button -->
-        <button
-          id="mobileMenuBtn"
-          class="md:hidden flex items-center justify-center size-10 rounded-lg border border-[#e6f2f4] dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-800 transition"
-          aria-label="Toggle menu"
-          aria-expanded="false"
-          aria-controls="mobileMenuPanel"
-          type="button"
-        >
-          <span id="mobileMenuIcon" class="material-symbols-outlined">menu</span>
-        </button>
-
-        <!-- Desktop CTA (UNCHANGED) -->
-        <a
-          href="contact.html"
-          class="hidden md:flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-primary text-text-main text-sm font-bold shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-shadow"
-        >
-          <span class="truncate">Let's Talk</span>
-        </a>
-      </div>
-    </div>
-  </div>
-
-  <!-- Mobile dropdown panel (slides down/up) -->
-<div
-  id="mobileMenuPanel"
-  class="md:hidden overflow-hidden border-t border-[#e6f2f4] dark:border-gray-800 bg-white/90 dark:bg-background-dark/90 backdrop-blur-md max-h-0 opacity-0 transition-all duration-300 ease-in-out"
->
-
-    <nav class="px-6 py-5 flex flex-col gap-4">
-      <a href="index.html" class="text-base font-semibold hover:text-primary dark:text-gray-200">Home</a>
-      <a href="work.html" class="text-base font-semibold hover:text-primary dark:text-gray-200">Work</a>
-      <a href="about.html" class="text-base font-semibold hover:text-primary dark:text-gray-200">About</a>
-      <a href="resume.html" class="text-base font-semibold hover:text-primary dark:text-gray-200">Resume</a>
-      <a href="contact.html" class="text-base font-semibold hover:text-primary dark:text-gray-200">Contact</a>
-
-      <!-- Mobile CTA -->
-      <a
-        href="contact.html"
-        class="mt-2 inline-flex items-center justify-center h-12 rounded-xl bg-primary text-text-main font-bold"
-      >
+<header class="w-full border-b border-[#e6f2f4] bg-white/80 backdrop-blur-md sticky top-0 z-50">
+<div class="layout-container flex justify-center">
+<div class="w-full max-w-[1280px] px-6 py-3 flex items-center justify-between">
+<!-- Logo -->
+<a class="flex items-center gap-4 text-text-main" href="index.html">
+<div class="size-8 flex items-center justify-center bg-primary rounded-lg text-text-main">
+<span class="material-symbols-outlined font-bold">design_services</span>
+</div>
+<h2 class="text-lg font-bold leading-tight tracking-[-0.015em]">Yahya.Portfolio</h2>
+</a>
+<!-- Desktop Navigation (UNCHANGED) -->
+<nav class="hidden md:flex items-center gap-9">
+<a class="text-sm font-medium hover:text-primary transition-colors" data-nav="Home" href="index.html">Home</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" data-nav="work" href="work.html">Work</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" data-nav="about" href="about.html">About</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" data-nav="resume" href="resume.html">Resume</a>
+<a class="text-sm font-medium hover:text-primary transition-colors" data-nav="contact" href="contact.html">Contact</a>
+</nav>
+<!-- Right side (desktop CTA + mobile hamburger) -->
+<div class="flex items-center gap-3">
+<!-- Mobile menu button -->
+<button aria-controls="mobileMenuPanel" aria-expanded="false" aria-label="Toggle menu" class="md:hidden flex items-center justify-center size-10 rounded-lg border border-[#e6f2f4] hover:bg-gray-100 transition" id="mobileMenuBtn" type="button">
+<span class="material-symbols-outlined" id="mobileMenuIcon">menu</span>
+</button>
+<!-- Desktop CTA (UNCHANGED) -->
+<a class="hidden md:flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-xl h-10 px-4 bg-primary text-text-main text-sm font-bold shadow-lg shadow-primary/20 hover:shadow-primary/40 transition-shadow" href="contact.html">
+<span class="truncate">Let's Talk</span>
+</a>
+</div>
+</div>
+</div>
+<!-- Mobile dropdown panel (slides down/up) -->
+<div class="md:hidden overflow-hidden border-t border-[#e6f2f4] bg-white/90 backdrop-blur-md max-h-0 opacity-0 transition-all duration-300 ease-in-out" id="mobileMenuPanel">
+<nav class="px-6 py-5 flex flex-col gap-4">
+<a class="text-base font-semibold hover:text-primary" href="index.html">Home</a>
+<a class="text-base font-semibold hover:text-primary" href="work.html">Work</a>
+<a class="text-base font-semibold hover:text-primary" href="about.html">About</a>
+<a class="text-base font-semibold hover:text-primary" href="resume.html">Resume</a>
+<a class="text-base font-semibold hover:text-primary" href="contact.html">Contact</a>
+<!-- Mobile CTA -->
+<a class="mt-2 inline-flex items-center justify-center h-12 rounded-xl bg-primary text-text-main font-bold" href="contact.html">
         Let’s Talk
       </a>
-    </nav>
-  </div>
+</nav>
+</div>
 </header>
