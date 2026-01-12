@@ -45,10 +45,19 @@
             },
         }
     </script>
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6SG29GVD0D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6SG29GVD0D');
+</script>
     <link rel="stylesheet" href="assets/css/styles.css" />
 </head>
 
-<body class="bg-background-light dark:bg-background-dark font-display text-text-main antialiased overflow-x-hidden"
+<body class="bg-background-light dark:bg-background-dark font-display text-text-main antialiased overflow-x-hidden selection:bg-primary selection:text-black"
     data-page="about">
     <div class="relative flex min-h-screen w-full flex-col group/design-root">
         <!-- Top Navigation -->
@@ -120,9 +129,11 @@
                                 <div
                                     class="w-full max-w-[400px] aspect-square rounded-2xl overflow-hidden bg-gray-200 relative group">
                                     <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105"
-                                        data-alt="Portrait of a friendly male designer smiling in a modern office environment"
-                                        style='background-image: url("assets/pictures/IMG_0352.webp");'>
-                                    </div>
+     role="img"
+     aria-label="Portrait of a friendly male designer smiling in a modern office environment"
+     style='background-image: url("assets/pictures/IMG_0352.png");'>
+</div>
+
                                     <!-- Playful badge -->
                                     <div
                                         class="absolute bottom-4 right-4 bg-white/90 dark:bg-background-dark/90 backdrop-blur px-4 py-2 rounded-lg shadow-lg border border-gray-100 dark:border-gray-700">

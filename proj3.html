@@ -51,13 +51,22 @@
             },
         };
     </script>
+    <!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-6SG29GVD0D"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-6SG29GVD0D');
+</script>
 
     <!-- Site CSS -->
     <link rel="stylesheet" href="assets/css/styles.css" />
 </head>
 
 <body
-    class="bg-background-light dark:bg-background-dark text-text-main dark:text-white font-body antialiased overflow-x-hidden"
+    class="bg-background-light dark:bg-background-dark text-text-main dark:text-white font-body antialiased overflow-x-hidden selection:bg-primary selection:text-black"
     data-page="work">
     <div class="relative flex min-h-screen flex-col">
         <!-- NAVBAR (INJECTED) -->
@@ -120,7 +129,7 @@
                             </div>
 
                             <!-- Optional: replace with your ERD or any project image -->
-        <img src="assets/pictures/RIT_logo.webp" alt="RIT Student App preview"
+        <img src="assets/pictures/RIT_logo.png" alt="RIT Student App preview"
                 class="w-full h-full object-contain p-10 md:p-14 transform group-hover:scale-105 transition-transform duration-700" />
                         </div>
 
@@ -304,7 +313,7 @@
 
                                 <div class="rounded-xl bg-slate-100 dark:bg-white/5 p-8">
                                     <img class="w-full h-auto rounded-xl"
-                                        src="assets/pictures/ERD.webp"
+                                        src="assets/pictures/ERD.png"
                                         alt="Schema snapshot" />
                                 </div>
 
