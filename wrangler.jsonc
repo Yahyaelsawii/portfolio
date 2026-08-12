@@ -1,0 +1,17 @@
+{
+  "name": "yahya-elsawi-portfolio",
+  "compatibility_date": "2026-08-11",
+  "compatibility_flags": ["nodejs_compat"],
+  "pages_build_output_dir": ".",
+  "ai": {
+    "binding": "AI",
+    "remote": true
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "yahya-portfolio-ai",
+      "database_id": "00988292-b8f9-47d0-9199-bcd4c82dd5d4"
+    }
+  ]
+}

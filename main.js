@@ -74,11 +74,28 @@ function renderProjects(target, limit) {
   if (node) node.innerHTML = projects.slice(0, limit || projects.length).map(projectCard).join('');
 }
 
+const galleryImageDimensions = {
+  Checkout:[1530,3036], Daily_checkins:[1530,3036], ERD:[1064,724], E_invite_confirmation:[1530,3036],
+  E_invite_payment_confirmation0:[793,1160], E_invite_steps:[1530,3036], flowmap:[1536,1024],
+  Homescreen:[1530,3036], Home_screen:[1530,3036], Login:[1530,3036], Login_giftiti:[1530,3036],
+  Mood_avg:[1530,3036], Notifications:[1530,3036], Order_confirmation0:[793,1160],
+  Sign_up_giftit:[1530,3036], Updated_user_flows:[1535,903], Verification:[1530,3036]
+};
+
+function renderGalleryImage(src, alt) {
+  const filename = src.split('/').pop() || '';
+  const stem = filename.replace(/\.[^.]+$/, '');
+  const [width, height] = galleryImageDimensions[stem] || [1200, 900];
+  const responsivePath = 'assets/Pictures/responsive/';
+  const sizes = '(max-width: 760px) calc(100vw - 68px), 420px';
+  return `<figure><picture><source type="image/avif" srcset="${responsivePath}${stem}-480.avif 480w, ${responsivePath}${stem}-768.avif 768w, ${responsivePath}${stem}-1200.avif 1200w" sizes="${sizes}"><source type="image/webp" srcset="${responsivePath}${stem}-480.webp 480w, ${responsivePath}${stem}-768.webp 768w, ${responsivePath}${stem}-1200.webp 1200w" sizes="${sizes}"><img src="${src}" alt="${alt}" width="${width}" height="${height}" loading="lazy" decoding="async"></picture><figcaption>${alt}</figcaption></figure>`;
+}
+
 function renderSection(section, index) {
   const facts = section.facts ? `<ul class="fact-list">${section.facts.map(x=>`<li>${x}</li>`).join('')}</ul>` : '';
   const cards = section.cards ? `<div class="insight-grid">${section.cards.map(([title,text])=>`<div class="insight"><h3>${title}</h3><p>${text}</p></div>`).join('')}</div>` : '';
   const columns = section.columns ? `<div class="metric-grid">${section.columns.map(([title,items])=>`<div class="metric"><h3>${title}</h3><ul>${items.split('|').map(x=>`<li>${x}</li>`).join('')}</ul></div>`).join('')}</div>` : '';
-  const images = section.images ? `<div class="gallery">${section.images.map(([src,alt])=>`<figure><img src="${src}" alt="${alt}" loading="lazy"><figcaption>${alt}</figcaption></figure>`).join('')}</div>` : '';
+  const images = section.images ? `<div class="gallery">${section.images.map(([src,alt])=>renderGalleryImage(src,alt)).join('')}</div>` : '';
   return `<article class="story-block" id="section-${index+1}"><span class="eyebrow">${String(index+1).padStart(2,'0')} / Case study</span><h2>${section.title}</h2>${section.text?`<p>${section.text}</p>`:''}${facts}${cards}${columns}${images}</article>`;
 }
 
@@ -94,25 +111,221 @@ function renderProjectDetail() {
   <section class="section-soft"><div class="shell content-grid"><aside class="content-nav"><span class="eyebrow">Contents</span>${nav}<a href="contact.html">Discuss this project →</a></aside><div class="story">${project.sections.map(renderSection).join('')}<article class="story-block next-project"><span class="eyebrow">End of scan</span><h2>Continue exploring.</h2><div class="actions"><a class="btn btn-primary" href="work.html">All projects</a><a class="btn btn-secondary" href="contact.html">Contact me</a></div></article></div></div></section>`;
 }
 
+function createChatMessage(role, text, sources = []) {
+  const message = document.createElement('div');
+  message.className = `ai-message ai-message-${role}`;
+
+  const label = document.createElement('span');
+  label.className = 'ai-message-label';
+  label.textContent = role === 'assistant' ? 'YAHYA_AI' : 'YOU';
+
+  const body = document.createElement('div');
+  body.className = 'ai-message-body';
+  body.textContent = text;
+  message.append(label, body);
+
+  if (sources.length) {
+    const evidence = document.createElement('div');
+    evidence.className = 'ai-evidence';
+    const title = document.createElement('span');
+    title.textContent = 'Evidence:';
+    evidence.append(title);
+    sources.forEach(source => {
+      if (!source?.url || !source?.label) return;
+      const link = document.createElement('a');
+      link.href = source.url;
+      link.textContent = source.label;
+      if (/^https?:\/\//.test(source.url)) {
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+      }
+      evidence.append(link);
+    });
+    message.append(evidence);
+  }
+  return message;
+}
+
+function createThinkingMessage() {
+  const message = document.createElement('div');
+  message.className = 'ai-message ai-message-assistant ai-message-thinking';
+
+  const label = document.createElement('span');
+  label.className = 'ai-message-label';
+  label.textContent = 'YAHYA_AI';
+
+  const body = document.createElement('div');
+  body.className = 'ai-message-body ai-thinking-body';
+  body.setAttribute('role', 'status');
+
+  const accessibleText = document.createElement('span');
+  accessibleText.className = 'sr-only';
+  accessibleText.textContent = 'Yahya AI is thinking';
+
+  const dots = document.createElement('span');
+  dots.className = 'ai-thinking-dots';
+  dots.setAttribute('aria-hidden', 'true');
+  dots.append(document.createElement('span'), document.createElement('span'), document.createElement('span'));
+
+  body.append(accessibleText, dots);
+  message.append(label, body);
+  return message;
+}
+
+function initializePortfolioAI() {
+  const form = document.querySelector('#ai-chat-form');
+  const input = document.querySelector('#ai-input');
+  const messages = document.querySelector('#ai-messages');
+  const status = document.querySelector('#ai-request-status');
+  const counter = document.querySelector('#ai-character-count');
+  const sendButton = form?.querySelector('button[type="submit"]');
+  if (!form || !input || !messages || !status || !counter || !sendButton) return;
+
+  let history = [];
+  let sessionId;
+  try {
+    sessionId = sessionStorage.getItem('yahya-ai-session') || crypto.randomUUID();
+    sessionStorage.setItem('yahya-ai-session', sessionId);
+  } catch {
+    sessionId = crypto.randomUUID();
+  }
+
+  const setBusy = busy => {
+    input.disabled = busy;
+    sendButton.disabled = busy;
+    sendButton.textContent = busy ? 'Thinking…' : 'Ask AI ↗';
+    status.textContent = busy ? 'Processing' : 'Ready';
+    messages.setAttribute('aria-busy', String(busy));
+    document.querySelectorAll('.ai-suggestions button').forEach(button => { button.disabled = busy; });
+  };
+
+  const append = (role, text, sources) => {
+    messages.append(createChatMessage(role, text, sources));
+    messages.scrollTo({ top: messages.scrollHeight, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  };
+
+  const localRoutes = { home:'index.html', work:'work.html', about:'about.html', resume:'resume.html', contact:'contact.html' };
+
+  async function ask(question) {
+    const cleanQuestion = question.trim();
+    if (!cleanQuestion) return;
+    const command = cleanQuestion.toLowerCase();
+    if (command === 'clear') {
+      messages.innerHTML = '';
+      history = [];
+      append('assistant', 'Conversation cleared. What would you like to know about Yahya?');
+      return;
+    }
+    if (localRoutes[command]) {
+      location.href = localRoutes[command];
+      return;
+    }
+    if (command === 'help') {
+      append('assistant', 'Ask a natural-language question, or use: home, work, about, resume, contact, and clear.');
+      return;
+    }
+
+    append('user', cleanQuestion);
+    input.value = '';
+    counter.textContent = '0 / 800';
+    setBusy(true);
+    const thinkingMessage = createThinkingMessage();
+    messages.append(thinkingMessage);
+    messages.scrollTo({ top: messages.scrollHeight, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    let finalStatus = '';
+
+    try {
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 30000);
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'content-type': 'application/json' },
+        body: JSON.stringify({ message: cleanQuestion, history: history.slice(-6), sessionId }),
+        signal: controller.signal
+      }).finally(() => clearTimeout(timeout));
+      const data = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(data.message || 'The assistant could not answer right now.');
+
+      thinkingMessage.remove();
+      append('assistant', data.answer, Array.isArray(data.sources) ? data.sources : []);
+      history.push({ role: 'user', content: cleanQuestion }, { role: 'assistant', content: data.answer });
+      history = history.slice(-8);
+      if (data.flag === 'salary') finalStatus = 'Flagged for Yahya';
+    } catch (error) {
+      thinkingMessage.remove();
+      const fallback = error.name === 'AbortError'
+        ? 'That response took too long. Please try the question again.'
+        : (error.message || 'The assistant is temporarily unavailable. Please try again.');
+      append('assistant', fallback);
+      finalStatus = 'Connection unavailable';
+    } finally {
+      thinkingMessage.remove();
+      setBusy(false);
+      if (finalStatus) status.textContent = finalStatus;
+      input.focus();
+    }
+  }
+
+  input.addEventListener('input', () => { counter.textContent = `${input.value.length} / 800`; });
+  input.addEventListener('keydown', event => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      form.requestSubmit();
+    }
+  });
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+    ask(input.value);
+  });
+  document.querySelectorAll('.ai-suggestions [data-question]').forEach(button => {
+    button.addEventListener('click', () => ask(button.dataset.question || ''));
+  });
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+  const main = document.querySelector('main');
+  if (main) {
+    main.id ||= 'main-content';
+    const skipLink = document.createElement('a');
+    skipLink.className = 'skip-link';
+    skipLink.href = `#${main.id}`;
+    skipLink.textContent = 'Skip to main content';
+    document.body.prepend(skipLink);
+  }
+
   const menu = document.querySelector('.menu-btn');
   const links = document.querySelector('.nav-links');
-  menu?.addEventListener('click', () => { const open = links.classList.toggle('open'); menu.setAttribute('aria-expanded', String(open)); });
+  if (menu && links) {
+    links.id ||= 'site-navigation';
+    menu.setAttribute('aria-controls', links.id);
+    const closeMenu = () => { links.classList.remove('open'); menu.setAttribute('aria-expanded', 'false'); };
+    menu.addEventListener('click', () => {
+      const open = links.classList.toggle('open');
+      menu.setAttribute('aria-expanded', String(open));
+      if (open) links.querySelector('a')?.focus();
+    });
+    links.addEventListener('click', event => { if (event.target.closest('a')) closeMenu(); });
+    document.addEventListener('keydown', event => { if (event.key === 'Escape') { closeMenu(); menu.focus(); } });
+    document.addEventListener('click', event => { if (!event.target.closest('.nav')) closeMenu(); });
+  }
+  document.querySelector('.nav-link.active')?.setAttribute('aria-current', 'page');
   renderProjects('#featured-projects', 3); renderProjects('#all-projects'); renderProjectDetail();
 
   document.querySelectorAll('.filter').forEach(button => button.addEventListener('click', () => {
-    document.querySelectorAll('.filter').forEach(item => item.classList.toggle('active', item === button));
+    document.querySelectorAll('.filter').forEach(item => {
+      const active = item === button;
+      item.classList.toggle('active', active);
+      item.setAttribute('aria-pressed', String(active));
+    });
     const value = button.dataset.filter;
     document.querySelectorAll('#all-projects .project-card').forEach(card => card.hidden = value !== 'all' && !card.dataset.category.includes(value));
+    const visibleCount = document.querySelectorAll('#all-projects .project-card:not([hidden])').length;
+    const filterStatus = document.querySelector('#project-filter-status');
+    if (filterStatus) filterStatus.textContent = `${visibleCount} project${visibleCount === 1 ? '' : 's'} shown.`;
   }));
+  document.querySelectorAll('.filter').forEach(button => button.setAttribute('aria-pressed', String(button.classList.contains('active'))));
 
-  const input = document.querySelector('#terminal-input'); const output = document.querySelector('#terminal-output');
-  input?.addEventListener('keydown', event => {
-    if (event.key !== 'Enter') return; const command = input.value.trim().toLowerCase();
-    const routes = {home:'index.html',work:'work.html',about:'about.html',resume:'resume.html',contact:'contact.html'};
-    output.insertAdjacentHTML('beforeend', `<div><span class="prompt">yahya@portfolio:~$</span> ${command}</div>`); input.value='';
-    if (routes[command]) location.href=routes[command]; else if(command==='clear') output.innerHTML=''; else output.insertAdjacentHTML('beforeend',`<div>${command==='help'?'Commands: home, work, about, resume, contact, clear':'Unknown command. Type help.'}</div>`);
-  });
+  initializePortfolioAI();
 
   const form = document.querySelector('#contact-form');
   form?.addEventListener('submit', event => {

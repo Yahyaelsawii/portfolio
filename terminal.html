@@ -1,1 +1,113 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Terminal — Yahya El-Sawi</title><link rel="stylesheet" href="styles.css"><script defer src="main.js"></script><link rel="icon" href="assets/favicon/logo.svg" type="image/svg+xml"></head><body><header class="site-header"><div class="shell nav"><a class="brand" href="index.html"><span class="brand-mark">Y</span>Yahya El-Sawi</a><button class="menu-btn" aria-label="Toggle navigation" aria-expanded="false">☰</button><nav class="nav-links"><a class="nav-link" href="index.html">Home</a><a class="nav-link" href="work.html">Work</a><a class="nav-link" href="about.html">About</a><a class="nav-link" href="resume.html">Resume</a><a class="nav-link" href="contact.html">Contact</a><a class="nav-link active" href="terminal.html">Terminal</a></nav></div></header><main><section class="shell page-hero"><span class="eyebrow">Interactive shell / system ready</span><h1>The <span class="accent">terminal.</span></h1><p class="lead">A lightweight alternate route through the complete portfolio. Type <strong>help</strong> to see available commands.</p></section><section class="shell" style="padding-bottom:100px"><div class="terminal"><div id="terminal-output"><div>Yahya Portfolio [system ready]</div><div>Type <span class="prompt">help</span> to begin.</div><br></div><div><span class="prompt">yahya@portfolio:~$</span> <input id="terminal-input" aria-label="Terminal command" autocomplete="off" autofocus></div></div></section></main><footer class="footer"><div class="shell footer-row"><span>Commands: home / work / about / resume / contact / clear</span><a class="text-link" href="index.html">Exit terminal</a></div></footer></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Ask Yahya AI — Yahya El-Sawi</title>
+  <meta name="description" content="Ask Yahya El-Sawi's portfolio assistant about his experience, projects, skills, availability, and contact details.">
+  <link rel="canonical" href="https://yahya-elsawi-portfolio.pages.dev/terminal">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Ask Yahya AI — Portfolio Assistant">
+  <meta property="og:description" content="Ask about Yahya El-Sawi's verified experience, projects, skills, availability, and contact details.">
+  <meta property="og:url" content="https://yahya-elsawi-portfolio.pages.dev/terminal">
+  <meta property="og:image" content="https://yahya-elsawi-portfolio.pages.dev/covers/rit-app-social.jpg">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="main.js"></script>
+  <link rel="icon" href="assets/favicon/logo.svg" type="image/svg+xml">
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell nav">
+      <a class="brand" href="index.html"><span class="brand-mark">Y</span>Yahya El-Sawi</a>
+      <button class="menu-btn" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+      <nav class="nav-links" aria-label="Primary">
+        <a class="nav-link" href="index.html">Home</a>
+        <a class="nav-link" href="work.html">Work</a>
+        <a class="nav-link" href="about.html">About</a>
+        <a class="nav-link" href="resume.html">Resume</a>
+        <a class="nav-link" href="contact.html">Contact</a>
+        <a class="nav-link active" href="terminal.html">Terminal</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="shell page-hero ai-page-hero">
+      <span class="eyebrow">Portfolio intelligence / Public beta</span>
+      <h1>Ask about <span class="accent">Yahya.</span></h1>
+      <p class="lead">A recruiter-friendly assistant grounded only in Yahya’s approved public profile, project evidence, and resume.</p>
+    </section>
+
+    <section class="shell ai-layout">
+      <article class="ai-terminal" aria-labelledby="ai-terminal-title">
+        <header class="ai-terminal-bar">
+          <div class="ai-terminal-id"><span class="ai-live-dot" aria-hidden="true"></span><span id="ai-terminal-title">YAHYA_AI / KNOWLEDGE_BASE</span></div>
+          <span class="ai-beta">PUBLIC BETA</span>
+        </header>
+
+        <div class="ai-messages" id="ai-messages" role="log" aria-live="polite" aria-relevant="additions">
+          <div class="ai-message ai-message-assistant">
+            <span class="ai-message-label">YAHYA_AI</span>
+            <div class="ai-message-body">Hi — ask me about Yahya’s projects, skills, experience, availability, or how to contact him. I will say when something is not in his approved public information.</div>
+          </div>
+        </div>
+
+        <div class="ai-suggestions" aria-label="Suggested questions">
+          <button type="button" data-question="What kind of roles is Yahya looking for?">Target roles</button>
+          <button type="button" data-question="Which project best shows Yahya's product thinking?">Best case study</button>
+          <button type="button" data-question="What is Yahya's frontend development experience?">Frontend skills</button>
+          <button type="button" data-question="Is Yahya available to relocate?">Availability</button>
+        </div>
+
+        <form class="ai-composer" id="ai-chat-form">
+          <label class="sr-only" for="ai-input">Ask about Yahya</label>
+          <textarea id="ai-input" name="message" rows="2" maxlength="800" placeholder="Ask about experience, skills, a project, or availability…" required></textarea>
+          <div class="ai-composer-footer">
+            <div class="ai-input-meta">
+              <span id="ai-request-status">Ready</span>
+              <span aria-hidden="true">/</span>
+              <span id="ai-character-count">0 / 800</span>
+            </div>
+            <button class="btn btn-primary ai-send" type="submit">Ask AI <span aria-hidden="true">↗</span></button>
+          </div>
+        </form>
+      </article>
+
+      <aside class="ai-sidebar" aria-label="Assistant information">
+        <section class="ai-side-card">
+          <span class="eyebrow">01 / Coverage</span>
+          <h2>What I can answer</h2>
+          <ul class="ai-check-list">
+            <li>Projects and case studies</li>
+            <li>Experience and verified skills</li>
+            <li>Availability and work authorization</li>
+            <li>Public contact and social links</li>
+          </ul>
+        </section>
+
+        <section class="ai-side-card ai-privacy-card">
+          <span class="eyebrow">02 / Privacy boundary</span>
+          <h2>Public by design.</h2>
+          <p>Questions, answers, and approximate region may be logged to improve the assistant. Raw IP addresses and device hostnames are never stored. Private or confidential information stays unavailable.</p>
+        </section>
+
+        <section class="ai-side-card">
+          <span class="eyebrow">03 / Direct access</span>
+          <div class="ai-direct-links">
+            <a class="text-link" href="resume.html">Read the resume →</a>
+            <a class="text-link" href="contact.html">Contact Yahya →</a>
+          </div>
+        </section>
+      </aside>
+    </section>
+  </main>
+
+  <footer class="footer ai-footer">
+    <div class="shell footer-row">
+      <span>AI answers use approved public data / Last reviewed August 2026</span>
+      <a class="text-link" href="contact.html">Prefer a human? Contact Yahya →</a>
+    </div>
+  </footer>
+</body>
+</html>
