@@ -21,6 +21,15 @@ CREATE INDEX IF NOT EXISTS idx_ai_logs_session_recent ON ai_logs(session_hash, c
 CREATE INDEX IF NOT EXISTS idx_ai_logs_visitor_recent ON ai_logs(visitor_hash, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_ai_logs_flag ON ai_logs(flag, created_at DESC);
 
+CREATE TABLE IF NOT EXISTS ai_rate_limits (
+  identity_hash TEXT NOT NULL,
+  window_start TEXT NOT NULL,
+  request_count INTEGER NOT NULL DEFAULT 1,
+  PRIMARY KEY (identity_hash, window_start)
+);
+
+CREATE INDEX IF NOT EXISTS idx_ai_rate_limits_window ON ai_rate_limits(window_start);
+
 CREATE TABLE IF NOT EXISTS knowledge_candidates (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   created_at TEXT NOT NULL DEFAULT (datetime('now')),

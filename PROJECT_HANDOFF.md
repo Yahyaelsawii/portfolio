@@ -21,6 +21,7 @@ This file is the continuation guide for Yahya El-Sawi, Codex, or any other AI/de
 - VR Neuroanatomy has a public locked shell only. Its title and locked status are the only approved facts.
 - The private AI dashboard is implemented as a secure foundation, but Cloudflare Access still needs to be fully configured and production-tested.
 - Monthly discovery, approval/rejection, Google Drive backup, and immediate email alerts are planned, not finished.
+- AI conversations now have a published 90-day retention policy, activity-triggered deletion, atomic D1 rate limiting, and safer user-only history forwarding.
 - The web resume is newer than the downloadable PDF CV. The PDF must be regenerated after StarLink details are finally verified.
 
 ## 2. Non-negotiable owner preferences
@@ -323,9 +324,11 @@ Behavior:
 - Salary, VR embargo, and private-topic requests are handled before the model call.
 - Same-origin requests only; JSON body limit 16 KB; message limit 800 characters; up to eight history messages.
 - Low-temperature responses, maximum 500 tokens.
-- Rate limit is six questions/minute when D1 and privacy hashing are available.
+- Rate limit is an atomic six questions/minute per daily privacy-hashed visitor. The assistant fails closed if D1, hashing, or the rate-limit table is unavailable.
 - Email addresses and phone-like content in visitor questions are redacted from logs.
 - Blocked private-topic wording is stored only as `[blocked private-topic request]`.
+- Client-supplied assistant-role history is discarded before model calls.
+- Availability, target-role, and contact questions have deterministic approved fallbacks that do not require a model call.
 
 Known reliability note: the most recent local AI test before the feature push received Cloudflare Workers AI error code 1031 from both models and correctly returned a temporary-unavailable response. Earlier calls worked. Treat this as an unverified transient/platform issue until production is tested again.
 
@@ -366,13 +369,13 @@ Still missing:
 
 - Approve/reject UI for `knowledge_candidates`.
 - Log review notes/actions.
-- Delete/export and retention controls.
+- Owner-triggered delete/export controls. Automatic 90-day conversation expiry is implemented during service activity.
 - Salary/private flag email notifications.
 - Monthly discovery job.
 - Google Drive backup/export.
-- A public privacy notice describing AI question logging and retention.
+- A dashboard link to the public privacy notice.
 
-Before public promotion, add a concise privacy page/notice and choose a log-retention period. A reasonable starting point is 90 days for raw conversation records, with aggregated anonymous counts kept longer, but Yahya must approve the policy.
+The public `privacy.html` notice sets a 90-day limit for individual conversation records. Keep the notice, implementation, and any future retention-policy changes synchronized.
 
 ## 13. “Forever learning” plan
 
@@ -407,14 +410,14 @@ Google Drive is not connected in the codebase and no Drive folder has been creat
 
 Hosting target: free Cloudflare Pages `pages.dev` address; no custom domain exists.
 
-Current expected canonical host: `https://yahya-elsawi-portfolio.pages.dev`.
+Current expected canonical host: `https://yahya-elsawi-portfolio-bnj.pages.dev`.
 
 Bindings in `wrangler.jsonc`:
 
 - Workers AI binding: `AI` with remote inference for local development.
 - D1 binding: `DB`, database `yahya-portfolio-ai`.
 - Public variable: `ADMIN_EMAIL=yahyaelsawi1@gmail.com`.
-- Observability enabled with full log head sampling and 1% traces.
+- Pages observability must be configured in Cloudflare rather than in `wrangler.jsonc`; Wrangler rejects the Worker-style `observability` block for Pages projects.
 
 Secrets/variables that must exist in Cloudflare and never in Git:
 
@@ -424,8 +427,8 @@ Secrets/variables that must exist in Cloudflare and never in Git:
 
 Cloudflare Access must protect both:
 
-- `yahya-elsawi-portfolio.pages.dev/admin/*`
-- `yahya-elsawi-portfolio.pages.dev/api/admin/*`
+- `yahya-elsawi-portfolio-bnj.pages.dev/admin/*`
+- `yahya-elsawi-portfolio-bnj.pages.dev/api/admin/*`
 
 Use One-time PIN and allow only `yahyaelsawi1@gmail.com` unless Yahya later approves another identity provider/account.
 
@@ -471,7 +474,8 @@ npx wrangler d1 execute yahya-portfolio-ai --local --file=schema.sql
 Start local Pages and Functions:
 
 ```powershell
-npx wrangler pages dev . --port 4177
+npm run build
+npx wrangler pages dev dist --port 4177
 ```
 
 Then open:
@@ -480,7 +484,7 @@ Then open:
 - `http://127.0.0.1:4177/terminal.html`
 - `http://127.0.0.1:4177/api/health`
 
-There is no application build step or package manifest. Cloudflare serves the repository root and compiles `/functions` during Pages deployment.
+The dependency-free `npm run build` command creates an explicit `dist/` artifact containing only public pages and assets. Cloudflare serves `dist/` and compiles `/functions` separately. Do not deploy the repository root because operational documents, tests, and schema files are not public assets.
 
 ## 16. Source-of-truth file map
 
@@ -535,7 +539,7 @@ These checks do not replace a production Lighthouse/network/security test.
 3. Complete Cloudflare Access setup and test unauthorized/authorized admin access.
 4. Retest Workers AI after the earlier 1031 errors and inspect Cloudflare logs.
 5. Confirm production D1 has the current `schema.sql` tables/indexes.
-6. Add a public AI/privacy notice and approve a retention period.
+6. Verify the public AI/privacy notice and 90-day cleanup behavior in production.
 
 ### P1 — truth and recruiter consistency
 
@@ -548,7 +552,7 @@ These checks do not replace a production Lighthouse/network/security test.
 
 ### P1 — AI resilience and owner controls
 
-1. Add deterministic curated fallback answers for high-value recruiter questions.
+1. Expand deterministic curated fallback answers only when a high-value approved question repeatedly fails.
 2. Build dashboard review actions, notes, export, and deletion.
 3. Implement `knowledge_candidates` listing and approve/reject workflow.
 4. Add salary/privacy flag notification only through a free, approved method.

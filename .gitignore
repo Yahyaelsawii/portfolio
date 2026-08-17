@@ -11,3 +11,4 @@ fonts/jetbrains-mono-latin.woff2
 .wrangler-local/
 tmp/
 node_modules/
+dist/

@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Privacy — Yahya El-Sawi</title>
+  <meta name="description" content="How Yahya El-Sawi's portfolio handles contact information, AI conversations, privacy-safe analytics, and data retention.">
+  <link rel="canonical" href="https://yahya-elsawi-portfolio-bnj.pages.dev/privacy">
+  <meta name="robots" content="index,follow">
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="main.js"></script>
+  <link rel="icon" href="assets/favicon/logo.svg" type="image/svg+xml">
+</head>
+<body>
+  <header class="site-header">
+    <div class="shell nav">
+      <a class="brand" href="index.html"><span class="brand-mark">Y</span>Yahya El-Sawi</a>
+      <button class="menu-btn" aria-label="Toggle navigation" aria-expanded="false">☰</button>
+      <nav class="nav-links" aria-label="Primary">
+        <a class="nav-link" href="index.html">Home</a>
+        <a class="nav-link" href="work.html">Work</a>
+        <a class="nav-link" href="about.html">About</a>
+        <a class="nav-link" href="resume.html">Resume</a>
+        <a class="nav-link" href="contact.html">Contact</a>
+        <a class="nav-link" href="terminal.html">Terminal</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="shell page-hero">
+      <span class="eyebrow">Privacy / Data handling</span>
+      <h1>Useful data, <span class="accent">kept minimal.</span></h1>
+      <p class="lead">This portfolio collects only what is needed to operate the public assistant, prevent abuse, and respond when you choose to make contact.</p>
+      <p class="scope-note">Last updated: 17 August 2026</p>
+    </section>
+
+    <section class="section section-soft">
+      <div class="shell content-grid privacy-layout">
+        <aside class="content-nav">
+          <span class="eyebrow">Contents</span>
+          <a href="#assistant">Portfolio assistant</a>
+          <a href="#retention">Retention</a>
+          <a href="#contact">Contact form</a>
+          <a href="#services">Service providers</a>
+          <a href="#rights">Your choices</a>
+        </aside>
+        <div class="story">
+          <article class="story-block" id="assistant">
+            <span class="eyebrow">01 / Portfolio assistant</span>
+            <h2>What the assistant records</h2>
+            <p>When you use Yahya AI, the service may store your question, its answer, response time, model, review flag, and approximate country, region, and city supplied by Cloudflare. These records help monitor reliability, identify abuse, and improve approved answers.</p>
+            <p>Raw IP addresses, device hostnames, exact GPS locations, raw user-agent strings, credentials, and unhashed network identifiers are not stored. IP addresses are transformed into one-way, daily rotating hashes before storage. Email addresses and phone-like values are removed from logged questions where detected.</p>
+            <p>Please do not submit confidential, sensitive, or unnecessary personal information to the assistant.</p>
+          </article>
+
+          <article class="story-block" id="retention">
+            <span class="eyebrow">02 / Retention</span>
+            <h2>Conversation records expire after 90 days</h2>
+            <p>Individual AI questions and answers are retained for no longer than 90 days and are automatically removed during service activity. Short-lived rate-limit counters are removed after one day. Anonymous aggregate totals may be kept longer because they cannot be used to reconstruct a conversation.</p>
+          </article>
+
+          <article class="story-block" id="contact">
+            <span class="eyebrow">03 / Contact</span>
+            <h2>Your email application handles the message</h2>
+            <p>The contact form does not submit information to a portfolio database. It prepares an email in your device's email application. Your email provider and Yahya's email provider process that message under their own privacy terms.</p>
+          </article>
+
+          <article class="story-block" id="services">
+            <span class="eyebrow">04 / Service providers</span>
+            <h2>Cloudflare operates the hosting layer</h2>
+            <p>Cloudflare Pages, Pages Functions, Workers AI, and D1 provide hosting, assistant responses, abuse protection, and conversation storage. Cloudflare may process standard network information needed to deliver and secure the site.</p>
+            <p>The site does not sell personal information and does not use third-party advertising trackers.</p>
+          </article>
+
+          <article class="story-block" id="rights">
+            <span class="eyebrow">05 / Your choices</span>
+            <h2>You can use the portfolio without AI</h2>
+            <p>All main portfolio pages remain available without using the assistant. To ask about a logged conversation or request deletion of information you submitted, email <a class="text-link" href="mailto:yahyaelsawi1@gmail.com">yahyaelsawi1@gmail.com</a> with enough non-sensitive context to identify the request.</p>
+            <p>This notice may change when the assistant, hosting, or retention policy changes. The updated date above will change with it.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="shell footer-row">
+      <span>Privacy / 90-day AI conversation retention</span>
+      <div class="actions"><a class="text-link" href="terminal.html">Yahya AI</a><a class="text-link" href="contact.html">Contact →</a></div>
+    </div>
+  </footer>
+</body>
+</html>

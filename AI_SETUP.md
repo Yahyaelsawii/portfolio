@@ -53,21 +53,27 @@ Logging is optional: the assistant works with only the `AI` binding.
 3. Use a randomly generated value of at least 32 characters. Do not commit it to Git.
 4. Save it for Production and Preview, then redeploy.
 
-This secret creates one-way, rotating visitor and session hashes for abuse control. The database never stores raw IP addresses, device hostnames, user-agent strings, or exact live locations. It stores only the question, answer, coarse Cloudflare country/region/city, timing, model, and review flag. Email addresses and phone-like values submitted in questions are redacted before logging; blocked private-topic wording is not saved.
+This secret creates one-way, rotating visitor and session hashes for abuse control. The database never stores raw IP addresses, device hostnames, user-agent strings, or exact live locations. It stores only the question, answer, coarse Cloudflare country/region/city, timing, model, and review flag. Email addresses and phone-like values submitted in questions are redacted before logging; blocked private-topic wording is not saved. Conversation records older than 90 days and rate-limit counters older than one day are deleted during service activity.
+
+The public assistant fails closed when D1, the hashing secret, or the atomic rate-limit table is unavailable. Apply `schema.sql` before deploying code that depends on a newer schema.
 
 ## Verify the deployment
 
-1. Visit `/api/health` on the `pages.dev` site. It should report `"ai": true`; after D1 is connected it should also report `"logging": true`.
+Run `npm run check` before deployment. It validates JavaScript, local references, policy tests, and creates the public-only `dist/` artifact. Deploy `dist/`, never the repository root.
+
+1. Visit `/api/health` on the `pages.dev` site. It should report `"ai": true`, `"logging": true`, `"privacyHashing": true`, `"atomicRateLimiting": true`, and `"conversationRetentionDays": 90`.
 2. Open `/terminal.html` and ask: `What kind of roles is Yahya looking for?`
 3. Ask a salary question and confirm it is redirected with a flag.
 4. Inspect D1 and confirm no raw IP or hostname column exists.
+
+Pages observability is configured in the Cloudflare dashboard. Do not add the Worker-style `observability` block to `wrangler.jsonc`; current Wrangler releases reject it for Pages projects.
 
 ## Protect the private dashboard with Cloudflare Access
 
 The dashboard deliberately returns no analytics until Access is fully configured.
 
 1. Open **Zero Trust** → **Access** → **Applications** and create one **Self-hosted** application.
-2. Add both public hostnames to the same application: `yahya-elsawi-portfolio.pages.dev/admin/*` and `yahya-elsawi-portfolio.pages.dev/api/admin/*`.
+2. Add both public hostnames to the same application: `yahya-elsawi-portfolio-bnj.pages.dev/admin/*` and `yahya-elsawi-portfolio-bnj.pages.dev/api/admin/*`.
 3. Add one Allow policy whose Include rule is the email `yahyaelsawi1@gmail.com`. Use One-time PIN as the login method unless a Google identity provider is connected later.
 4. Copy the application **AUD tag** and the Zero Trust team domain ending in `.cloudflareaccess.com`.
 5. In the Pages project’s Production and Preview variables, add `ACCESS_AUD` and `ACCESS_TEAM_DOMAIN`. `ADMIN_EMAIL` is already declared in `wrangler.jsonc`.

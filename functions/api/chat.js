@@ -9,6 +9,8 @@ const MAX_MESSAGE_LENGTH = 800;
 const MAX_HISTORY_MESSAGES = 8;
 const MAX_BODY_BYTES = 16 * 1024;
 const RATE_LIMIT_PER_MINUTE = 6;
+const LOG_RETENTION_DAYS = 90;
+let safetySchemaPromise;
 const CONTEXT_HINTS = Object.freeze({
   "gift-it": "Gift It case study",
   "rit-app": "RIT Student App case study",
@@ -129,6 +131,33 @@ function deterministicReply(question, context) {
       sourceIds: []
     };
   }
+
+  const contact = /\b(contact|email|phone|whatsapp|linkedin|github|reach yahya|get in touch)\b|تواصل|البريد|الهاتف|واتساب/i;
+  if (contact.test(question)) {
+    return {
+      answer: "You can reach Yahya at yahyaelsawi1@gmail.com or +971 50 168 1229. You can also use the LinkedIn and GitHub links on his Contact page.",
+      flag: "none",
+      sourceIds: ["contact", "linkedin", "github"]
+    };
+  }
+
+  const availability = /\b(available|availability|start date|start work|relocat|remote work|work authorization|golden visa|based|location|language|arabic|english)\b|متاح|الانتقال|عن بعد|التأشيرة|اللغة|دبي/i;
+  if (availability.test(question)) {
+    return {
+      answer: "Yahya is based in Dubai, can start as soon as needed, and is open to remote work and relocation. He has a self-sponsored UAE Golden Visa and speaks Arabic and English natively.",
+      flag: "none",
+      sourceIds: ["about", "resume", "contact"]
+    };
+  }
+
+  const targetRoles = /\b(roles?|job|position|looking for|role fit|hire|hiring|opportunit)\b|وظائف|منصب|توظيف|فرص/i;
+  if (targetRoles.test(question)) {
+    return {
+      answer: "Yahya is targeting UI/UX and product design, frontend/web development, software and product roles, plus selected technical systems and network opportunities. His strongest fit combines product thinking, clear interfaces, and hands-on implementation.",
+      flag: "none",
+      sourceIds: ["recruiter", "resume", "work"]
+    };
+  }
   return null;
 }
 
@@ -175,17 +204,42 @@ async function privacyHashes(request, sessionId, secret) {
   };
 }
 
-async function isRateLimited(db, sessionHash, visitorHash) {
-  if (!db || (!sessionHash && !visitorHash)) return false;
-  const result = await db.prepare(
-    "SELECT COUNT(*) AS total FROM ai_logs WHERE created_at >= datetime('now', '-1 minute') AND (session_hash = ? OR visitor_hash = ?)"
-  ).bind(sessionHash, visitorHash).first();
-  return Number(result?.total || 0) >= RATE_LIMIT_PER_MINUTE;
+async function ensureSafetySchema(db) {
+  if (!safetySchemaPromise) {
+    safetySchemaPromise = db.batch([
+      db.prepare(`
+        CREATE TABLE IF NOT EXISTS ai_rate_limits (
+          identity_hash TEXT NOT NULL,
+          window_start TEXT NOT NULL,
+          request_count INTEGER NOT NULL DEFAULT 1,
+          PRIMARY KEY (identity_hash, window_start)
+        )
+      `),
+      db.prepare("CREATE INDEX IF NOT EXISTS idx_ai_rate_limits_window ON ai_rate_limits(window_start)")
+    ]).catch(error => {
+      safetySchemaPromise = undefined;
+      throw error;
+    });
+  }
+  await safetySchemaPromise;
+}
+
+async function reserveRateLimit(db, identityHash) {
+  if (!db || !identityHash) throw new Error("RATE_LIMIT_NOT_CONFIGURED");
+  const result = await db.prepare(`
+    INSERT INTO ai_rate_limits (identity_hash, window_start, request_count)
+    VALUES (?, strftime('%Y-%m-%dT%H:%M:00Z', 'now'), 1)
+    ON CONFLICT(identity_hash, window_start)
+    DO UPDATE SET request_count = request_count + 1
+    WHERE request_count < ?
+    RETURNING request_count
+  `).bind(identityHash, RATE_LIMIT_PER_MINUTE).first();
+  return Boolean(result);
 }
 
 async function writeLog(db, entry) {
   if (!db) return;
-  await db.prepare(`
+  const insert = db.prepare(`
     INSERT INTO ai_logs (
       session_hash, visitor_hash, country, region, city, question, answer,
       flag, model, response_ms, knowledge_version
@@ -202,7 +256,10 @@ async function writeLog(db, entry) {
     entry.model,
     entry.responseMs,
     KNOWLEDGE_VERSION
-  ).run();
+  );
+  const purgeLogs = db.prepare(`DELETE FROM ai_logs WHERE created_at < datetime('now', '-${LOG_RETENTION_DAYS} days')`);
+  const purgeLimits = db.prepare("DELETE FROM ai_rate_limits WHERE window_start < datetime('now', '-1 day')");
+  await db.batch([insert, purgeLogs, purgeLimits]);
 }
 
 function extractAnswer(result) {
@@ -273,13 +330,25 @@ export async function onRequestPost(context) {
   }
 
   const secret = env.LOG_HASH_SECRET || "";
-  const hashes = secret ? await privacyHashes(request, sessionId, secret) : { sessionHash: null, visitorHash: null };
+  if (!env.DB || secret.length < 32) {
+    return respond({
+      error: "SAFETY_CONTROLS_UNAVAILABLE",
+      message: "The assistant is temporarily unavailable while its privacy and abuse controls are offline."
+    }, 503);
+  }
+  const hashes = await privacyHashes(request, sessionId, secret);
   try {
-    if (await isRateLimited(env.DB, hashes.sessionHash, hashes.visitorHash)) {
+    await ensureSafetySchema(env.DB);
+    const identityHash = hashes.visitorHash || hashes.sessionHash;
+    if (!await reserveRateLimit(env.DB, identityHash)) {
       return respond({ error: "RATE_LIMITED", message: "Please wait a minute before asking another question." }, 429);
     }
   } catch (error) {
     console.error(JSON.stringify({ event: "rate_limit_check_failed", error: error?.message || "Unknown error" }));
+    return respond({
+      error: "SAFETY_CONTROLS_UNAVAILABLE",
+      message: "The assistant is temporarily unavailable while its abuse controls are offline."
+    }, 503);
   }
 
   const fixed = deterministicReply(question, pageContext);
@@ -300,7 +369,7 @@ export async function onRequestPost(context) {
     const cleanHistory = history
       .slice(-MAX_HISTORY_MESSAGES)
       .map(item => ({ role: item?.role, content: normalizeText(item?.content) }))
-      .filter(item => (item.role === "user" || item.role === "assistant") && item.content);
+      .filter(item => item.role === "user" && item.content);
 
     try {
       const contextInstruction = pageContext

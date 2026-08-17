@@ -2,7 +2,7 @@
   "name": "yahya-elsawi-portfolio",
   "compatibility_date": "2026-08-11",
   "compatibility_flags": ["nodejs_compat"],
-  "pages_build_output_dir": ".",
+  "pages_build_output_dir": "./dist",
   "vars": {
     "ADMIN_EMAIL": "yahyaelsawi1@gmail.com"
   },
@@ -14,17 +14,7 @@
     {
       "binding": "DB",
       "database_name": "yahya-portfolio-ai",
-      "database_id": "00988292-b8f9-47d0-9199-bcd4c82dd5d4"
+      "database_id": "fa19b35a-f243-4d7c-9a9f-9b03c657d38c"
     }
-  ],
-  "observability": {
-    "enabled": true,
-    "logs": {
-      "head_sampling_rate": 1
-    },
-    "traces": {
-      "enabled": true,
-      "head_sampling_rate": 0.01
-    }
-  }
+  ]
 }
