@@ -59,12 +59,18 @@ const projects = [
       {title:'Key Screens', text:'The UI prioritizes readable charts, obvious filters, and personal-feeling insights.', images:[[A+'Home_screen.webp','Home screen'],[A+'Daily_checkins.webp','Daily check-ins'],[A+'Mood_avg.webp','Mood average and trends']]},
       {title:'Outcomes', text:'A calmer Insights experience where users can spot trends, compare time ranges, and receive gentle support when stress patterns repeat.', facts:['See mood trends clearly','Filter by day, week, or month','Receive gentle stress nudges']}
     ]
+  },
+  {
+    id:'vr-neuroanatomy', url:'vr-neuroanatomy.html', cover:'vr-neuroanatomy', number:'06', title:'VR Neuroanatomy', client:'Locked case study', category:'Locked', role:'Details under embargo', image:'covers/vr-neuroanatomy-960.webp', summary:'This project exists, but its public case study is locked until written disclosure approval is received.', tags:['Locked','Disclosure pending'], locked:true
+  },
+  {
+    id:'network-automation', url:'network-automation.html', cover:'network-automation', number:'07', title:'SmartMall AI Network Automation', client:'RIT Dubai · Collaborative project', category:'Networks + AI Automation', role:'Documentation + error handling', image:'covers/network-automation-960.webp', summary:'A five-person proof of concept for conversational network operations, dynamic tenant orchestration, validation, and closed-loop recovery.', tags:['GNS3','Python + Netmiko','Closed-loop recovery'], demo:true
   }
 ];
 
 function projectCard(project) {
   return `<a class="project-card" data-category="${project.category.toLowerCase()} ${project.tags.join(' ').toLowerCase()}" href="${project.url}">
-    <div class="project-art"><span class="project-number">${project.number} / ${project.category}</span><picture><source type="image/avif" srcset="covers/${project.cover}-640.avif 640w, covers/${project.cover}-960.avif 960w, covers/${project.cover}-1440.avif 1440w" sizes="(max-width: 820px) 100vw, 50vw"><source type="image/webp" srcset="covers/${project.cover}-640.webp 640w, covers/${project.cover}-960.webp 960w, covers/${project.cover}-1440.webp 1440w" sizes="(max-width: 820px) 100vw, 50vw"><img src="covers/${project.cover}-960.webp" alt="${project.title} project cover" width="960" height="640" loading="lazy" decoding="async"></picture></div>
+    <div class="project-art"><span class="project-number">${project.number} / ${project.category}</span>${project.locked ? '<span class="project-state project-state-locked">Locked</span>' : project.demo ? '<span class="project-state">Interactive</span>' : ''}<picture><source type="image/avif" srcset="covers/${project.cover}-640.avif 640w, covers/${project.cover}-960.avif 960w, covers/${project.cover}-1440.avif 1440w" sizes="(max-width: 820px) 100vw, 50vw"><source type="image/webp" srcset="covers/${project.cover}-640.webp 640w, covers/${project.cover}-960.webp 960w, covers/${project.cover}-1440.webp 1440w" sizes="(max-width: 820px) 100vw, 50vw"><img src="covers/${project.cover}-960.webp" alt="${project.title} project cover" width="960" height="640" loading="lazy" decoding="async"></picture></div>
     <div class="project-body"><span class="eyebrow">${project.client}</span><h3>${project.title}</h3><p>${project.summary}</p><div class="tags">${project.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div></div>
   </a>`;
 }
@@ -108,7 +114,7 @@ function renderProjectDetail() {
   const meta = project.meta.map(([label,value])=>`<div class="meta"><small>${label}</small>${value}</div>`).join('');
   const nav = project.sections.map((s,i)=>`<a href="#section-${i+1}">${String(i+1).padStart(2,'0')} / ${s.title}</a>`).join('');
   mount.innerHTML = `<section class="shell detail-hero"><div><span class="eyebrow">Case study ${project.number} / ${project.client}</span><h1>${project.title}</h1><p class="lead">${project.summary}</p>${project.note?`<p class="scope-note">${project.note}</p>`:''}<div class="meta-grid">${meta}</div></div><div class="detail-visual"><picture><source type="image/avif" srcset="covers/${project.cover}-640.avif 640w, covers/${project.cover}-960.avif 960w, covers/${project.cover}-1440.avif 1440w" sizes="(max-width: 820px) 100vw, 45vw"><source type="image/webp" srcset="covers/${project.cover}-640.webp 640w, covers/${project.cover}-960.webp 960w, covers/${project.cover}-1440.webp 1440w" sizes="(max-width: 820px) 100vw, 45vw"><img src="${project.image}" alt="${project.title} cover artwork" width="960" height="640" decoding="async"></picture></div></section>
-  <section class="section-soft"><div class="shell content-grid"><aside class="content-nav"><span class="eyebrow">Contents</span>${nav}<a href="contact.html">Discuss this project →</a></aside><div class="story">${project.sections.map(renderSection).join('')}<article class="story-block next-project"><span class="eyebrow">End of scan</span><h2>Continue exploring.</h2><div class="actions"><a class="btn btn-primary" href="work.html">All projects</a><a class="btn btn-secondary" href="contact.html">Contact me</a></div></article></div></div></section>`;
+  <section class="section-soft"><div class="shell content-grid"><aside class="content-nav"><span class="eyebrow">Contents</span>${nav}<a href="terminal.html?context=${encodeURIComponent(project.id)}">Ask AI about this project →</a><a href="contact.html">Discuss this project →</a></aside><div class="story">${project.sections.map(renderSection).join('')}<article class="story-block next-project"><span class="eyebrow">End of scan</span><h2>Continue exploring.</h2><div class="actions"><a class="btn btn-primary" href="work.html">All projects</a><a class="btn btn-secondary" href="terminal.html?context=${encodeURIComponent(project.id)}">Ask Yahya AI</a></div></article></div></div></section>`;
 }
 
 function createChatMessage(role, text, sources = []) {
@@ -181,6 +187,44 @@ function initializePortfolioAI() {
   const sendButton = form?.querySelector('button[type="submit"]');
   if (!form || !input || !messages || !status || !counter || !sendButton) return;
 
+  const query = new URLSearchParams(location.search);
+  const approvedContexts = {
+    'gift-it':'Gift It case study',
+    'rit-app':'RIT Student App case study',
+    'passwordless':'Passwordless authentication case study',
+    'vehicle-rental':'Vehicle rental case study',
+    'mood-insights':'Mood Insights case study',
+    'vr-neuroanatomy':'VR Neuroanatomy — locked',
+    'network-automation':'SmartMall AI Network Automation',
+    'experience':'Professional experience',
+    'recruiter':'Recruiter quick view'
+  };
+  const pageContext = Object.hasOwn(approvedContexts, query.get('context')) ? query.get('context') : '';
+  const assistantMode = query.get('mode') === 'recruiter' ? 'recruiter' : 'general';
+  const contextBadge = document.querySelector('#ai-context');
+  if (contextBadge && pageContext) {
+    contextBadge.hidden = false;
+    contextBadge.textContent = `Context / ${approvedContexts[pageContext]}`;
+  }
+  const startingQuestion = (query.get('q') || '').trim().slice(0, 800);
+  if (startingQuestion) {
+    input.value = startingQuestion;
+    counter.textContent = `${startingQuestion.length} / 800`;
+  }
+  if (assistantMode === 'recruiter') {
+    const recruiterQuestions = [
+      ['Why interview Yahya?', 'Give me a concise recruiter summary of Yahya.'],
+      ['Strongest evidence', 'Which three pieces of evidence best support Yahya’s fit?'],
+      ['Availability', 'Summarize Yahya’s availability and work authorization.'],
+      ['Contact', 'How can I contact Yahya?']
+    ];
+    document.querySelectorAll('.ai-suggestions [data-question]').forEach((button, index) => {
+      if (!recruiterQuestions[index]) return;
+      button.textContent = recruiterQuestions[index][0];
+      button.dataset.question = recruiterQuestions[index][1];
+    });
+  }
+
   let history = [];
   let sessionId;
   try {
@@ -204,7 +248,7 @@ function initializePortfolioAI() {
     messages.scrollTo({ top: messages.scrollHeight, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   };
 
-  const localRoutes = { home:'index.html', work:'work.html', about:'about.html', resume:'resume.html', contact:'contact.html' };
+  const localRoutes = { home:'index.html', work:'work.html', experience:'experience.html', about:'about.html', resume:'resume.html', recruiter:'recruiter.html', log:'log.html', contact:'contact.html' };
 
   async function ask(question) {
     const cleanQuestion = question.trim();
@@ -221,7 +265,7 @@ function initializePortfolioAI() {
       return;
     }
     if (command === 'help') {
-      append('assistant', 'Ask a natural-language question, or use: home, work, about, resume, contact, and clear.');
+      append('assistant', 'Ask a natural-language question, or use: home, work, experience, about, resume, recruiter, log, contact, and clear.');
       return;
     }
 
@@ -240,7 +284,7 @@ function initializePortfolioAI() {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ message: cleanQuestion, history: history.slice(-6), sessionId }),
+        body: JSON.stringify({ message: cleanQuestion, history: history.slice(-6), sessionId, context: pageContext, mode: assistantMode }),
         signal: controller.signal
       }).finally(() => clearTimeout(timeout));
       const data = await response.json().catch(() => ({}));
@@ -280,6 +324,59 @@ function initializePortfolioAI() {
   document.querySelectorAll('.ai-suggestions [data-question]').forEach(button => {
     button.addEventListener('click', () => ask(button.dataset.question || ''));
   });
+}
+
+function initializeNetworkDemo() {
+  const demo = document.querySelector('#network-demo');
+  if (!demo) return;
+  const status = demo.querySelector('#network-demo-status');
+  const log = demo.querySelector('#network-demo-log');
+  const nodes = [...demo.querySelectorAll('[data-network-node]')];
+  const controls = [...demo.querySelectorAll('[data-network-action]')];
+
+  const setState = (state, message, events) => {
+    demo.dataset.state = state;
+    if (status) status.textContent = message;
+    nodes.forEach(node => {
+      node.classList.toggle('is-warning', state === 'fault' && node.dataset.networkNode === 'edge-03');
+      node.classList.toggle('is-recovering', state === 'recovering');
+    });
+    if (log) log.innerHTML = events.map(event => `<li><span>${event.time}</span>${event.text}</li>`).join('');
+  };
+
+  const scenarios = {
+    validate: ['Validation complete', [
+      { time:'00:00.08', text:'Topology inventory matched the approved synthetic model.' },
+      { time:'00:00.21', text:'Policy and reachability checks passed.' },
+      { time:'00:00.34', text:'No configuration drift detected.' }
+    ]],
+    fault: ['Synthetic fault detected', [
+      { time:'00:00.05', text:'Health probe missed on EDGE-03.' },
+      { time:'00:00.16', text:'Dependency map isolated the affected path.' },
+      { time:'00:00.29', text:'Recovery proposal staged for review.' }
+    ]],
+    recovered: ['Recovery verified', [
+      { time:'00:00.07', text:'Approved recovery action applied to the simulation.' },
+      { time:'00:00.18', text:'Reachability restored across all synthetic nodes.' },
+      { time:'00:00.31', text:'Post-change validation passed.' }
+    ]]
+  };
+
+  controls.forEach(button => button.addEventListener('click', () => {
+    controls.forEach(control => { control.disabled = true; });
+    const action = button.dataset.networkAction;
+    if (action === 'recover') {
+      setState('recovering', 'Analyzing synthetic fault…', [{ time:'00:00.01', text:'Comparing current state with the approved baseline.' }]);
+      setTimeout(() => {
+        setState('healthy', scenarios.recovered[0], scenarios.recovered[1]);
+        controls.forEach(control => { control.disabled = false; });
+      }, 720);
+      return;
+    }
+    const next = action === 'fault' ? scenarios.fault : scenarios.validate;
+    setState(action === 'fault' ? 'fault' : 'healthy', next[0], next[1]);
+    controls.forEach(control => { control.disabled = false; });
+  }));
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -326,6 +423,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('.filter').forEach(button => button.setAttribute('aria-pressed', String(button.classList.contains('active'))));
 
   initializePortfolioAI();
+  initializeNetworkDemo();
 
   const form = document.querySelector('#contact-form');
   form?.addEventListener('submit', event => {
@@ -337,7 +435,7 @@ document.addEventListener('DOMContentLoaded', () => {
     location.href=`mailto:yahyaelsawi1@gmail.com?subject=${subject}&body=${body}`;
   });
 
-  const revealTargets = document.querySelectorAll('.section, .page-hero, .project-card, .story-block, .cap-card, .timeline-item, .skill-group, .certificate, .contact-item');
+  const revealTargets = document.querySelectorAll('.section, .page-hero, .project-card, .story-block, .cap-card, .timeline-item, .skill-group, .certificate, .contact-item, .log-entry, .experience-card');
   if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
     revealTargets.forEach(node => node.classList.add('reveal'));
     const observer = new IntersectionObserver(entries => entries.forEach(entry => {

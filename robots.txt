@@ -1,6 +1,8 @@
 User-agent: *
 Allow: /
 Disallow: /api/
+Disallow: /admin/
+Disallow: /vr-neuroanatomy
 Disallow: /project
 Disallow: /deep-scan
 Disallow: /infrastructure

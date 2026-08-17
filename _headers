@@ -9,6 +9,14 @@
 /api/*
   Cache-Control: no-store, max-age=0
 
+/admin/*
+  Cache-Control: no-store, max-age=0
+  X-Robots-Tag: noindex, nofollow, noarchive
+
+/vr-neuroanatomy*
+  Cache-Control: no-store, max-age=0
+  X-Robots-Tag: noindex, nofollow, noarchive
+
 /fonts/*
   Cache-Control: public, max-age=31536000, immutable
 
