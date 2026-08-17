@@ -6,19 +6,57 @@
 
 async function injectComponent(targetId, url) {
   const mount = document.getElementById(targetId);
-  if (!mount) return;
+  if (!mount) {
+    console.warn(`[Component Injection] Target element #${targetId} not found`);
+    return;
+  }
 
   try {
-    const res = await fetch(url, { cache: "no-store" });
-    if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    mount.innerHTML = await res.text();
+    const res = await fetch(url, {
+      cache: "no-store",
+      method: "GET",
+      headers: { "Accept": "text/html" }
+    });
+
+    if (!res.ok) {
+      throw new Error(`HTTP ${res.status}: ${res.statusText}`);
+    }
+
+    const html = await res.text();
+    if (!html || html.trim().length === 0) {
+      throw new Error("Empty response received");
+    }
+
+    mount.innerHTML = html;
+
+    // Re-initialize any scripts or event listeners in the injected component
+    const scripts = mount.querySelectorAll("script");
+    scripts.forEach((oldScript) => {
+      const newScript = document.createElement("script");
+      Array.from(oldScript.attributes).forEach((attr) => {
+        newScript.setAttribute(attr.name, attr.value);
+      });
+      newScript.textContent = oldScript.textContent;
+      oldScript.parentNode?.replaceChild(newScript, oldScript);
+    });
+
   } catch (err) {
+    const errorMsg = err instanceof TypeError && err.message.includes("Failed to fetch")
+      ? "Network error: Unable to fetch component. Ensure you're using a local server (e.g., VS Code Live Server)."
+      : err.message || "Unknown error occurred";
+
     mount.innerHTML = `
-      <div class="max-w-[1280px] mx-auto px-6 py-4 text-sm text-red-600">
-        Component failed to load: <b>${url}</b>.<br/>
-        If you're opening the file directly (file://), use a local server (VS Code "Live Server").
+      <div class="max-w-[1280px] mx-auto px-6 py-4 text-sm text-red-600 border border-red-200 rounded-lg bg-red-50">
+        <strong>Component failed to load:</strong> ${url}<br/>
+        <span class="text-xs mt-1 block">${errorMsg}</span>
+        <span class="text-xs mt-2 block text-gray-600">If opening directly (file://), use a local server.</span>
       </div>`;
-    console.error("Component load failed:", url, err);
+    console.error("[Component Injection] Failed to load:", url, err);
+
+    // Dispatch custom event for error tracking
+    window.dispatchEvent(new CustomEvent("componentLoadError", {
+      detail: { targetId, url, error: err.message }
+    }));
   }
 }
 
@@ -175,6 +213,9 @@ function initProjectsAutoScroll() {
 
   let index = 0;
   let timer = null;
+  let touchStartX = 0;
+  let touchEndX = 0;
+  let isDragging = false;
 
   const isMobile = () => window.matchMedia("(max-width: 767px)").matches;
 
@@ -226,12 +267,47 @@ function initProjectsAutoScroll() {
     render();
   };
 
+  const prev = () => {
+    if (!isMobile()) return;
+    index = (index - 1 + (cards.length - 1)) % (cards.length - 1);
+    render();
+  };
+
   const start = () => (timer = setInterval(next, 6000));
   const stop = () => timer && clearInterval(timer);
   const restart = () => {
     stop();
     start();
   };
+
+  // Touch gesture support
+  track.addEventListener("touchstart", (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+    isDragging = true;
+    stop();
+  }, { passive: true });
+
+  track.addEventListener("touchmove", (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+  }, { passive: false });
+
+  track.addEventListener("touchend", (e) => {
+    if (!isDragging) return;
+    touchEndX = e.changedTouches[0].screenX;
+    const swipeThreshold = 50;
+    const diff = touchStartX - touchEndX;
+
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0) {
+        next();
+      } else {
+        prev();
+      }
+    }
+    isDragging = false;
+    restart();
+  }, { passive: true });
 
   window.addEventListener("resize", () => {
     // keep current slide if still mobile; otherwise reset visual
@@ -254,6 +330,9 @@ function initFinalUiCarousel() {
 
   let index = 0;
   let timer = null;
+  let touchStartX = 0;
+  let touchEndX = 0;
+  let isDragging = false;
 
   const isMobile = () => window.matchMedia("(max-width: 767px)").matches;
 
@@ -304,12 +383,47 @@ function initFinalUiCarousel() {
     render();
   };
 
+  const prev = () => {
+    if (!isMobile()) return;
+    index = (index - 1 + slides.length) % slides.length;
+    render();
+  };
+
   const start = () => (timer = setInterval(next, 6000));
   const stop = () => timer && clearInterval(timer);
   const restart = () => {
     stop();
     start();
   };
+
+  // Touch gesture support
+  track.addEventListener("touchstart", (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+    isDragging = true;
+    stop();
+  }, { passive: true });
+
+  track.addEventListener("touchmove", (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+  }, { passive: false });
+
+  track.addEventListener("touchend", (e) => {
+    if (!isDragging) return;
+    touchEndX = e.changedTouches[0].screenX;
+    const swipeThreshold = 50;
+    const diff = touchStartX - touchEndX;
+
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0) {
+        next();
+      } else {
+        prev();
+      }
+    }
+    isDragging = false;
+    restart();
+  }, { passive: true });
 
   window.addEventListener("resize", () => {
     index = 0;
@@ -331,6 +445,9 @@ function initEmailsCarousel() {
 
   let index = 0;
   let timer = null;
+  let touchStartX = 0;
+  let touchEndX = 0;
+  let isDragging = false;
 
   const isMobile = () => window.matchMedia("(max-width: 767px)").matches;
 
@@ -382,9 +499,44 @@ function initEmailsCarousel() {
     render();
   };
 
+  const prev = () => {
+    if (!isMobile()) return;
+    index = (index - 1 + slides.length) % slides.length;
+    render();
+  };
+
   const start = () => (timer = setInterval(next, 6000));
   const stop = () => timer && clearInterval(timer);
   const restart = () => { stop(); start(); };
+
+  // Touch gesture support
+  track.addEventListener("touchstart", (e) => {
+    touchStartX = e.changedTouches[0].screenX;
+    isDragging = true;
+    stop();
+  }, { passive: true });
+
+  track.addEventListener("touchmove", (e) => {
+    if (!isDragging) return;
+    e.preventDefault();
+  }, { passive: false });
+
+  track.addEventListener("touchend", (e) => {
+    if (!isDragging) return;
+    touchEndX = e.changedTouches[0].screenX;
+    const swipeThreshold = 50;
+    const diff = touchStartX - touchEndX;
+
+    if (Math.abs(diff) > swipeThreshold) {
+      if (diff > 0) {
+        next();
+      } else {
+        prev();
+      }
+    }
+    isDragging = false;
+    restart();
+  }, { passive: true });
 
   window.addEventListener("resize", () => {
     index = 0;

@@ -14,6 +14,7 @@
   <link href="https://fonts.googleapis.com" rel="preconnect" />
   <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&amp;display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&amp;display=swap" rel="preload" as="style" />
   <link
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
     rel="stylesheet" />
@@ -34,7 +35,9 @@
   <!-- Tailwind Config -->
 
   <link href="assets/css/styles.css" rel="stylesheet" />
-  <meta content="Yahya’s UX/UI design portfolio—case studies, product design work, and projects." name="description" />
+  <meta content="Yahya's UX/UI design portfolio—case studies, product design work, and projects." name="description" />
+  <link rel="preconnect" href="https://www.googletagmanager.com" />
+  <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
   <meta content="index,follow" name="robots" />
   <meta content="light" name="color-scheme" />
   <meta content="#f5f8f8" name="theme-color" />
@@ -43,11 +46,39 @@
     property="og:description" />
   <meta content="website" property="og:type" />
   <meta content="summary" name="twitter:card" />
+  <!-- NOTE: Replace YOUR_DOMAIN_HERE with your actual domain -->
+  <meta content="https://YOUR_DOMAIN_HERE/assets/Pictures/head_shot.webp" property="og:image" />
+  <meta content="https://YOUR_DOMAIN_HERE/assets/Pictures/head_shot.webp" name="twitter:image" />
+  <link rel="canonical" href="https://YOUR_DOMAIN_HERE/" />
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Yahya El-Sawi",
+    "jobTitle": "UI/UX Designer",
+    "url": "https://YOUR_DOMAIN_HERE",
+    "sameAs": [
+      "https://www.linkedin.com/in/yahya-elsawi/",
+      "https://github.com/Yahyaelsawii"
+    ],
+    "email": "yahyaelsawi1@gmail.com",
+    "address": {
+      "@type": "PostalAddress",
+      "addressLocality": "Dubai",
+      "addressCountry": "UAE"
+    },
+    "alumniOf": {
+      "@type": "EducationalOrganization",
+      "name": "Rochester Institute of Technology (RIT), Dubai"
+    }
+  }
+  </script>
 </head>
 
 <body
   class="font-display bg-background-light text-[#0d1a1c] overflow-x-hidden antialiased selection:bg-primary selection:text-black"
   data-page="home">
+  <a href="#work" class="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 focus:z-50 focus:px-4 focus:py-2 focus:bg-primary focus:text-[#0d1a1c] focus:rounded-lg focus:font-bold">Skip to main content</a>
   <div class="relative flex min-h-screen w-full flex-col group/design-root">
     <!-- Navigation -->
     <!-- Navbar (injected) -->
@@ -108,11 +139,13 @@
             <div class="flex gap-6 transition-transform duration-500 ease-in-out md:grid md:grid-cols-3 md:gap-8"
               id="projectsTrack">
               <!-- Card 1 -->
-              <a class="projectCard flex-none w-[calc(50%-12px)] md:w-auto group flex flex-col gap-4" href="proj1.html">
+              <a class="projectCard flex-none w-[calc(50%-12px)] md:w-auto group flex flex-col gap-4" href="proj1.html" aria-label="View Checkout & Flow Redesign project">
                 <div
                   class="relative w-full aspect-[4/3] overflow-hidden rounded-2xl bg-gray-100 shadow-sm group-hover:shadow-xl group-hover:shadow-primary/10 transition-all duration-300">
                   <div
                     class="w-3/4 h-full bg-contain bg-center bg-no-repeat mx-auto transition-transform duration-700 group-hover:scale-105"
+                    role="img"
+                    aria-label="Gift It logo"
                     style="background-image: url('assets/Pictures/Giftit_logo.webp');"></div>
                   <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
                   <div
@@ -132,11 +165,13 @@
                 </div>
               </a>
               <!-- Card 2 -->
-              <a class="projectCard flex-none w-[calc(50%-12px)] md:w-auto group flex flex-col gap-4" href="proj2.html">
+              <a class="projectCard flex-none w-[calc(50%-12px)] md:w-auto group flex flex-col gap-4" href="proj2.html" aria-label="View RIT Student App 2.0 project">
                 <div
                   class="relative w-full aspect-[4/3] overflow-hidden rounded-2xl bg-gray-100 shadow-sm group-hover:shadow-xl group-hover:shadow-primary/10 transition-all duration-300">
                   <div
                     class="w-3/4 h-full bg-contain bg-center bg-no-repeat mx-auto transition-transform duration-700 group-hover:scale-105"
+                    role="img"
+                    aria-label="RIT logo"
                     style="background-image: url('assets/Pictures/RIT_logo.webp');"></div>
                   <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
                   <div
@@ -156,11 +191,13 @@
                 </div>
               </a>
               <!-- Card 3 -->
-              <a class="projectCard flex-none w-[calc(50%-12px)] md:w-auto group flex flex-col gap-4" href="proj4.html">
+              <a class="projectCard flex-none w-[calc(50%-12px)] md:w-auto group flex flex-col gap-4" href="proj4.html" aria-label="View Login & Signup Redesign project">
                 <div
                   class="relative w-full aspect-[4/3] overflow-hidden rounded-2xl bg-gray-100 shadow-sm group-hover:shadow-xl group-hover:shadow-primary/10 transition-all duration-300">
                   <div
                     class="w-3/4 h-full bg-contain bg-center bg-no-repeat mx-auto transition-transform duration-700 group-hover:scale-105"
+                    role="img"
+                    aria-label="Gift It logo"
                     style="background-image: url('assets/Pictures/Giftit_logo.webp');"></div>
                   <div class="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors duration-300"></div>
                   <div
@@ -237,14 +274,15 @@
       <!-- About Section -->
       <section class="w-full px-6 py-20 md:py-32 max-w-7xl" id="about">
         <div class="flex flex-col-reverse md:flex-row items-center gap-12 lg:gap-20">
-          <div class="hidden md:block flex-1 w-full relative group">
+          <div class="flex-1 w-full relative group">
             <!-- Image decoration -->
             <div
-              class="absolute -top-4 -left-4 w-full h-full border-2 border-primary rounded-2xl md:rounded-[2rem] transition-transform duration-300 group-hover:translate-x-2 group-hover:translate-y-2">
+              class="absolute -top-4 -left-4 w-full h-full border-2 border-primary rounded-2xl md:rounded-[2rem] transition-transform duration-300 group-hover:translate-x-2 group-hover:translate-y-2 hidden md:block">
             </div>
             <div
   class="relative w-full aspect-[4/5] md:aspect-square rounded-2xl md:rounded-[2rem] overflow-hidden bg-white"
-  data-alt="Portrait of Yahya smiling in a professional studio setting"
+  role="img"
+  aria-label="Portrait of Yahya smiling in a professional studio setting"
   style='
     background-image: url("assets/Pictures/head_shot.webp");
     background-size: contain;
@@ -261,24 +299,20 @@
               Bridge builder between user needs and business goals.
             </h3>
             <p class="text-base md:text-lg text-gray-600 leading-relaxed">
-              Hi, I’m Yahya
               A UI/UX Designer focused on building intuitive, user-centered digital experiences.
               With a strong background in computing and business, I bridge user needs with technical and
               business constraints to design products that are clear, usable, and impactful. My work is
               driven by research, iteration, and attention to details, because the best design often goes
               unnoticed.
-              I’m currently based in Dubai and enjoy working on projects that solve real problems, whether
+              I'm currently based in Dubai and enjoy working on projects that solve real problems, whether
               through thoughtful interfaces, improved user flows, or scalable systems.
             </p>
             <div class="pt-4">
-              <button
-                class="flex items-center gap-2 h-12 px-6 rounded-xl bg-[#e6f2f4] border border-transparent text-[#0d1a1c] text-base font-bold transition-all hover:bg-primary hover:border-primary hover:text-[#0d1a1c]">
+              <a class="inline-flex items-center justify-center gap-2 h-12 px-6 rounded-xl bg-[#e6f2f4] border border-transparent text-[#0d1a1c] text-base font-bold transition-all hover:bg-primary hover:border-primary hover:text-[#0d1a1c]"
+                download="" href="assets/pdfs/resume.pdf">
                 <span class="material-symbols-outlined text-xl">download</span>
-                <a class="inline-flex items-center justify-center h-11 px-5 rounded-xl text-text-main font-bold hover:opacity-90 transition"
-                  download="" href="assets/pdfs/resume.pdf">
-                  Download resume
-                </a>
-              </button>
+                Download resume
+              </a>
             </div>
           </div>
         </div>
@@ -307,7 +341,7 @@
       <section class="w-full px-6 py-1 max-w-7xl text-center" id="contact">
         <div class="bg-primary rounded-3xl p-10 md:p-20 relative overflow-hidden flex flex-col items-center gap-6">
           <!-- Texture overlay -->
-          <div class="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.webp')] opacity-10">
+          <div class="absolute inset-0 opacity-10" style="background-image: url('https://www.transparenttextures.com/patterns/cubes.webp'), linear-gradient(135deg, rgba(31, 213, 249, 0.1) 0%, rgba(31, 213, 249, 0.05) 100%); background-size: 50px 50px, 100% 100%;">
           </div>
           <div
             class="absolute top-0 right-0 w-64 h-64 bg-white/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2">

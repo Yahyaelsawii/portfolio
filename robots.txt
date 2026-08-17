@@ -1,0 +1,5 @@
+User-agent: *
+Allow: /
+
+# NOTE: Replace YOUR_DOMAIN_HERE with your actual domain (e.g., https://yahya.design)
+Sitemap: https://YOUR_DOMAIN_HERE/sitemap.xml
