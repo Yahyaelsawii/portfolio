@@ -70,14 +70,9 @@ Pages observability is configured in the Cloudflare dashboard. Do not add the Wo
 
 ## Protect the private dashboard with Cloudflare Access
 
-The dashboard deliberately returns no analytics until Access is fully configured.
+Cloudflare Access is configured for the production `pages.dev` host. The `Portfolio Admin` self-hosted application protects both `yahya-elsawi-portfolio-bnj.pages.dev/admin/*` and `yahya-elsawi-portfolio-bnj.pages.dev/api/admin/*`. Its Allow policy accepts only `yahyaelsawi1@gmail.com`.
 
-1. Open **Zero Trust** → **Access** → **Applications** and create one **Self-hosted** application.
-2. Add both public hostnames to the same application: `yahya-elsawi-portfolio-bnj.pages.dev/admin/*` and `yahya-elsawi-portfolio-bnj.pages.dev/api/admin/*`.
-3. Add one Allow policy whose Include rule is the email `yahyaelsawi1@gmail.com`. Use One-time PIN as the login method unless a Google identity provider is connected later.
-4. Copy the application **AUD tag** and the Zero Trust team domain ending in `.cloudflareaccess.com`.
-5. In the Pages project’s Production and Preview variables, add `ACCESS_AUD` and `ACCESS_TEAM_DOMAIN`. `ADMIN_EMAIL` is already declared in `wrangler.jsonc`.
-6. Redeploy, open `/admin/`, and authenticate with the approved email.
+`ACCESS_AUD`, `ACCESS_TEAM_DOMAIN`, and `ADMIN_EMAIL` are declared in `wrangler.jsonc`; they are application identifiers, not credentials. Keep the Access application destinations and audience synchronized with that file if the Pages hostname changes. After a relevant change, redeploy, confirm an unauthenticated request is redirected to Access, and authenticate at `/admin/` with the approved email.
 
 The API validates the Access JWT issuer, audience, lifetime, RS256 signature, and exact email. Missing or invalid configuration fails closed. The dashboard never returns raw IP addresses, hostnames, visitor hashes, or session hashes.
 

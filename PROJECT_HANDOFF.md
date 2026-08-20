@@ -19,7 +19,7 @@ This file is the continuation guide for Yahya El-Sawi, Codex, or any other AI/de
 - Yahya AI is a real server-side Cloudflare Workers AI assistant grounded only in an approved profile. It is not a hard-coded fake terminal, although some safety-sensitive questions use deterministic policy replies.
 - The SmartMall network-automation project is published as a full collaborative case study.
 - VR Neuroanatomy has a public locked shell only. Its title and locked status are the only approved facts.
-- The private AI dashboard is implemented as a secure foundation, but Cloudflare Access still needs to be fully configured and production-tested.
+- The private AI dashboard is protected by Cloudflare Access on both its UI and API routes, with server-side JWT verification as a second layer.
 - Monthly discovery, approval/rejection, Google Drive backup, and immediate email alerts are planned, not finished.
 - AI conversations now have a published 90-day retention policy, activity-triggered deletion, atomic D1 rate limiting, and safer user-only history forwarding.
 - The web resume is newer than the downloadable PDF CV. The PDF must be regenerated after StarLink details are finally verified.
@@ -417,20 +417,20 @@ Bindings in `wrangler.jsonc`:
 - Workers AI binding: `AI` with remote inference for local development.
 - D1 binding: `DB`, database `yahya-portfolio-ai`.
 - Public variable: `ADMIN_EMAIL=yahyaelsawi1@gmail.com`.
+- Public variable: `ACCESS_TEAM_DOMAIN=https://shrill-union-7062.cloudflareaccess.com`.
+- Public variable: `ACCESS_AUD=e17cd74598693da30a1ca2626decf344550f59c0f7cebd2cf8b54fda3e9ba1ca`.
 - Pages observability must be configured in Cloudflare rather than in `wrangler.jsonc`; Wrangler rejects the Worker-style `observability` block for Pages projects.
 
-Secrets/variables that must exist in Cloudflare and never in Git:
+Secret that must exist in Cloudflare and never in Git:
 
 - `LOG_HASH_SECRET`
-- `ACCESS_TEAM_DOMAIN`
-- `ACCESS_AUD`
 
-Cloudflare Access must protect both:
+The `Portfolio Admin` Cloudflare Access application protects both:
 
 - `yahya-elsawi-portfolio-bnj.pages.dev/admin/*`
 - `yahya-elsawi-portfolio-bnj.pages.dev/api/admin/*`
 
-Use One-time PIN and allow only `yahyaelsawi1@gmail.com` unless Yahya later approves another identity provider/account.
+The `Portfolio owner` Allow policy accepts only `yahyaelsawi1@gmail.com`. The application ID is `081f1274-a7bd-4d5b-ada6-b542dae4f4e6`.
 
 Production verification after every relevant deploy:
 
@@ -441,7 +441,7 @@ Production verification after every relevant deploy:
 5. Confirm Access blocks both admin UI and API for non-approved visitors.
 6. Confirm no raw IP/hostname columns or API output exist.
 
-The current code was pushed, but the latest Cloudflare production deployment and all checks above were not verified in the final old-PC session.
+The hardened build was deployed and its public routes, private-file exclusions, security headers, health endpoint, AI policy behavior, D1 logging, and unauthenticated Access redirects were verified on production.
 
 If a custom domain is added later, replace the hard-coded canonical URLs, Open Graph URLs, `robots.txt` sitemap URL, and `sitemap.xml` locations globally.
 
@@ -536,7 +536,7 @@ These checks do not replace a production Lighthouse/network/security test.
 
 1. Confirm Cloudflare deployed commit `56e1828` or later from `main`.
 2. Verify `/api/health` reports AI, D1 logging, and privacy hashing correctly.
-3. Complete Cloudflare Access setup and test unauthorized/authorized admin access.
+3. Re-test authorized admin access after any Access policy, audience, hostname, or identity-provider change.
 4. Retest Workers AI after the earlier 1031 errors and inspect Cloudflare logs.
 5. Confirm production D1 has the current `schema.sql` tables/indexes.
 6. Verify the public AI/privacy notice and 90-day cleanup behavior in production.
@@ -634,7 +634,7 @@ Start with production verification and private-dashboard setup, not another rede
 
 1. Clone `main` and read this file plus `AI_SETUP.md`.
 2. Check the Cloudflare deployment and `/api/health`.
-3. Configure/test Cloudflare Access for `/admin/*` and `/api/admin/*`.
+3. Keep Cloudflare Access protection for `/admin/*` and `/api/admin/*` synchronized with the configured Pages hostname.
 4. Retest normal and policy AI questions.
 5. Add the privacy/retention notice.
 6. Then update the CV and StarLink record when the official certificate is available.
