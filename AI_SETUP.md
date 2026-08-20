@@ -1,6 +1,6 @@
 # Yahya AI — Cloudflare setup
 
-This first release uses Cloudflare Pages, Pages Functions, Workers AI, and optional D1 logging. It does not require an OpenAI API subscription and it does not train on visitor conversations.
+The production portfolio uses Cloudflare Pages, Pages Functions, Workers AI, D1, Access, and a scheduled retention Worker. It does not require an OpenAI API subscription and it does not train on visitor conversations.
 
 ## What is already built
 
@@ -11,6 +11,7 @@ This first release uses Cloudflare Pages, Pages Functions, Workers AI, and optio
 - `/schema.sql`: privacy-safe interaction logs and future monthly knowledge candidates.
 - `/functions/api/health.js`: binding status without revealing secrets.
 - `/admin/`: fail-closed private analytics dashboard for questions, coarse regions, flags, and response health.
+- `/workers/retention.js`: daily D1 cleanup using the same retention policy as request-time cleanup.
 
 The assistant answers only from the approved profile. Unknown facts are declined. Salary questions are redirected and flagged. Private/security questions are blocked before reaching the model.
 
@@ -20,11 +21,11 @@ The assistant answers only from the approved profile. Unknown facts are declined
 2. Authorize GitHub and select `Yahyaelsawii/portfolio`.
 3. Use `main` as the production branch.
 4. Framework preset: **None**.
-5. Build command: `exit 0`.
-6. Build output directory: `.`.
+5. Build command: `npm run build`.
+6. Build output directory: `dist`.
 7. Deploy. Cloudflare will provide a free `pages.dev` address.
 
-Use Git integration rather than dashboard drag-and-drop. Pages Functions in the repository’s `/functions` directory are compiled during a Git deployment.
+Use Git integration or `wrangler pages deploy dist`; never publish the repository root. Pages Functions in `/functions` are compiled with the Pages deployment.
 
 ## Add Workers AI
 
@@ -35,9 +36,9 @@ Use Git integration rather than dashboard drag-and-drop. Pages Functions in the 
 
 Workers AI currently includes a free daily allocation. If the allowance is exhausted, the public assistant will show a temporary-unavailable message instead of creating a bill.
 
-## Add D1 interaction logging
+## Add D1 privacy and abuse controls
 
-Logging is optional: the assistant works with only the `AI` binding.
+D1 is required for the public assistant. The endpoint fails closed when logging, hashing, or atomic rate limiting is unavailable.
 
 1. Open **Storage & Databases** → **D1 SQL Database** → **Create**.
 2. Name it `yahya-portfolio-ai`.
@@ -53,15 +54,26 @@ Logging is optional: the assistant works with only the `AI` binding.
 3. Use a randomly generated value of at least 32 characters. Do not commit it to Git.
 4. Save it for Production and Preview, then redeploy.
 
-This secret creates one-way, rotating visitor and session hashes for abuse control. The database never stores raw IP addresses, device hostnames, user-agent strings, or exact live locations. It stores only the question, answer, coarse Cloudflare country/region/city, timing, model, and review flag. Email addresses and phone-like values submitted in questions are redacted before logging; blocked private-topic wording is not saved. Conversation records older than 90 days and rate-limit counters older than one day are deleted during service activity.
+This secret creates one-way, rotating visitor and session hashes for abuse control. The database never stores raw IP addresses, device hostnames, user-agent strings, or exact live locations. It stores only the question, answer, coarse Cloudflare country/region/city, timing, model, and review flag. Email addresses and phone-like values submitted in questions are redacted before logging; blocked private-topic wording is not saved.
 
 The public assistant fails closed when D1, the hashing secret, or the atomic rate-limit table is unavailable. Apply `schema.sql` before deploying code that depends on a newer schema.
 
+## Deploy scheduled retention
+
+`wrangler.retention.jsonc` defines `yahya-portfolio-retention`, a Worker that uses the production D1 binding and runs every day at 02:17 UTC. Request and dashboard activity also apply the same cleanup policy.
+
+```bash
+npx wrangler deploy --config wrangler.retention.jsonc
+npx wrangler deployments list --config wrangler.retention.jsonc
+```
+
+The policy deletes individual conversation records older than 90 days and rate-limit windows older than one day. Keep `functions/_shared/retention.js`, `privacy.html`, and the Worker schedule synchronized.
+
 ## Verify the deployment
 
-Run `npm run check` before deployment. It validates JavaScript, local references, policy tests, and creates the public-only `dist/` artifact. Deploy `dist/`, never the repository root.
+Run `npm ci` and `npm run check:release` before deployment. This validates HTML, JavaScript, local references, unit tests, the public-only artifact, responsive layouts, accessibility, and key interactions. Deploy `dist/`, never the repository root.
 
-1. Visit `/api/health` on the `pages.dev` site. It should report `"ai": true`, `"logging": true`, `"privacyHashing": true`, `"atomicRateLimiting": true`, and `"conversationRetentionDays": 90`.
+1. Visit `/api/health` on the `pages.dev` site. It should report `"ready": true`, `"ai": true`, `"logging": true`, `"privacyHashing": true`, `"atomicRateLimiting": true`, `"conversationRetentionDays": 90`, and `"scheduledRetention": true`.
 2. Open `/terminal.html` and ask: `What kind of roles is Yahya looking for?`
 3. Ask a salary question and confirm it is redirected with a flag.
 4. Inspect D1 and confirm no raw IP or hostname column exists.
@@ -91,5 +103,7 @@ That approval workflow is the safe version of “forever learning”: continuous
 - Pages Functions bindings: https://developers.cloudflare.com/pages/functions/bindings/
 - Pages Git integration: https://developers.cloudflare.com/pages/get-started/git-integration/
 - D1 pricing: https://developers.cloudflare.com/d1/platform/pricing/
+- D1 Worker binding API: https://developers.cloudflare.com/d1/worker-api/
+- Cron Triggers: https://developers.cloudflare.com/workers/configuration/cron-triggers/
 - Cloudflare Access self-hosted applications: https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/self-hosted-public-app/
 - Cloudflare Access JWT validation: https://developers.cloudflare.com/cloudflare-one/access-controls/applications/http-apps/authorization-cookie/validating-json/

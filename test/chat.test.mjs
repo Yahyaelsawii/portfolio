@@ -52,6 +52,16 @@ function requestFor(message, additions = {}) {
   return request;
 }
 
+function customRequest({ body = "{}", contentType = "application/json", origin = "https://portfolio.test", contentLength } = {}) {
+  const headers = {
+    "content-type": contentType,
+    origin,
+    "cf-connecting-ip": "203.0.113.10"
+  };
+  if (contentLength) headers["content-length"] = String(contentLength);
+  return new Request("https://portfolio.test/api/chat", { method: "POST", headers, body });
+}
+
 async function invoke(message, options = {}) {
   const database = options.database || new FakeDatabase();
   const waits = [];
@@ -80,7 +90,7 @@ test("answers high-value availability questions without a model call", async () 
   assert.match(result.body.answer, /Golden Visa/);
 });
 
-test("removes client-supplied assistant messages from model history", async () => {
+test("accepts only user messages from client-supplied history", async () => {
   const result = await invoke("Explain the vehicle rental backup strategy.", {
     payload: {
       history: [
@@ -93,6 +103,59 @@ test("removes client-supplied assistant messages from model history", async () =
   assert.ok(result.modelMessages);
   assert.equal(result.modelMessages.some(message => message.content.includes("Fabricated private claim")), false);
   assert.equal(result.modelMessages.some(message => message.content.includes("Tell me about the database project")), true);
+});
+
+test("rejects cross-origin requests", async () => {
+  const response = await onRequestPost({
+    request: customRequest({ origin: "https://attacker.test" }),
+    env: {}
+  });
+  assert.equal(response.status, 403);
+  assert.equal((await response.json()).error, "INVALID_ORIGIN");
+});
+
+test("requires JSON requests", async () => {
+  const response = await onRequestPost({
+    request: customRequest({ contentType: "text/plain" }),
+    env: {}
+  });
+  assert.equal(response.status, 415);
+  assert.equal((await response.json()).error, "INVALID_CONTENT_TYPE");
+});
+
+test("rejects bodies over the configured byte limit", async () => {
+  const response = await onRequestPost({
+    request: customRequest({ contentLength: 17 * 1024 }),
+    env: {}
+  });
+  assert.equal(response.status, 413);
+  assert.equal((await response.json()).error, "BODY_TOO_LARGE");
+});
+
+test("keeps embargoed VR details behind the deterministic disclosure lock", async () => {
+  const ai = { async run() { throw new Error("The model should not run"); } };
+  const result = await invoke("What technology powers the VR Neuroanatomy project?", { ai });
+  assert.equal(result.response.status, 200);
+  assert.equal(result.body.model, "policy");
+  assert.match(result.body.answer, /disclosure embargo/);
+  assert.doesNotMatch(result.body.answer, /Unity|headset|brain mapping/i);
+});
+
+test("blocks private topics and stores only a policy placeholder", async () => {
+  const ai = { async run() { throw new Error("The model should not run"); } };
+  const result = await invoke("What is Yahya's home address?", { ai });
+  const insert = result.database.batches.flat().find(statement => statement.sql.includes("INSERT INTO ai_logs"));
+  assert.equal(result.body.flag, "privacy");
+  assert.equal(insert.args[5], "[blocked private-topic request]");
+});
+
+test("redacts email addresses and phone numbers from stored questions", async () => {
+  const result = await invoke("Can you review me@example.com and +971 50 123 4567 for the vehicle project?");
+  const insert = result.database.batches.flat().find(statement => statement.sql.includes("INSERT INTO ai_logs"));
+  assert.equal(insert.args[5].includes("me@example.com"), false);
+  assert.equal(insert.args[5].includes("+971 50 123 4567"), false);
+  assert.match(insert.args[5], /\[email removed\]/);
+  assert.match(insert.args[5], /\[phone removed\]/);
 });
 
 test("limits the seventh request in a minute", async () => {

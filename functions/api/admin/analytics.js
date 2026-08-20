@@ -1,4 +1,5 @@
 import { verifyAdminAccess } from "../../_shared/access.js";
+import { purgeExpiredData } from "../../_shared/retention.js";
 
 const headers = {
   "content-type": "application/json; charset=utf-8",
@@ -16,7 +17,8 @@ export async function onRequestGet({ request, env }) {
   if (!env.DB) return respond({ error: "ANALYTICS_DATABASE_NOT_CONFIGURED" }, 503);
 
   try {
-    const [summary, flags, daily, regions, recent] = await env.DB.batch([
+    await purgeExpiredData(env.DB);
+    const [summary, daily, regions, recent] = await env.DB.batch([
       env.DB.prepare(`
         SELECT
           COUNT(*) AS questions,
@@ -26,13 +28,6 @@ export async function onRequestGet({ request, env }) {
           SUM(CASE WHEN flag = 'privacy' THEN 1 ELSE 0 END) AS privacy_blocks
         FROM ai_logs
         WHERE created_at >= datetime('now', '-30 days')
-      `),
-      env.DB.prepare(`
-        SELECT flag, COUNT(*) AS total
-        FROM ai_logs
-        WHERE flag != 'none' AND created_at >= datetime('now', '-90 days')
-        GROUP BY flag
-        ORDER BY total DESC
       `),
       env.DB.prepare(`
         SELECT date(created_at) AS day, COUNT(*) AS questions
@@ -50,8 +45,9 @@ export async function onRequestGet({ request, env }) {
         LIMIT 8
       `),
       env.DB.prepare(`
-        SELECT id, created_at, country, region, city, question, answer, flag, model, response_ms, knowledge_version, reviewed_at
+        SELECT created_at, country, region, city, question, flag, response_ms
         FROM ai_logs
+        WHERE created_at >= datetime('now', '-90 days')
         ORDER BY id DESC
         LIMIT 50
       `)
@@ -62,7 +58,6 @@ export async function onRequestGet({ request, env }) {
       range: "30 days",
       generatedAt: new Date().toISOString(),
       summary: summary.results?.[0] || {},
-      flags: flags.results || [],
       daily: daily.results || [],
       regions: regions.results || [],
       recent: recent.results || []

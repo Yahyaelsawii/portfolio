@@ -94,7 +94,7 @@ function renderGalleryImage(src, alt) {
   const [width, height] = galleryImageDimensions[stem] || [1200, 900];
   const responsivePath = 'assets/Pictures/responsive/';
   const sizes = '(max-width: 760px) calc(100vw - 68px), 420px';
-  return `<figure><picture><source type="image/avif" srcset="${responsivePath}${stem}-480.avif 480w, ${responsivePath}${stem}-768.avif 768w, ${responsivePath}${stem}-1200.avif 1200w" sizes="${sizes}"><source type="image/webp" srcset="${responsivePath}${stem}-480.webp 480w, ${responsivePath}${stem}-768.webp 768w, ${responsivePath}${stem}-1200.webp 1200w" sizes="${sizes}"><img src="${src}" alt="${alt}" width="${width}" height="${height}" loading="lazy" decoding="async"></picture><figcaption>${alt}</figcaption></figure>`;
+  return `<figure><picture><source type="image/avif" srcset="${responsivePath}${stem}-480.avif 480w, ${responsivePath}${stem}-768.avif 768w, ${responsivePath}${stem}-1200.avif 1200w" sizes="${sizes}"><source type="image/webp" srcset="${responsivePath}${stem}-480.webp 480w, ${responsivePath}${stem}-768.webp 768w, ${responsivePath}${stem}-1200.webp 1200w" sizes="${sizes}"><img src="${responsivePath}${stem}-1200.webp" alt="${alt}" width="${width}" height="${height}" loading="lazy" decoding="async"></picture><figcaption>${alt}</figcaption></figure>`;
 }
 
 function renderSection(section, index) {
@@ -284,7 +284,7 @@ function initializePortfolioAI() {
       const response = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ message: cleanQuestion, history: history.slice(-6), sessionId, context: pageContext, mode: assistantMode }),
+        body: JSON.stringify({ message: cleanQuestion, history: history.slice(-4), sessionId, context: pageContext, mode: assistantMode }),
         signal: controller.signal
       }).finally(() => clearTimeout(timeout));
       const data = await response.json().catch(() => ({}));
@@ -292,8 +292,8 @@ function initializePortfolioAI() {
 
       thinkingMessage.remove();
       append('assistant', data.answer, Array.isArray(data.sources) ? data.sources : []);
-      history.push({ role: 'user', content: cleanQuestion }, { role: 'assistant', content: data.answer });
-      history = history.slice(-8);
+      history.push({ role: 'user', content: cleanQuestion });
+      history = history.slice(-4);
       if (data.flag === 'salary') finalStatus = 'Flagged for Yahya';
     } catch (error) {
       thinkingMessage.remove();
@@ -402,7 +402,12 @@ document.addEventListener('DOMContentLoaded', () => {
       if (open) links.querySelector('a')?.focus();
     });
     links.addEventListener('click', event => { if (event.target.closest('a')) closeMenu(); });
-    document.addEventListener('keydown', event => { if (event.key === 'Escape') { closeMenu(); menu.focus(); } });
+    document.addEventListener('keydown', event => {
+      if (event.key === 'Escape' && links.classList.contains('open')) {
+        closeMenu();
+        menu.focus();
+      }
+    });
     document.addEventListener('click', event => { if (!event.target.closest('.nav')) closeMenu(); });
   }
   document.querySelector('.nav-link.active')?.setAttribute('aria-current', 'page');

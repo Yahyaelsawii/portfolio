@@ -1,4 +1,5 @@
 import { KNOWLEDGE_VERSION, PROFILE_CONTEXT, SOURCES } from "../_shared/profile.js";
+import { retentionStatements } from "../_shared/retention.js";
 
 const MODELS = [
   "@cf/meta/llama-3.1-8b-instruct-fast",
@@ -6,10 +7,9 @@ const MODELS = [
 ];
 const MODEL = MODELS[0];
 const MAX_MESSAGE_LENGTH = 800;
-const MAX_HISTORY_MESSAGES = 8;
+const MAX_HISTORY_USER_MESSAGES = 4;
 const MAX_BODY_BYTES = 16 * 1024;
 const RATE_LIMIT_PER_MINUTE = 6;
-const LOG_RETENTION_DAYS = 90;
 let safetySchemaPromise;
 const CONTEXT_HINTS = Object.freeze({
   "gift-it": "Gift It case study",
@@ -257,9 +257,7 @@ async function writeLog(db, entry) {
     entry.responseMs,
     KNOWLEDGE_VERSION
   );
-  const purgeLogs = db.prepare(`DELETE FROM ai_logs WHERE created_at < datetime('now', '-${LOG_RETENTION_DAYS} days')`);
-  const purgeLimits = db.prepare("DELETE FROM ai_rate_limits WHERE window_start < datetime('now', '-1 day')");
-  await db.batch([insert, purgeLogs, purgeLimits]);
+  await db.batch([insert, ...retentionStatements(db)]);
 }
 
 function extractAnswer(result) {
@@ -367,7 +365,7 @@ export async function onRequestPost(context) {
 
     const history = Array.isArray(payload?.history) ? payload.history : [];
     const cleanHistory = history
-      .slice(-MAX_HISTORY_MESSAGES)
+      .slice(-MAX_HISTORY_USER_MESSAGES)
       .map(item => ({ role: item?.role, content: normalizeText(item?.content) }))
       .filter(item => item.role === "user" && item.content);
 

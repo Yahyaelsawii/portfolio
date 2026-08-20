@@ -19,11 +19,17 @@ async function walk(directory) {
 
 function localReferences(html) {
   const references = [];
-  const attributePattern = /\b(?:href|src)=["']([^"']+)["']/gi;
+  const attributePattern = /\b(?:href|src|poster)=["']([^"']+)["']/gi;
   for (const match of html.matchAll(attributePattern)) {
     const value = match[1].trim();
     if (!value || value.startsWith("#") || /^(?:https?:|mailto:|tel:|data:|javascript:)/i.test(value)) continue;
     references.push(value);
+  }
+  for (const match of html.matchAll(/\bsrcset=["']([^"']+)["']/gi)) {
+    for (const candidate of match[1].split(",")) {
+      const value = candidate.trim().split(/\s+/, 1)[0];
+      if (value && !/^(?:https?:|data:)/i.test(value)) references.push(value);
+    }
   }
   return references;
 }
@@ -33,6 +39,8 @@ async function resolvesFrom(htmlFile, reference) {
   if (!cleanReference) return true;
   const relative = cleanReference.startsWith("/") ? cleanReference.slice(1) : path.join(path.dirname(path.relative(root, htmlFile)), cleanReference);
   const target = path.resolve(root, relative);
+  const outsideRoot = path.relative(root, target).startsWith(`..${path.sep}`);
+  if (outsideRoot) return false;
   const candidates = path.extname(target) ? [target] : [target, `${target}.html`, path.join(target, "index.html")];
   for (const candidate of candidates) {
     try {
@@ -53,6 +61,13 @@ for (const htmlFile of htmlFiles) {
   const html = await readFile(htmlFile, "utf8");
   if (!/^<!doctype html>/i.test(html.trimStart())) failures.push(`${path.relative(root, htmlFile)}: missing doctype`);
   if (!/<title>[^<]+<\/title>/i.test(html)) failures.push(`${path.relative(root, htmlFile)}: missing title`);
+  if (!/<html\b[^>]*\blang=["'][^"']+["']/i.test(html)) failures.push(`${path.relative(root, htmlFile)}: missing document language`);
+  if (!/<meta\b[^>]*\bname=["']viewport["']/i.test(html)) failures.push(`${path.relative(root, htmlFile)}: missing viewport metadata`);
+  if (!/<meta\b[^>]*\bname=["']description["']/i.test(html)) failures.push(`${path.relative(root, htmlFile)}: missing description metadata`);
+
+  const ids = [...html.matchAll(/\bid=["']([^"']+)["']/gi)].map(match => match[1]);
+  const duplicateIds = [...new Set(ids.filter((id, index) => ids.indexOf(id) !== index))];
+  if (duplicateIds.length) failures.push(`${path.relative(root, htmlFile)}: duplicate ids ${duplicateIds.join(", ")}`);
 
   for (const reference of localReferences(html)) {
     if (!await resolvesFrom(htmlFile, reference)) failures.push(`${path.relative(root, htmlFile)}: missing ${reference}`);
