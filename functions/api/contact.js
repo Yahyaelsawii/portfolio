@@ -127,24 +127,46 @@ export async function onRequestPost({ request, env }) {
     return respond({ error:"CONTACT_UNAVAILABLE", message:"Secure contact delivery is temporarily unavailable." }, 503);
   }
 
-  if (!env.RESEND_API_KEY || !env.CONTACT_FROM_EMAIL || !env.ADMIN_EMAIL) {
+  const resendReady = Boolean(env.RESEND_API_KEY && env.CONTACT_FROM_EMAIL && env.ADMIN_EMAIL);
+  const formSubmitReady = typeof env.CONTACT_FORM_ENDPOINT === "string"
+    && /^https:\/\/formsubmit\.co\/ajax\/[a-z0-9]+$/i.test(env.CONTACT_FORM_ENDPOINT);
+  if (!resendReady && !formSubmitReady) {
     return respond({ error:"CONTACT_UNAVAILABLE", message:"Secure contact delivery is temporarily unavailable." }, 503);
   }
 
-  const delivery = await fetch("https://api.resend.com/emails", {
-    method:"POST",
-    headers:{
-      authorization:`Bearer ${env.RESEND_API_KEY}`,
-      "content-type":"application/json"
-    },
-    body:JSON.stringify({
-      from:env.CONTACT_FROM_EMAIL,
-      to:[env.ADMIN_EMAIL],
-      reply_to:email,
-      subject:`Portfolio: ${subject} — ${name}`,
-      text:`Name: ${name}\nEmail: ${email}\nSubject: ${subject}\n\n${message}`
-    })
-  });
+  let delivery;
+  try {
+    delivery = resendReady
+      ? await fetch("https://api.resend.com/emails", {
+          method:"POST",
+          headers:{
+            authorization:`Bearer ${env.RESEND_API_KEY}`,
+            "content-type":"application/json"
+          },
+          body:JSON.stringify({
+            from:env.CONTACT_FROM_EMAIL,
+            to:[env.ADMIN_EMAIL],
+            reply_to:email,
+            subject:`Portfolio: ${subject} — ${name}`,
+            text:`Name: ${name}\nEmail: ${email}\nSubject: ${subject}\n\n${message}`
+          })
+        })
+      : await fetch(env.CONTACT_FORM_ENDPOINT, {
+          method:"POST",
+          headers:{ accept:"application/json", "content-type":"application/json" },
+          body:JSON.stringify({
+            name,
+            email,
+            subject,
+            message,
+            _subject:`Portfolio: ${subject} - ${name}`,
+            _template:"table",
+            _captcha:"false"
+          })
+        });
+  } catch {
+    return respond({ error:"DELIVERY_FAILED", message:"Your message could not be delivered. Please try again shortly." }, 502);
+  }
 
   if (!delivery.ok) {
     return respond({ error:"DELIVERY_FAILED", message:"Your message could not be delivered. Please try again shortly." }, 502);

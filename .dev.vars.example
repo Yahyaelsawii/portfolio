@@ -1,5 +1,6 @@
 LOG_HASH_SECRET=replace-with-a-long-random-development-secret
 RESEND_API_KEY=re_replace-with-your-resend-api-key
 CONTACT_FROM_EMAIL=Portfolio <portfolio@your-verified-domain.example>
+CONTACT_FORM_ENDPOINT=https://formsubmit.co/ajax/replace-with-your-form-id
 ACCESS_TEAM_DOMAIN=https://your-team.cloudflareaccess.com
 ACCESS_AUD=replace-with-the-access-application-audience

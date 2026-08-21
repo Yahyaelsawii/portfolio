@@ -75,6 +75,28 @@ test("delivers a valid contact submission through the configured email service",
   }
 });
 
+test("uses the approved V1 server-side form handler when Resend is unavailable", async () => {
+  const originalFetch = globalThis.fetch;
+  let delivery;
+  globalThis.fetch = async (url, options) => {
+    delivery = { url, options, body:JSON.parse(options.body) };
+    return new Response(JSON.stringify({ success:"true" }), { status:200 });
+  };
+  const env = environment();
+  delete env.RESEND_API_KEY;
+  delete env.CONTACT_FROM_EMAIL;
+  env.CONTACT_FORM_ENDPOINT = "https://formsubmit.co/ajax/75adad6ce5e399fb72fe44ae27bd0d55";
+  try {
+    const response = await onRequestPost({ request:contactRequest(), env });
+    assert.equal(response.status, 200);
+    assert.equal(delivery.url, env.CONTACT_FORM_ENDPOINT);
+    assert.equal(delivery.body.email, "person@example.com");
+    assert.equal(delivery.body.message, "This is a valid test message.");
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
 test("rejects cross-origin submissions", async () => {
   const response = await onRequestPost({ request:contactRequest({}, { origin:"https://attacker.test" }), env:environment() });
   assert.equal(response.status, 403);
@@ -115,6 +137,8 @@ test("rate limits the fifth message in a minute", async () => {
 test("fails closed when delivery configuration is absent", async () => {
   const env = environment();
   delete env.RESEND_API_KEY;
+  delete env.CONTACT_FROM_EMAIL;
+  delete env.CONTACT_FORM_ENDPOINT;
   const response = await onRequestPost({ request:contactRequest(), env });
   assert.equal(response.status, 503);
 });

@@ -5,6 +5,7 @@
   "pages_build_output_dir": "./dist",
   "vars": {
     "ADMIN_EMAIL": "yahyaelsawi1@gmail.com",
+    "CONTACT_FORM_ENDPOINT": "https://formsubmit.co/ajax/75adad6ce5e399fb72fe44ae27bd0d55",
     "ACCESS_TEAM_DOMAIN": "https://shrill-union-7062.cloudflareaccess.com",
     "ACCESS_AUD": "e17cd74598693da30a1ca2626decf344550f59c0f7cebd2cf8b54fda3e9ba1ca"
   },

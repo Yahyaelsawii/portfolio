@@ -27,3 +27,17 @@ test("reports safety controls unavailable for a weak secret", async () => {
   assert.equal(body.privacyHashing, false);
   assert.equal(body.atomicRateLimiting, false);
 });
+
+test("reports contact delivery ready with the approved V1 fallback", async () => {
+  const response = onRequestGet({
+    env: {
+      AI:{},
+      DB:{},
+      LOG_HASH_SECRET:"a".repeat(32),
+      CONTACT_FORM_ENDPOINT:"https://formsubmit.co/ajax/75adad6ce5e399fb72fe44ae27bd0d55"
+    }
+  });
+  const body = await response.json();
+  assert.equal(body.ready, true);
+  assert.equal(body.contactDelivery, true);
+});

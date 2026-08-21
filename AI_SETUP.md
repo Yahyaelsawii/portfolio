@@ -75,12 +75,13 @@ The public assistant fails closed when D1, the hashing secret, or the atomic rat
 The contact form posts to the first-party `/api/contact` Pages Function. It validates same-origin requests and field lengths, uses a honeypot, rate limits by a one-way IP hash, and does not store message contents.
 
 1. Verify a sending domain in Resend.
-2. In the Pages project, add an encrypted secret named `RESEND_API_KEY`.
-3. Set `CONTACT_FROM_EMAIL` to a sender on that verified domain, such as `Portfolio <portfolio@example.com>`.
-4. Keep `ADMIN_EMAIL` set to the inbox that should receive portfolio messages.
-5. Apply the current `schema.sql` so the `contact_rate_limits` table exists, then redeploy.
+2. For Resend delivery, add an encrypted secret named `RESEND_API_KEY`.
+3. For Resend delivery, set `CONTACT_FROM_EMAIL` to a sender on that verified domain, such as `Portfolio <portfolio@example.com>`.
+4. Without Resend, keep `CONTACT_FORM_ENDPOINT` set to the approved V1 FormSubmit AJAX endpoint; the Cloudflare Function relays validated messages server-side.
+5. Keep `ADMIN_EMAIL` set to the inbox that should receive portfolio messages.
+6. Apply the current `schema.sql` so the `contact_rate_limits` table exists, then redeploy.
 
-The endpoint fails closed with a user-facing retry message if Resend, D1, or the hashing secret is unavailable.
+The endpoint fails closed with a user-facing retry message if neither delivery provider is configured, or if D1 or the hashing secret is unavailable.
 
 ## Deploy scheduled retention
 
