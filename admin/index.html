@@ -3,12 +3,12 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex,nofollow,noarchive">
   <title>Private AI Dashboard — Yahya El-Sawi</title><meta name="description" content="Private portfolio AI analytics dashboard.">
-  <link rel="stylesheet" href="../styles.css"><script defer src="../dashboard.js"></script><link rel="icon" href="../assets/favicon/logo.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/styles.css?v=20260821.3"><script defer src="/dashboard.js?v=20260821.3"></script><link rel="icon" href="/assets/favicon/logo.svg" type="image/svg+xml">
 </head>
 <body class="dashboard-page">
   <header class="site-header"><div class="shell nav"><a class="brand" href="../index.html"><span class="brand-mark">Y</span>Yahya El-Sawi</a><span class="status status-private"><i aria-hidden="true">⌁</i>Private dashboard</span></div></header>
   <main class="shell dashboard-shell">
-    <section class="dashboard-head"><div><span class="eyebrow">AI operations / Owner only</span><h1>Portfolio intelligence.</h1><p class="lead">Review usage, questions, flags, and response health without exposing raw IP addresses or device hostnames.</p></div><div class="dashboard-viewer"><small>Authenticated viewer</small><strong id="dashboard-viewer">Checking access…</strong><button class="btn btn-secondary" id="dashboard-refresh" type="button">Refresh</button></div></section>
+    <section class="dashboard-head"><div><span class="eyebrow">AI operations / Owner only</span><h1>Portfolio intelligence.</h1><p class="lead">Review usage, questions, flags, and response health without exposing raw IP addresses or device hostnames.</p><a class="text-link" href="/admin/log/">Open private developer log</a></div><div class="dashboard-viewer"><small>Authenticated viewer</small><strong id="dashboard-viewer">Checking access…</strong><button class="btn btn-secondary" id="dashboard-refresh" type="button">Refresh</button></div></section>
     <section class="dashboard-gate" id="dashboard-gate" role="status"><span class="ai-thinking-dots" aria-hidden="true"><span></span><span></span><span></span></span><p>Verifying Cloudflare Access and loading private analytics…</p></section>
     <div id="dashboard-content" hidden>
       <section class="dashboard-metrics" aria-label="Thirty-day summary"><article><small>Questions</small><strong id="metric-questions">0</strong><span>Last 30 days</span></article><article><small>Visitors</small><strong id="metric-visitors">0</strong><span>Privacy-hashed</span></article><article><small>Average response</small><strong id="metric-response">0 ms</strong><span>AI + policy answers</span></article><article><small>Needs review</small><strong id="metric-flags">0</strong><span>Salary + privacy</span></article></section>
@@ -16,6 +16,6 @@
       <section class="dashboard-panel dashboard-recent"><div class="section-head"><div><span class="eyebrow">Conversation review</span><h2>Recent questions</h2></div><span id="dashboard-generated"></span></div><div class="dashboard-table-wrap"><table><thead><tr><th>Time</th><th>Question</th><th>Location</th><th>Flag</th><th>Response</th></tr></thead><tbody id="dashboard-rows"></tbody></table></div></section>
     </div>
   </main>
-  <footer class="footer"><div class="shell footer-row"><span>Owner-only analytics / 90-day conversation retention</span><a class="text-link" href="../privacy.html">Public privacy notice →</a></div></footer>
+  <footer class="footer"><div class="shell footer-row"><span>Owner-only analytics / 90-day conversation retention</span><div class="actions"><a class="text-link" href="/admin/log/">Private developer log</a><a class="text-link" href="/privacy">Public privacy notice</a></div></div></footer>
 </body>
 </html>

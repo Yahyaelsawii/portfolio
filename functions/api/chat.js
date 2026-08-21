@@ -119,7 +119,7 @@ function deterministicReply(question, context) {
   }
   if (context === "vr-neuroanatomy" || embargoedVr.test(question)) {
     return {
-      answer: "VR Neuroanatomy is currently under an active disclosure embargo. Only the project title and locked status are approved for public use, so I cannot share or infer any other details until written clearance is received.",
+      answer: "This is an ongoing research project. Further details cannot be disclosed at this stage.",
       flag: "none",
       sourceIds: ["vrNeuroanatomy"]
     };

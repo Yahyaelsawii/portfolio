@@ -7,7 +7,8 @@
   },
   "scripts": {
     "build": "node scripts/build-static.mjs",
-    "check:js": "node --check main.js && node --check dashboard.js && node --check redirect.js && node --check functions/api/chat.js && node --check functions/api/health.js && node --check functions/api/admin/analytics.js && node --check functions/_shared/access.js && node --check functions/_shared/profile.js && node --check functions/_shared/retention.js && node --check workers/retention.js && node --check scripts/build-static.mjs && node --check scripts/verify-site.mjs && node --check scripts/verify-dist.mjs && node --check scripts/verify-browser.mjs",
+    "build:sitemap-pdf": "python3 scripts/build_sitemap_pdf.py",
+    "check:js": "node --check main.js && node --check dashboard.js && node --check redirect.js && node --check functions/api/chat.js && node --check functions/api/contact.js && node --check functions/api/health.js && node --check functions/api/admin/analytics.js && node --check functions/_shared/access.js && node --check functions/_shared/profile.js && node --check functions/_shared/retention.js && node --check workers/retention.js && node --check scripts/build-static.mjs && node --check scripts/verify-site.mjs && node --check scripts/verify-dist.mjs && node --check scripts/verify-browser.mjs",
     "check:html": "html-validate \"*.html\" \"admin/*.html\"",
     "check:site": "node scripts/verify-site.mjs",
     "check:dist": "node scripts/verify-dist.mjs",

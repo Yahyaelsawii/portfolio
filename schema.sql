@@ -30,6 +30,15 @@ CREATE TABLE IF NOT EXISTS ai_rate_limits (
 
 CREATE INDEX IF NOT EXISTS idx_ai_rate_limits_window ON ai_rate_limits(window_start);
 
+CREATE TABLE IF NOT EXISTS contact_rate_limits (
+  identity_hash TEXT NOT NULL,
+  window_start TEXT NOT NULL,
+  request_count INTEGER NOT NULL DEFAULT 1,
+  PRIMARY KEY (identity_hash, window_start)
+);
+
+CREATE INDEX IF NOT EXISTS idx_contact_rate_limits_window ON contact_rate_limits(window_start);
+
 CREATE TABLE IF NOT EXISTS knowledge_candidates (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   created_at TEXT NOT NULL DEFAULT (datetime('now')),

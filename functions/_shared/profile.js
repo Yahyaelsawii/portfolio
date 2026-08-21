@@ -1,21 +1,21 @@
-export const KNOWLEDGE_VERSION = "2026-08-13.2";
+export const KNOWLEDGE_VERSION = "2026-08-21.1";
 
 export const SOURCES = {
   about: { label: "About Yahya", url: "/about.html" },
   work: { label: "Selected work", url: "/work.html" },
-  experience: { label: "Professional experience", url: "/experience.html" },
+  experience: { label: "Professional experience", url: "/work" },
   recruiter: { label: "Recruiter quick view", url: "/recruiter.html" },
-  developerLog: { label: "Developer log", url: "/log.html" },
   resume: { label: "Resume & credentials", url: "/resume.html" },
   contact: { label: "Contact Yahya", url: "/contact.html" },
-  giftIt: { label: "Gift It case study", url: "/gift-it.html" },
-  ritApp: { label: "RIT Student App case study", url: "/rit-app.html" },
-  passwordless: { label: "Passwordless authentication case study", url: "/passwordless.html" },
-  vehicleRental: { label: "Vehicle rental database case study", url: "/vehicle-rental.html" },
-  moodInsights: { label: "Mood Insights case study", url: "/mood-insights.html" },
-  vrNeuroanatomy: { label: "VR Neuroanatomy — locked", url: "/vr-neuroanatomy.html" },
-  networkAutomation: { label: "SmartMall AI Network Automation case study", url: "/network-automation.html" },
+  giftIt: { label: "Gift It Checkout & E-Invite Redesign", url: "/work/gift-it" },
+  ritApp: { label: "RIT Student App 2.0", url: "/work/rit-app" },
+  passwordless: { label: "Passwordless Login & Signup Redesign", url: "/work/passwordless" },
+  vehicleRental: { label: "Vehicle Rental Operations Database", url: "/work/vehicle-rental" },
+  moodInsights: { label: "Mood Insights & Stress Alerts", url: "/work/mood-insights" },
+  vrNeuroanatomy: { label: "VR Neuroanatomy — locked", url: "/work/vr-neuroanatomy" },
+  networkAutomation: { label: "SmartMall AI Network Automation", url: "/work/network-automation" },
   cv: { label: "Yahya El-Sawi CV", url: "/assets/pdfs/Yahya_ElSawi_CV.pdf" },
+  recruiterPack: { label: "Yahya El-Sawi recruiter brief", url: "/assets/pdfs/Yahya_ElSawi_Recruiter_Pack.pdf" },
   linkedin: { label: "LinkedIn", url: "https://www.linkedin.com/in/yahya-elsawi/" },
   github: { label: "GitHub", url: "https://github.com/Yahyaelsawii" }
 };
@@ -59,19 +59,19 @@ export const PROFILE = {
   experience: [
     {
       organization: "Gift It",
-      role: "Software & Web Developer",
+      role: "Frontend Developer & Product Associate",
       location: "Dubai, UAE",
       timeline: "Joined as an intern in May 2024 for three months, then transitioned into a full-time role.",
       work: "Production features across web, UX, and databases; testing; performance optimization; database schemas; transactional emails; and product collaboration with the founder."
     },
     {
       organization: "StarLink, an Infinigate Group Company",
-      role: "Cybersecurity & IT Intern",
+      role: "Cybersecurity Intern",
       location: "Dubai, UAE — on-site",
-      timeline: "Part-time internship from June 9 to August 28, 2026. These dates remain pending final certificate or HR-record verification.",
+      timeline: "Completed the StarLink Internship Program in Dubai from July to August 2026.",
       work: "Isolated-lab training with Palo Alto Networks firewalls, PAN-OS, Windows Server 2019, Active Directory, LDAP and LDAPS, SSL/TLS certificates, Certificate Authority integration, NAT, DNS, DHCP, routing, security policy matching, network troubleshooting, Forcepoint DLP concepts, GlobalProtect, VMware, and Wireshark.",
       verifiedOutcomes: ["validated LDAP authentication on TCP port 389", "validated LDAPS authentication on TCP port 636", "established client-to-internet traffic through security policy and NAT", "configured Active Directory-based firewall administrator authentication"],
-      confidentialityBoundary: "Do not share internal or customer configurations, customer names or environments, real IP addresses, credentials, internal documents or diagrams, internal procedures, customer cases, proprietary training material, internal communications, or screenshots containing company or customer information. No StarLink work sample or logo has been approved for public use."
+      confidentialityBoundary: "Do not share internal or customer configurations, customer names or environments, real IP addresses, credentials, internal documents or diagrams, internal procedures, customer cases, proprietary training material, internal communications, or screenshots containing company or customer information."
     },
     {
       organization: "RIT Dubai",
@@ -106,7 +106,7 @@ export const PROFILE = {
   ],
   projects: [
     {
-      name: "Gift It Checkout & E-Invite Flow Redesign",
+      name: "Gift It Checkout & E-Invite Redesign",
       role: "UX / Product (Web)",
       focus: "Reduced checkout friction, improved trust, clarified e-invite setup, and treated confirmation pages and transactional emails as part of the product experience.",
       problem: "The largest funnel drop-offs appeared around shipping and contact details, payment selection, and e-invite setup. Users also needed clearer reassurance about code delivery, legitimacy, refunds, and what happens after purchase.",
@@ -125,7 +125,7 @@ export const PROFILE = {
       evidence: "ritApp"
     },
     {
-      name: "Login & Signup Redesign",
+      name: "Passwordless Login & Signup Redesign",
       role: "Lead Designer — design and handoff, not production implementation",
       focus: "A mobile-first passwordless email-OTP experience targeting a registration-time reduction from roughly 3–4 minutes to 1–2 minutes and consistent web/mobile behavior through one API.",
       solution: "One clear decision per screen, shorter registration, email-to-code verification, consistent API behavior, and designed error states for invalid email, incorrect or expired OTP, resend throttling, captcha failure, and existing-account routing.",
@@ -133,7 +133,7 @@ export const PROFILE = {
       evidence: "passwordless"
     },
     {
-      name: "Vehicle Rental Operations Dashboard",
+      name: "Vehicle Rental Operations Database",
       role: "Database Developer",
       focus: "An Oracle relational database with normalized operations data, roles and privileges, operational queries and views, transaction logic, and a cold-backup-to-S3 strategy. The dashboard UI is a concept based on the implemented backend.",
       dataModel: "Core Customer, Vehicle, Rental, and Maintenance entities, with Employee and AvgDailyCost supporting ownership, operations, and pricing analysis.",
@@ -158,9 +158,9 @@ export const PROFILE = {
       evidence: "vrNeuroanatomy"
     },
     {
-      name: "Secure Small Mall Automation System — SmartMall AI Network Automation",
+      name: "SmartMall AI Network Automation",
       type: "Five-person collaborative academic project for RIT Dubai's Network Design & Performance course, Spring 2026.",
-      yahyaRole: "The team worked collaboratively. The project report documents Yahya's contribution as 16%, centered on documentation and error handling. Do not imply sole ownership or attribute the entire implementation to Yahya.",
+      collaboration: "All group members contributed equally across the project.",
       focus: "A GNS3 proof of concept combining a browser dashboard, an AI-assisted Network Brain, Python and Netmiko automation, Cisco routing and switching, tenant orchestration, validation, logs, and closed-loop correction.",
       features: ["plain-English network setup", "dynamic fictional-tenant onboarding and offboarding", "advisory, dry-run, override, fix, and deploy modes", "OSPF, RIPv2, and static-routing planning", "multi-tier tenant onboarding", "host IP heartbeat and persistence", "timed tenant offboarding", "validation and correction reports"],
       teamResults: "In the demonstrated fault-recovery scenario, 7 of 10 pings passed before correction and 9 of 10 passed afterward. The report states that the demonstrated correction sequence took about seven minutes.",
@@ -179,6 +179,7 @@ export const PROFILE = {
     researchAndCompliance: ["minimal-risk student research", "social and behavioral research", "research security", "export compliance"]
   },
   credentials: [
+    "StarLink Internship Program Certificate of Achievement — July–August 2026",
     "BSc in Computing and Information Technologies — RIT Dubai, May 2026",
     "Software Design: Modeling with UML — LinkedIn Learning, December 2025",
     "Business Analysis & Process Management — Coursera, August 2023",

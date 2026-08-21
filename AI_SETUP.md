@@ -1,4 +1,4 @@
-# Yahya AI — Cloudflare setup
+# Yahya'AI — Cloudflare setup
 
 The production portfolio uses Cloudflare Pages, Pages Functions, Workers AI, D1, Access, and a scheduled retention Worker. It does not require an OpenAI API subscription and it does not train on visitor conversations.
 
@@ -7,10 +7,12 @@ The production portfolio uses Cloudflare Pages, Pages Functions, Workers AI, D1,
 - `/terminal.html`: public AI chat with recruiter-focused prompts and evidence links.
 - Page-aware and recruiter modes passed from approved portfolio links; context never expands the public knowledge boundary.
 - `/functions/api/chat.js`: server-side assistant endpoint using fast Llama 3.1 8B with IBM Granite 4.0 Micro as an automatic fallback.
+- `/functions/api/contact.js`: validated, rate-limited contact delivery through Resend without opening the visitor's email application.
 - `/functions/_shared/profile.js`: approved public knowledge base.
 - `/schema.sql`: privacy-safe interaction logs and future monthly knowledge candidates.
 - `/functions/api/health.js`: binding status without revealing secrets.
 - `/admin/`: fail-closed private analytics dashboard for questions, coarse regions, flags, and response health.
+- `/admin/log/`: private developer log covered by the same Cloudflare Access application.
 - `/workers/retention.js`: daily D1 cleanup using the same retention policy as request-time cleanup.
 
 The assistant answers only from the approved profile. Unknown facts are declined. Salary questions are redirected and flagged. Private/security questions are blocked before reaching the model.
@@ -26,6 +28,16 @@ The assistant answers only from the approved profile. Unknown facts are declined
 7. Deploy. Cloudflare will provide a free `pages.dev` address.
 
 Use Git integration or `wrangler pages deploy dist`; never publish the repository root. Pages Functions in `/functions` are compiled with the Pages deployment.
+
+## Enable privacy-first Web Analytics
+
+Cloudflare Web Analytics is enabled for the production Pages project as of 20 August 2026. The dashboard injects its beacon on the next deployment; no analytics token or inline beacon belongs in this repository.
+
+1. Open the Pages project → **Metrics**.
+2. Confirm **Web Analytics is enabled**.
+3. Keep `_headers` compatible with `https://static.cloudflareinsights.com` and the analytics connection endpoint.
+4. Keep `privacy.html` synchronized with the enabled service.
+5. After deployment, inspect the production document for Cloudflare's injected beacon and verify that analytics requests are not blocked by the CSP.
 
 ## Add Workers AI
 
@@ -58,6 +70,18 @@ This secret creates one-way, rotating visitor and session hashes for abuse contr
 
 The public assistant fails closed when D1, the hashing secret, or the atomic rate-limit table is unavailable. Apply `schema.sql` before deploying code that depends on a newer schema.
 
+## Configure direct contact delivery
+
+The contact form posts to the first-party `/api/contact` Pages Function. It validates same-origin requests and field lengths, uses a honeypot, rate limits by a one-way IP hash, and does not store message contents.
+
+1. Verify a sending domain in Resend.
+2. In the Pages project, add an encrypted secret named `RESEND_API_KEY`.
+3. Set `CONTACT_FROM_EMAIL` to a sender on that verified domain, such as `Portfolio <portfolio@example.com>`.
+4. Keep `ADMIN_EMAIL` set to the inbox that should receive portfolio messages.
+5. Apply the current `schema.sql` so the `contact_rate_limits` table exists, then redeploy.
+
+The endpoint fails closed with a user-facing retry message if Resend, D1, or the hashing secret is unavailable.
+
 ## Deploy scheduled retention
 
 `wrangler.retention.jsonc` defines `yahya-portfolio-retention`, a Worker that uses the production D1 binding and runs every day at 02:17 UTC. Request and dashboard activity also apply the same cleanup policy.
@@ -73,7 +97,7 @@ The policy deletes individual conversation records older than 90 days and rate-l
 
 Run `npm ci` and `npm run check:release` before deployment. This validates HTML, JavaScript, local references, unit tests, the public-only artifact, responsive layouts, accessibility, and key interactions. Deploy `dist/`, never the repository root.
 
-1. Visit `/api/health` on the `pages.dev` site. It should report `"ready": true`, `"ai": true`, `"logging": true`, `"privacyHashing": true`, `"atomicRateLimiting": true`, `"conversationRetentionDays": 90`, and `"scheduledRetention": true`.
+1. Visit `/api/health` on the `pages.dev` site. It should report `"ready": true`, `"ai": true`, `"contactDelivery": true`, `"logging": true`, `"privacyHashing": true`, `"atomicRateLimiting": true`, `"conversationRetentionDays": 90`, and `"scheduledRetention": true`.
 2. Open `/terminal.html` and ask: `What kind of roles is Yahya looking for?`
 3. Ask a salary question and confirm it is redirected with a flag.
 4. Inspect D1 and confirm no raw IP or hostname column exists.
@@ -82,7 +106,7 @@ Pages observability is configured in the Cloudflare dashboard. Do not add the Wo
 
 ## Protect the private dashboard with Cloudflare Access
 
-Cloudflare Access is configured for the production `pages.dev` host. The `Portfolio Admin` self-hosted application protects both `yahya-elsawi-portfolio-bnj.pages.dev/admin/*` and `yahya-elsawi-portfolio-bnj.pages.dev/api/admin/*`. Its Allow policy accepts only `yahyaelsawi1@gmail.com`.
+Cloudflare Access is configured for the production `pages.dev` host. The `Portfolio Admin` self-hosted application protects every page below `yahya-elsawi-portfolio-bnj.pages.dev/admin/*`, including `/admin/log/`, and every API below `yahya-elsawi-portfolio-bnj.pages.dev/api/admin/*`. Its Allow policy accepts only `yahyaelsawi1@gmail.com`.
 
 `ACCESS_AUD`, `ACCESS_TEAM_DOMAIN`, and `ADMIN_EMAIL` are declared in `wrangler.jsonc`; they are application identifiers, not credentials. Keep the Access application destinations and audience synchronized with that file if the Pages hostname changes. After a relevant change, redeploy, confirm an unauthenticated request is redirected to Access, and authenticate at `/admin/` with the approved email.
 
@@ -102,6 +126,8 @@ That approval workflow is the safe version of “forever learning”: continuous
 - Granite 4.0 H Micro: https://developers.cloudflare.com/workers-ai/models/granite-4.0-h-micro/
 - Pages Functions bindings: https://developers.cloudflare.com/pages/functions/bindings/
 - Pages Git integration: https://developers.cloudflare.com/pages/get-started/git-integration/
+- Cloudflare Web Analytics setup: https://developers.cloudflare.com/web-analytics/get-started/
+- Cloudflare Web Analytics collection: https://developers.cloudflare.com/web-analytics/data-metrics/data-origin-and-collection/
 - D1 pricing: https://developers.cloudflare.com/d1/platform/pricing/
 - D1 Worker binding API: https://developers.cloudflare.com/d1/worker-api/
 - Cron Triggers: https://developers.cloudflare.com/workers/configuration/cron-triggers/

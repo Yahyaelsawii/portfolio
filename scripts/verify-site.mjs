@@ -42,6 +42,8 @@ async function resolvesFrom(htmlFile, reference) {
   const outsideRoot = path.relative(root, target).startsWith(`..${path.sep}`);
   if (outsideRoot) return false;
   const candidates = path.extname(target) ? [target] : [target, `${target}.html`, path.join(target, "index.html")];
+  const projectRoute = cleanReference.match(/^\/?work\/([a-z0-9-]+)$/);
+  if (projectRoute) candidates.push(path.join(root, `${projectRoute[1]}.html`));
   for (const candidate of candidates) {
     try {
       await access(candidate);

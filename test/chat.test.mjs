@@ -137,7 +137,7 @@ test("keeps embargoed VR details behind the deterministic disclosure lock", asyn
   const result = await invoke("What technology powers the VR Neuroanatomy project?", { ai });
   assert.equal(result.response.status, 200);
   assert.equal(result.body.model, "policy");
-  assert.match(result.body.answer, /disclosure embargo/);
+  assert.equal(result.body.answer, "This is an ongoing research project. Further details cannot be disclosed at this stage.");
   assert.doesNotMatch(result.body.answer, /Unity|headset|brain mapping/i);
 });
 

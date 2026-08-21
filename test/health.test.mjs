@@ -4,12 +4,13 @@ import { onRequestGet } from "../functions/api/health.js";
 
 test("reports privacy, rate limiting, and retention readiness", async () => {
   const response = onRequestGet({
-    env: { AI: {}, DB: {}, LOG_HASH_SECRET: "a".repeat(32) }
+    env: { AI: {}, DB: {}, LOG_HASH_SECRET: "a".repeat(32), RESEND_API_KEY: "key", CONTACT_FROM_EMAIL: "portfolio@example.com", ADMIN_EMAIL: "owner@example.com" }
   });
   const body = await response.json();
   assert.equal(body.ok, true);
   assert.equal(body.ready, true);
   assert.equal(body.ai, true);
+  assert.equal(body.contactDelivery, true);
   assert.equal(body.logging, true);
   assert.equal(body.privacyHashing, true);
   assert.equal(body.atomicRateLimiting, true);

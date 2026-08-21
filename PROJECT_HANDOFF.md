@@ -13,16 +13,21 @@ This file is the continuation guide for Yahya El-Sawi, Codex, or any other AI/de
 ## 1. Executive state
 
 - V1 is gone from the active website. The former V2 design is now the only main website.
-- The current site is a static-first HTML/CSS/JavaScript portfolio with Cloudflare Pages Functions for the AI and private analytics API.
+- The current site is a static-first HTML/CSS/JavaScript portfolio with Cloudflare Pages Functions for AI, direct contact delivery, and the private analytics API.
 - The production site is `https://yahya-elsawi-portfolio-bnj.pages.dev`. Local servers are disposable processes and must be started from the repository when needed.
-- The current public information architecture separates case studies from professional experience.
-- Yahya AI is a real server-side Cloudflare Workers AI assistant grounded only in an approved profile. It is not a hard-coded fake terminal, although some safety-sensitive questions use deterministic policy replies.
+- The Work page separates professional experience and case studies with Professional Experience open by default.
+- Yahya'AI is a real server-side Cloudflare Workers AI assistant grounded only in an approved profile. It is not a hard-coded fake terminal, although some safety-sensitive questions use deterministic policy replies.
 - The SmartMall network-automation project is published as a full collaborative case study.
 - VR Neuroanatomy has a public locked shell only. Its title and locked status are the only approved facts.
 - The private AI dashboard is protected by Cloudflare Access on both its UI and API routes, with server-side JWT verification as a second layer.
 - Monthly discovery, approval/rejection, Google Drive backup, and immediate email alerts are planned, not finished.
 - AI conversations have a published 90-day retention policy enforced by a daily scheduled Worker and request-time cleanup, atomic D1 rate limiting, and safer user-only history forwarding.
-- The downloadable CV was rebuilt on 20 August 2026 from `scripts/build_cv.py`. It includes approved StarLink and SmartMall wording, preserves the StarLink date caveat, and contains no embargoed VR details.
+- The downloadable CV was replaced on 20 August 2026 with Yahya's supplied Illustrator PDF; `assets/pdfs/Yahya_ElSawi_CV.pdf` is the source of truth.
+- Every project route now uses the same five-part verified record: problem, contribution, delivery, evidence, and outcome. Unknown or unmeasured results stay explicit.
+- Recruiter Quick View has Product & UX, Frontend, and Cybersecurity & Networks role views, plus a separate two-page recruiter brief at `assets/pdfs/Yahya_ElSawi_Recruiter_Pack.pdf`.
+- Build-time Schema.org JSON-LD covers the public profile, work collection, and project routes. It is injected into `dist/` by `scripts/build-static.mjs` and validated by `scripts/verify-dist.mjs`.
+- Cloudflare Web Analytics was enabled for the Pages project on 20 August 2026. The CSP and privacy notice are prepared; Cloudflare will inject its beacon with the next production deployment.
+- The supplied CV includes VR Neuroanatomy project details even though the website route is locked. Resolve that owner-controlled content conflict before a public push if the PDF must follow the same disclosure boundary.
 
 ## 2. Non-negotiable owner preferences
 
@@ -58,16 +63,23 @@ Major changes made during the redesign:
 13. Added unique SEO titles, descriptions, canonical URLs, social images, `robots.txt`, `sitemap.xml`, security headers, a 404 page, and redirect compatibility pages.
 14. Added a real Cloudflare Workers AI assistant, evidence links, loading bubbles, recruiter mode, page-aware context, logging, rate limiting, safety policies, and fallback models.
 15. Added separate Professional Experience and Recruiter Quick View pages.
-16. Added a public Developer Log and a private analytics dashboard foundation.
+16. Added an owner-only Developer Log and private analytics dashboard below the Cloudflare Access-protected `/admin/*` path.
 17. Added the locked VR Neuroanatomy shell with multiple independent disclosure protections.
 18. Added StarLink cybersecurity training to professional experience and the approved knowledge base.
 19. Turned the SmartMall network project into a full case study with optimized report visuals and an interactive recovery demonstration.
+20. Standardized verified evidence and outcome boundaries across all seven project routes.
+21. Added a global bottom-right scroll-to-top control that lifts above the footer on every viewport.
+22. Added a production-shipped four-page portfolio roadmap and sitemap PDF with local and production access links.
+21. Added role-specific recruiter views with URL-addressable tab state.
+22. Added a visually verified two-page recruiter brief that complements the full CV.
+23. Added build-time Schema.org graphs for the profile, work index, and every project route.
+24. Enabled Cloudflare Web Analytics and updated the CSP and privacy disclosure for it.
 
 Useful history markers:
 
 - `4ec5366` — promoted the redesigned portfolio.
 - `0269a85` — merged the redesign into the default branch.
-- `de972b3` — launched Yahya AI and expanded verified credentials.
+- `de972b3` — launched Yahya'AI and expanded verified credentials.
 - `56e1828` — added flagship case studies, StarLink experience, and the dashboard foundation.
 
 If the exact old design must be inspected, use Git history. The current product direction is the post-V1 design.
@@ -78,7 +90,7 @@ Old-PC references that were used but are not committed:
 - Palette/design brief: `C:\Users\yahya\Downloads\DESIGN.md`
 - SmartMall source report: `C:\Users\yahya\Downloads\Final Project_Group4.docx`
 
-The implemented design and optimized public assets are committed, so those first two references are not required to run the site. The SmartMall DOCX is required only if the next agent needs to re-audit the report against the public case study. No VR report or screenshots have been provided yet, and no StarLink certificate has been provided yet.
+The implemented design and optimized public assets are committed, so those first two references are not required to run the site. The SmartMall DOCX is required only if the next agent needs to re-audit the report against the public case study. No VR report or screenshots have been provided. The StarLink certificate supplied on 20 August 2026 is published as optimized AVIF/WebP variants.
 
 ## 4. Current information architecture
 
@@ -87,27 +99,27 @@ The implemented design and optimized public assets are committed, so those first
 | Route/file | Purpose | Notes |
 | --- | --- | --- |
 | `/` / `index.html` | Main portfolio landing page | Product, frontend, XR, and network positioning; links to recruiter mode. |
-| `/work` / `work.html` | Case-study index | Distinguishes published work, the locked VR project, and interactive SmartMall work. |
-| `/experience` / `experience.html` | Professional employment/training | Gift It and StarLink; intentionally separate from academic/design case studies. |
+| `/work` / `work.html` | Employment and case-study index | Professional Experience is the default tab; Case Studies contains published work, locked VR, and SmartMall. |
+| `/experience` / `experience.html` | Compatibility redirect | Permanently redirects to `/work`. |
 | `/about` / `about.html` | Biography and working philosophy | Uses optimized portrait variants. |
-| `/resume` / `resume.html` | Web resume, skills, grouped credentials | Links to the current, embargo-safe downloadable PDF CV. |
-| `/contact` / `contact.html` | Public contact details and mailto form | The form opens the visitor’s mail client; it is not a server-side form. |
-| `/terminal` / `terminal.html` | Yahya AI chat | Supports general, recruiter, and page-context modes. |
-| `/recruiter` / `recruiter.html` | 60-second recruiter view | Availability, mobility, evidence, and direct AI entry. |
-| `/log` / `log.html` | Public developer log | Only approved, non-confidential updates. |
-| `/admin/` | Private AI analytics | Must be protected with Cloudflare Access; API also verifies the Access JWT. |
+| `/resume` / `resume.html` | Embedded PDF, skills, grouped credentials | PDF first; optional tabs reveal skills or credentials on demand. |
+| `/contact` / `contact.html` | Public contact details and direct form | Posts to `/api/contact`; Resend, D1, and environment values must be configured. |
+| `/terminal` / `terminal.html` | Yahya'AI chat | Supports general, recruiter, and page-context modes. |
+| `/recruiter` / `recruiter.html` | 60-second recruiter view | Role-specific evidence, availability, mobility, recruiter brief, full CV, and direct AI entry. |
+| `/admin/` | Private AI analytics | Protected by Cloudflare Access; the API also verifies the Access JWT. |
+| `/admin/log/` / `admin/log.html` | Private developer log | Owner-only, excluded from public navigation and search, and covered by the `/admin/*` Access policy. |
 
 ### Project routes
 
 | Project | Route | Public status | Attribution boundary |
 | --- | --- | --- | --- |
-| Gift It Checkout & E-Invite | `/gift-it` | Published | Product/UX work connected to professional Gift It experience. |
-| RIT Student App 2.0 | `/rit-app` | Published | RIT project, dated September–December 2023. |
-| Passwordless Login & Signup | `/passwordless` | Published | Yahya owned UX/UI and handoff specifications; do not imply production implementation. |
-| Vehicle Rental Operations | `/vehicle-rental` | Published | Oracle/database and operations case study. |
-| Mood Insights & Stress Alerts | `/mood-insights` | Published concept | UX/wellbeing concept; do not present simulated outcomes as measured clinical results. |
-| SmartMall AI Network Automation | `/network-automation` | Published | Five-person collaborative RIT project; Yahya’s documented contribution was documentation and error handling. Team results must remain labeled as team results. |
-| VR Neuroanatomy | `/vr-neuroanatomy` | Locked/noindex | Title and locked status only until written disclosure approval. |
+| Gift It Checkout & E-Invite Redesign | `/work/gift-it` | Published | Product/UX work connected to professional Gift It experience. |
+| RIT Student App 2.0 | `/work/rit-app` | Published | RIT project, dated September–December 2023. |
+| Passwordless Login & Signup Redesign | `/work/passwordless` | Published | Yahya owned UX/UI and handoff specifications; do not imply production implementation. |
+| Vehicle Rental Operations Database | `/work/vehicle-rental` | Published | Oracle/database and operations case study. |
+| Mood Insights & Stress Alerts | `/work/mood-insights` | Published concept | UX/wellbeing concept; do not present simulated outcomes as measured clinical results. |
+| SmartMall AI Network Automation | `/work/network-automation` | Published | Five-person collaborative RIT project; all group members contributed equally. Team results remain labeled as team results. |
+| VR Neuroanatomy | `/work/vr-neuroanatomy` | Locked/noindex | Exact public message only until written disclosure approval. |
 
 Compatibility files `project.html`, `deep-scan.html`, and `infrastructure.html` redirect old links and are intentionally excluded from indexing.
 
@@ -139,7 +151,7 @@ Design principles used:
 - Short, fast motion; avoid long cinematic transitions.
 - Responsive images with explicit dimensions to reduce layout shift.
 - Original covers instead of repeated logos or unapproved brand assets.
-- Technical language is balanced by the portrait, biography, and public log.
+- Technical language is balanced by the portrait and biography; engineering notes remain in the private developer log.
 - Interactive elements must teach something. The SmartMall demo explains failure/recovery instead of adding motion for its own sake.
 - Accessibility basics include visible focus, semantic headings, keyboard-friendly controls, alt text, mobile navigation, and reduced-motion behavior.
 
@@ -217,7 +229,7 @@ Approved framing:
 - Original report framing: Secure Small Mall Automation System: An AI-Assisted Network Automation System.
 - RIT Dubai, Network Design & Performance, Spring 2026.
 - Five-person collaborative project; teammates approved public presentation.
-- Yahya confirmed it was fully collaborative, while the report’s formal contribution table recorded Yahya at 16%, centered on documentation and error handling. The site resolves this honestly: the team designed/built collaboratively, Yahya’s documented contribution is stated, and group performance is labeled as team output.
+- Required public collaboration description: “All group members contributed equally across the project.” Group performance remains labeled as team output.
 - Fictional Bank, CoffeeShop, Carrefour, and IKEA names may remain.
 
 Public system evidence:
@@ -249,7 +261,8 @@ This is the strictest content rule in the project.
 Approved public facts:
 
 - Project title: VR Neuroanatomy.
-- Status: locked pending written disclosure approval.
+- Status: ongoing and locked.
+- Exact public message: “This is an ongoing research project. Further details cannot be disclosed at this stage.”
 
 Everything else is non-public. Do not reveal, infer, confirm, deny, reconstruct, hint at, or encode:
 
@@ -262,7 +275,7 @@ Everything else is non-public. Do not reveal, infer, confirm, deny, reconstruct,
 
 Current protections:
 
-- Locked page contains only a neutral abstract lock/capsule cover.
+- Locked page contains only the project title, lock status, exact public message, and a return action.
 - `noindex,nofollow,noarchive` meta tag.
 - `robots.txt` disallow.
 - `X-Robots-Tag` and no-store headers in `_headers`.
@@ -284,20 +297,24 @@ Do not “temporarily” expose content for testing on a public preview URL.
 
 ## 10. Credentials and resume
 
-The resume page groups 10 verified records:
+The resume page groups 11 verified records:
 
 - Education: RIT BSc in Computing and Information Technologies, May 2026.
-- Professional development: Software Design: Modeling with UML; Business Analysis & Process Management; My Marketing Experience Business Simulation; Odoo Technical Bootcamp.
+- Professional development: StarLink Internship Program; Software Design: Modeling with UML; Business Analysis & Process Management; My Marketing Experience Business Simulation; Odoo Technical Bootcamp.
 - Research ethics/compliance: four CITI certificates for minimal-risk student research, social/behavioral research, export compliance, and research security.
 - Challenge/event: RIT Dubai and ZainTECH Data Challenge.
 
 Certificate PDFs are committed under `assets/pdfs/` with safe filenames. The four supplied CITI files were copied into that folder and are already linked.
 
-`assets/pdfs/Yahya_ElSawi_CV.pdf` is generated by `scripts/build_cv.py`. It includes approved StarLink/network/cybersecurity content, labels the SmartMall contribution as 16% documentation and error handling, and excludes all VR details beyond the separate website's locked title/status. Install `reportlab==4.4.9` from `requirements-dev.txt` before rebuilding, then render and visually inspect both pages.
+`assets/pdfs/Yahya_ElSawi_CV.pdf` is the owner-supplied Illustrator resume and is not generated from source code in this repository. The obsolete ReportLab generator was removed to prevent accidental replacement with stale content. Always render and visually inspect a replacement PDF before publishing.
 
-The StarLink certificate has not been supplied. When received, verify the exact title and dates, add it to the appropriate credential category, update the record count, update the PDF CV, and remove the date caveat only if the certificate resolves it.
+`assets/pdfs/Yahya_ElSawi_Recruiter_Pack.pdf` is a separate two-page hiring brief generated by `scripts/build_recruiter_pack.py`. It summarizes role fit, availability, professional signals, and selected evidence without replacing or rewriting the owner-supplied CV. Render and inspect both pages whenever its source changes.
 
-## 11. Yahya AI architecture
+The inline preview is generated from that PDF and stored under `assets/Pictures/resume/`. Render page one to PNG with Poppler, then run `scripts/optimize_images.py --resume-preview /path/to/render.png` with the Python environment from `codex_app__load_workspace_dependencies` whenever the PDF changes.
+
+The supplied StarLink certificate states July–August 2026 and is stored as optimized variants under `assets/Pictures/credentials/`.
+
+## 11. Yahya'AI architecture
 
 Relevant files:
 
@@ -431,10 +448,12 @@ Scheduled retention:
 - D1 binding: `yahya-portfolio-ai`.
 - Deployed version on 20 August 2026: `8295cca1-4e63-42b9-bee3-8ea213a8987f`.
 
-The `Portfolio Admin` Cloudflare Access application protects both:
+The `Portfolio Admin` Cloudflare Access application protects all private admin pages and APIs, including:
 
 - `yahya-elsawi-portfolio-bnj.pages.dev/admin/*`
 - `yahya-elsawi-portfolio-bnj.pages.dev/api/admin/*`
+
+The private developer log is available at `/admin/log/`. Legacy `/log` and `/log.html` requests redirect there and cannot bypass Access.
 
 The `Portfolio owner` Allow policy accepts only `yahyaelsawi1@gmail.com`. The application ID is `081f1274-a7bd-4d5b-ada6-b542dae4f4e6`.
 
@@ -500,39 +519,32 @@ The dependency-free `npm run build` command creates an explicit `dist/` artifact
 | `styles.css` | Entire design system, responsive layout, animation, dashboard, case-study, and component styles. |
 | `network-automation.html` | Standalone SmartMall narrative and figures. |
 | `vr-neuroanatomy.html` | Embargo-safe locked shell only. |
-| `experience.html` | Gift It and StarLink professional experience. |
+| `work.html` | Gift It and StarLink professional experience plus the case-study index. |
 | `resume.html` | Web skills and grouped credentials. |
 | `functions/_shared/profile.js` | Public AI knowledge and approved evidence links. |
 | `functions/api/chat.js` | AI/security/logging behavior. |
+| `functions/api/contact.js` | Direct contact validation, rate limiting, and Resend delivery. |
 | `schema.sql` | D1 logging and future knowledge candidates. |
 | `functions/_shared/access.js` | Cloudflare Access JWT validation. |
 | `functions/api/admin/analytics.js` | Private analytics read API. |
-| `admin/index.html`, `dashboard.js` | Private dashboard UI. |
+| `admin/index.html`, `admin/log.html`, `dashboard.js` | Private analytics and developer-log UI. |
 | `functions/_shared/retention.js` | Shared 90-day conversation and one-day rate-limit cleanup policy. |
 | `workers/retention.js`, `wrangler.retention.jsonc` | Daily production cleanup Worker and schedule. |
 | `wrangler.jsonc` | Cloudflare Pages bindings and Access identifiers. |
 | `_headers`, `_routes.json` | Security/cache headers and Functions routing. |
 | `robots.txt`, `sitemap.xml` | Search visibility. |
+| `scripts/build_sitemap_pdf.py`, `output/pdf/Yahya_ElSawi_Portfolio_Roadmap_and_Sitemap.pdf` | Reproducible local/production route guide shipped with the public build. |
 | `AI_SETUP.md` | Operational Cloudflare setup guide. |
 | `covers/` | Unique responsive project cover art and social images. |
 | `assets/Pictures/responsive/` | Existing case-study responsive image variants. |
 | `assets/Pictures/network-automation/` | SmartMall report-derived optimized visuals. |
-| `scripts/build_cv.py`, `assets/pdfs/` | Reproducible public CV generator, generated CV, and verified certificates. |
+| `assets/pdfs/` | Owner-supplied CV and verified certificate PDFs. |
 
-When changing a standard case study, update both its HTML metadata and its content entry in `main.js`. SmartMall and VR are standalone pages and need direct HTML edits. When changing any public fact, also update `profile.js` so Yahya AI does not contradict the website.
+When changing a standard case study, update both its HTML metadata and its content entry in `main.js`. SmartMall and VR are standalone pages and need direct HTML edits. When changing any public fact, also update `profile.js` so Yahya'AI does not contradict the website.
 
 ## 17. Verification already completed
 
-The 20 August 2026 hardening gate includes:
-
-- Standards validation for all 22 source HTML files and local references.
-- JavaScript syntax checks and 22 focused unit tests for chat, Access JWTs, analytics minimization, health, and retention.
-- An explicit public allowlist build: 262 files / 9.6 MiB, with source and operational files rejected from `dist/`.
-- Playwright checks across 12 routes at 1440x900 and 390x844, with horizontal-overflow, runtime-error, landmark, heading, interaction, and WCAG A/AA assertions.
-- Human screenshot review of home, work, project media, and the interactive SmartMall panel.
-- Two-page CV render inspection plus text checks for embargo and attribution boundaries.
-- Production D1 verification and removal of two stale rate-limit counters; no expired conversations existed.
-- Daily retention Worker deployment and trigger verification.
+The 20 August 2026 hardening gate includes standards validation, JavaScript syntax checks, focused unit tests, an explicit public allowlist build, desktop/mobile Playwright and WCAG checks, human screenshot review, PDF render inspection, D1 verification, and daily retention-Worker verification. Treat `npm run check:release` as the authoritative current count because routes, assets, and tests continue to grow.
 
 The release command is `npm run check:release`. Production verification is still required after every Pages deployment.
 
@@ -547,12 +559,11 @@ The release command is `npm run check:release`. Production verification is still
 
 ### P1 — truth and recruiter consistency
 
-1. Obtain StarLink’s final certificate/HR record and verify exact dates/title.
-2. Rebuild and re-review the CV after the final StarLink record arrives.
-3. Add the StarLink certificate to the grouped credentials if approved.
-4. Add the approved X handle to `profile.js` and optionally the contact UI.
-5. Review every project outcome and replace aspirational wording with measured evidence wherever new evidence exists.
-6. Update sitemap `lastmod` dates when content is republished.
+1. Obtain any future StarLink HR record needed to corroborate the approved July–August 2026 certificate and role title.
+2. Resolve the CV/locked-VR disclosure mismatch before public release if the PDF must follow the same confidentiality boundary.
+3. Add the approved X handle to `profile.js` and optionally the contact UI.
+4. Replace qualified or unknown project outcomes only when new measured evidence exists.
+5. Update sitemap `lastmod` dates when content is republished.
 
 ### P1 — AI resilience and owner controls
 
@@ -569,12 +580,12 @@ The release command is `npm run check:release`. Production verification is still
 3. Run keyboard-only and screen-reader spot checks on nav, terminal, demo, filters, forms, and dashboard.
 4. Test at 320, 390, 768, 1024, 1440, and ultrawide widths.
 5. Validate social cards and convert remaining relative OG image URLs to absolute URLs if validators report issues.
-6. Check the mailto contact experience and clearly label that it opens an email app.
+6. Verify direct contact delivery, error states, and rate limiting after every Pages Functions deployment.
 
 ### P2 — high-value “wow” improvements
 
 1. Deepen the SmartMall interactive demonstration with an explainable event timeline, planned diff, validation evidence, and recovery state—still clearly simulated.
-2. Add a recruiter evidence trail: claim → project proof → exact contribution → contact action.
+2. Expand the existing recruiter evidence trail only when new verified evidence becomes public.
 3. Add subtle context-aware Terminal suggestions per case study.
 4. Add safe original StarLink visuals only from Yahya’s isolated recreation lab and only after content review.
 5. Use an abstract, non-informative lock animation on VR only if it reveals no project clues.
