@@ -57,6 +57,11 @@ async function walk(directory) {
 
 for (const requiredPath of requiredPaths) await access(path.join(output, requiredPath));
 
+const functionRoutes = JSON.parse(await readFile(path.join(output, "_routes.json"), "utf8"));
+for (const requiredRoute of ["/api/*", "/admin/api/*"]) {
+  if (!functionRoutes.include?.includes(requiredRoute)) throw new Error(`Pages Functions route is missing: ${requiredRoute}`);
+}
+
 for (const structuredDataPath of structuredDataPaths) {
   const html = await readFile(path.join(output, structuredDataPath), "utf8");
   const blocks = [...html.matchAll(/<script type="application\/ld\+json">([\s\S]*?)<\/script>/g)];
