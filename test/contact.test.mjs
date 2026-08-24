@@ -92,8 +92,29 @@ test("uses the approved V1 server-side form handler when Resend is unavailable",
     const response = await onRequestPost({ request:contactRequest(), env });
     assert.equal(response.status, 200);
     assert.equal(delivery.url, env.CONTACT_FORM_ENDPOINT);
+    assert.equal(delivery.options.headers.origin, "https://yahyaelsawi.website");
+    assert.equal(delivery.options.headers.referer, "https://yahyaelsawi.website/contact");
     assert.equal(delivery.body.email, "person@example.com");
     assert.equal(delivery.body.message, "This is a valid test message.");
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("reports when the V1 form handler still needs owner activation", async () => {
+  const originalFetch = globalThis.fetch;
+  globalThis.fetch = async () => new Response(JSON.stringify({
+    success:"false",
+    message:"This form needs Activation. Activate Form to continue."
+  }), { status:200 });
+  const env = environment();
+  delete env.RESEND_API_KEY;
+  delete env.CONTACT_FROM_EMAIL;
+  env.CONTACT_FORM_ENDPOINT = "https://formsubmit.co/ajax/75adad6ce5e399fb72fe44ae27bd0d55";
+  try {
+    const response = await onRequestPost({ request:contactRequest(), env });
+    assert.equal(response.status, 503);
+    assert.equal((await response.json()).error, "CONTACT_ACTIVATION_REQUIRED");
   } finally {
     globalThis.fetch = originalFetch;
   }

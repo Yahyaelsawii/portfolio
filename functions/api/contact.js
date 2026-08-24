@@ -14,6 +14,7 @@ const jsonHeaders = publicCorsHeaders({
   "cache-control": "no-store, max-age=0",
   "x-content-type-options": "nosniff"
 });
+const PUBLIC_CONTACT_URL = "https://yahyaelsawi.website/contact";
 
 function respond(body, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: jsonHeaders });
@@ -145,7 +146,13 @@ export async function onRequestPost({ request, env }) {
         })
       : await fetch(env.CONTACT_FORM_ENDPOINT, {
           method:"POST",
-          headers:{ accept:"application/json", "content-type":"application/json" },
+          headers:{
+            accept:"application/json",
+            "content-type":"application/json",
+            origin:new URL(PUBLIC_CONTACT_URL).origin,
+            referer:PUBLIC_CONTACT_URL,
+            "user-agent":"Yahya El-Sawi portfolio contact form"
+          },
           body:JSON.stringify({
             name,
             email,
@@ -162,6 +169,24 @@ export async function onRequestPost({ request, env }) {
 
   if (!delivery.ok) {
     return respond({ error:"DELIVERY_FAILED", message:"Your message could not be delivered. Please try again shortly." }, 502);
+  }
+  if (!resendReady) {
+    const providerText = await delivery.text().catch(() => "");
+    let providerResult = {};
+    try {
+      providerResult = JSON.parse(providerText);
+    } catch {
+      providerResult = {};
+    }
+    if (String(providerResult.success).toLowerCase() !== "true") {
+      const activationPending = /activation|activate form/i.test(providerResult.message || "");
+      return respond({
+        error:activationPending ? "CONTACT_ACTIVATION_REQUIRED" : "DELIVERY_FAILED",
+        message:activationPending
+          ? "Contact delivery is awaiting owner activation. Please use the email link above for now."
+          : "Your message could not be delivered. Please try again shortly."
+      }, activationPending ? 503 : 502);
+    }
   }
   return respond({ ok:true });
 }

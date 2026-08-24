@@ -3,6 +3,7 @@ const content = document.querySelector('#dashboard-content');
 const refresh = document.querySelector('#dashboard-refresh');
 const tabs = [...document.querySelectorAll('[role="tab"][aria-controls]')];
 const isGitHubPagesAdmin = location.hostname === 'yahyaelsawii.github.io';
+let refreshResetTimer;
 
 function setText(selector, value) {
   const node = document.querySelector(selector);
@@ -190,7 +191,13 @@ function renderAi(data) {
 }
 
 async function loadDashboard() {
-  refresh.disabled = true;
+  const isRefresh = Boolean(content && !content.hidden);
+  clearTimeout(refreshResetTimer);
+  if (refresh) {
+    refresh.disabled = true;
+    refresh.setAttribute('aria-busy', 'true');
+    refresh.textContent = isRefresh ? 'Refreshing…' : 'Loading…';
+  }
   try {
     const response = await fetch('/admin/api/analytics', {
       headers: { accept: 'application/json' },
@@ -205,11 +212,17 @@ async function loadDashboard() {
     renderAi(data.ai || {});
     gate.hidden = true;
     content.hidden = false;
+    if (refresh && isRefresh) refresh.textContent = 'Refreshed';
   } catch (error) {
     content.hidden = true;
     showError(error.message);
   } finally {
-    refresh.disabled = false;
+    if (refresh) {
+      refresh.disabled = false;
+      refresh.removeAttribute('aria-busy');
+      if (!isRefresh) refresh.textContent = 'Refresh';
+      else refreshResetTimer = setTimeout(() => { refresh.textContent = 'Refresh'; }, 1200);
+    }
   }
 }
 

@@ -276,7 +276,12 @@ try {
       recent:[{ created_at:"2026-08-24T12:00:00Z", question:"Role fit?", country:"AE", region:"Dubai", city:"Dubai", flag:"none", response_ms:125 }]
     }
   };
-  await detailPage.route("**/admin/api/analytics", route => route.fulfill({ status:200, contentType:"application/json", body:JSON.stringify(dashboardPayload) }));
+  let dashboardRequests = 0;
+  await detailPage.route("**/admin/api/analytics", async route => {
+    dashboardRequests += 1;
+    await new Promise(resolve => setTimeout(resolve, 80));
+    await route.fulfill({ status:200, contentType:"application/json", body:JSON.stringify(dashboardPayload) });
+  });
   await detailPage.goto(`${base}/admin/`, { waitUntil:"networkidle" });
   await detailPage.waitForFunction(() => document.querySelector("#dashboard-content")?.hidden === false);
   if (!await detailPage.locator("#website-analytics-panel").isVisible()) failures.push("admin analytics: Website Analytics did not open by default");
@@ -285,6 +290,9 @@ try {
   await detailPage.getByRole("tab", { name:"AI Analytics" }).click();
   if (!await detailPage.locator("#ai-analytics-panel").isVisible()) failures.push("admin analytics: AI Analytics tab did not open");
   if (await detailPage.locator("#website-analytics-panel").isVisible()) failures.push("admin analytics: Website Analytics remained visible after tab switch");
+  await detailPage.getByRole("button", { name:"Refresh" }).click();
+  await detailPage.waitForFunction(() => document.querySelector("#dashboard-refresh")?.textContent === "Refreshed");
+  if (dashboardRequests !== 2) failures.push(`admin analytics: refresh made ${dashboardRequests} requests instead of 2 total`);
   await detailPage.unroute("**/admin/api/analytics");
 
   await detailPage.route("**/api/contact", route => route.fulfill({ status:200, contentType:"application/json", body:JSON.stringify({ ok:true }) }));
