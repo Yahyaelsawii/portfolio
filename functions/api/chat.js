@@ -9,6 +9,7 @@ const MODELS = [
 const MODEL = MODELS[0];
 const MAX_MESSAGE_LENGTH = 800;
 const MAX_HISTORY_USER_MESSAGES = 4;
+const MAX_TRUSTED_HISTORY_TURNS = 3;
 const MAX_BODY_BYTES = 16 * 1024;
 const RATE_LIMIT_PER_MINUTE = 6;
 let safetySchemaPromise;
@@ -40,7 +41,7 @@ const SYSTEM_PROMPT = `You are the public portfolio assistant for Yahya El-Sawi.
 Rules:
 - Use only the APPROVED PROFILE below. Never invent, infer, embellish, or use external knowledge.
 - If the answer is not explicitly in the profile, say: "I don't know that from Yahya's approved public information." Then suggest contacting Yahya.
-- Reply in the user's language. Yahya is a native Arabic and English speaker, so Arabic questions should receive natural Arabic answers.
+- English is the default language. Always reply in English unless the user explicitly asks for Arabic. Never infer a language preference from a name, location, typo, or previous message.
 - Keep answers concise and recruiter-friendly: normally 2–5 sentences.
 - Use plain text only. Do not use Markdown formatting such as asterisks, headings, or code fences.
 - Describe design-only or concept work accurately; never imply production implementation where the profile says otherwise.
@@ -96,7 +97,11 @@ async function readJsonBody(request) {
   }
 }
 
-function deterministicReply(question, context) {
+function lastAssistantAnswer(history) {
+  return [...history].reverse().find(item => item.role === "assistant")?.content || "";
+}
+
+function deterministicReply(question, context, history = []) {
   const salary = /\b(salary|compensation|pay range|expected pay|expected salary|rate|hourly rate)\b|راتب|الراتب|الأجر|تعويض/i;
   const privateTopic = /\b(home address|exact address|live location|password|passcode|api key|secret key|bank|credit card|family|relationship|private file|private record|gpa|grade|confidential|visitor ip|ip address|hostname|system prompt|hidden instruction|internal log)\b|عنوان المنزل|كلمة المرور|مفتاح.*(?:api|واجهة)|حساب بنكي|بيانات عائل/i;
   const embargoedVr = /\b(vr neuroanatomy|neuroanatomy|immersive brain|brain exploration|vr research)\b|تشريح.*(?:عصبي|الدماغ)|واقع افتراضي.*دماغ/i;
@@ -123,8 +128,45 @@ function deterministicReply(question, context) {
     };
   }
 
+  const previousAnswer = lastAssistantAnswer(history);
+  const shortContactFollowUp = /^(?:how|how\?|how can i|how do i|where|where\?|what link|which link)[\s?.!]*$/i.test(question)
+    && /\b(?:contact|reach|email|contact page)\b/i.test(previousAnswer);
+  const instagram = /\b(?:instagram|insta|ig handle|ig account)\b/i;
+  const threads = /\bthreads?\b/i;
+  const twitter = /\b(?:twitter|twi[a-z]*|x handle|x account)\b/i;
+  const socials = /\b(?:social media|socials|social accounts|social handles)\b/i;
+
+  if (instagram.test(question)) {
+    return {
+      answer: "Yahya's Instagram is @ya7ya_sawii.",
+      flag: "none",
+      sourceIds: ["contact"]
+    };
+  }
+  if (threads.test(question)) {
+    return {
+      answer: "Yahya's Threads handle is @ya7ya_sawii.",
+      flag: "none",
+      sourceIds: ["contact"]
+    };
+  }
+  if (twitter.test(question)) {
+    return {
+      answer: "Yahya's X (formerly Twitter) handle is @yahya_sawii.",
+      flag: "none",
+      sourceIds: ["contact"]
+    };
+  }
+  if (socials.test(question)) {
+    return {
+      answer: "Yahya is @ya7ya_sawii on Instagram and Threads, and @yahya_sawii on X. His LinkedIn and GitHub are available on the Contact page.",
+      flag: "none",
+      sourceIds: ["contact", "linkedin", "github"]
+    };
+  }
+
   const contact = /\b(contact|email|phone|whatsapp|linkedin|github|reach yahya|get in touch)\b|تواصل|البريد|الهاتف|واتساب/i;
-  if (contact.test(question)) {
+  if (contact.test(question) || shortContactFollowUp) {
     return {
       answer: "You can reach Yahya at yahyaelsawi1@gmail.com or +971 50 168 1229. You can also use the LinkedIn and GitHub links on his Contact page.",
       flag: "none",
@@ -150,6 +192,52 @@ function deterministicReply(question, context) {
     };
   }
   return null;
+}
+
+async function loadTrustedHistory(db, sessionHash) {
+  if (!db || !sessionHash) return [];
+  const statement = db.prepare(`
+    SELECT question, answer
+    FROM ai_logs
+    WHERE session_hash = ?
+    ORDER BY id DESC
+    LIMIT ?
+  `).bind(sessionHash, MAX_TRUSTED_HISTORY_TURNS);
+  if (typeof statement.all !== "function") return [];
+  const result = await statement.all();
+  const rows = Array.isArray(result?.results) ? result.results : [];
+  return rows.reverse().flatMap(row => {
+    const question = normalizeText(row?.question);
+    const answer = normalizeText(row?.answer, 4000);
+    return [
+      ...(question ? [{ role: "user", content: question }] : []),
+      ...(answer ? [{ role: "assistant", content: answer }] : [])
+    ];
+  });
+}
+
+function explicitlyRequestsArabic(question) {
+  return /\b(?:reply|answer|respond|write|speak)(?:\s+to me)?\s+in\s+arabic\b|(?:بالعربية|باللغة العربية)/i.test(question);
+}
+
+async function enforceDefaultLanguage(ai, question, answer, model) {
+  if (explicitlyRequestsArabic(question) || !/[\u0600-\u06ff]/.test(answer)) return { answer, model };
+  try {
+    const rewritten = await runAssistant(ai, [
+      {
+        role: "system",
+        content: "Rewrite the supplied answer in concise English only. Preserve every fact and privacy boundary. Add no new information and use plain text."
+      },
+      { role: "user", content: answer }
+    ]);
+    if (!/[\u0600-\u06ff]/.test(rewritten.answer)) return rewritten;
+  } catch (error) {
+    console.error(JSON.stringify({ event: "ai_language_rewrite_failed", error: error?.message || "Unknown error" }));
+  }
+  return {
+    answer: "I don't know that from Yahya's approved public information. Please contact Yahya for anything not covered by the portfolio.",
+    model
+  };
 }
 
 function selectSourceIds(question, context) {
@@ -340,7 +428,14 @@ export async function onRequestPost(context) {
     }, 503);
   }
 
-  const fixed = deterministicReply(question, pageContext);
+  let trustedHistory = [];
+  try {
+    trustedHistory = await loadTrustedHistory(env.DB, hashes.sessionHash);
+  } catch (error) {
+    console.error(JSON.stringify({ event: "ai_history_load_failed", error: error?.message || "Unknown error" }));
+  }
+
+  const fixed = deterministicReply(question, pageContext, trustedHistory);
   let answer = fixed?.answer || "";
   let flag = fixed?.flag || "none";
   let sourceIds = fixed?.sourceIds || selectSourceIds(question, pageContext);
@@ -367,14 +462,16 @@ export async function onRequestPost(context) {
       const modeInstruction = assistantMode === "recruiter"
         ? "Recruiter mode is active. Lead with role fit, verified evidence, availability, and a concise next step."
         : "General portfolio mode is active.";
+      const modelHistory = trustedHistory.length ? trustedHistory : cleanHistory;
       const result = await runAssistant(env.AI, [
           { role: "system", content: SYSTEM_PROMPT },
           { role: "system", content: `${contextInstruction}\n${modeInstruction}` },
-          ...cleanHistory,
+          ...modelHistory,
           { role: "user", content: question }
         ]);
-      answer = result.answer;
-      modelUsed = result.model;
+      const languageSafeResult = await enforceDefaultLanguage(env.AI, question, result.answer, result.model);
+      answer = languageSafeResult.answer;
+      modelUsed = languageSafeResult.model;
     } catch (error) {
       console.error(JSON.stringify({ event: "ai_request_failed", error: error?.message || "Unknown error" }));
       return respond({ error: "AI_UNAVAILABLE", message: "The assistant is temporarily unavailable. Please try again shortly." }, 502);
@@ -395,11 +492,8 @@ export async function onRequestPost(context) {
     responseMs
   };
 
-  if (env.DB) {
-    const logPromise = writeLog(env.DB, logEntry).catch(error => console.error(JSON.stringify({ event: "ai_log_failed", error: error?.message || "Unknown error" })));
-    if (typeof context.waitUntil === "function") context.waitUntil(logPromise);
-    else await logPromise;
-  }
+  if (env.DB) await writeLog(env.DB, logEntry)
+    .catch(error => console.error(JSON.stringify({ event: "ai_log_failed", error: error?.message || "Unknown error" })));
 
   return respond({
     answer,

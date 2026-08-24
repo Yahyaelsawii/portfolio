@@ -1,7 +1,32 @@
 const A = '/assets/Pictures/';
 const CLOUDFLARE_SERVICE_ORIGIN = 'https://yahya-elsawi-portfolio-bnj.pages.dev';
+const PUBLIC_SITE_ORIGIN = 'https://yahyaelsawi.website';
 const isGitHubPages = location.hostname === 'yahyaelsawii.github.io';
 const apiEndpoint = path => `${isGitHubPages ? CLOUDFLARE_SERVICE_ORIGIN : ''}${path}`;
+
+if (isGitHubPages) {
+  const legacyPath = location.pathname.replace(/^\/portfolio\/?/, '/');
+  const legacyRoutes = {
+    '/':'/', '/index.html':'/', '/about.html':'/about', '/contact.html':'/contact',
+    '/privacy.html':'/privacy', '/recruiter.html':'/recruiter', '/resume.html':'/resume',
+    '/terminal.html':'/terminal', '/work.html':'/work', '/gift-it.html':'/work/gift-it',
+    '/rit-app.html':'/work/rit-app', '/passwordless.html':'/work/passwordless',
+    '/vehicle-rental.html':'/work/vehicle-rental', '/mood-insights.html':'/work/mood-insights',
+    '/network-automation.html':'/work/network-automation', '/vr-neuroanatomy.html':'/work/vr-neuroanatomy'
+  };
+  const canonicalPath = legacyRoutes[legacyPath];
+  if (canonicalPath) location.replace(`${PUBLIC_SITE_ORIGIN}${canonicalPath}${location.search}${location.hash}`);
+}
+
+function getAnonymousSessionId() {
+  try {
+    const sessionId = sessionStorage.getItem('yahya-ai-session') || crypto.randomUUID();
+    sessionStorage.setItem('yahya-ai-session', sessionId);
+    return sessionId;
+  } catch {
+    return crypto.randomUUID();
+  }
+}
 
 const projects = [
   {
@@ -139,6 +164,27 @@ function renderProjectDetail() {
   <section class="section-soft"><div class="shell content-grid"><aside class="content-nav"><span class="eyebrow">Contents</span>${nav}<a href="/terminal?context=${encodeURIComponent(project.id)}">Ask Yahya'AI about this project</a><a href="/contact">Discuss this project</a></aside><div class="story">${project.sections.map(renderSection).join('')}<article class="story-block next-project"><span class="eyebrow">End of scan</span><h2>Continue exploring.</h2><div class="actions"><a class="btn btn-primary" href="/work?view=case-studies">All projects</a><a class="btn btn-secondary" href="/terminal?context=${encodeURIComponent(project.id)}">Ask Yahya'AI</a></div></article></div></div></section>`;
 }
 
+function appendChatEvidence(message, sources = []) {
+  if (!sources.length) return;
+  const evidence = document.createElement('div');
+  evidence.className = 'ai-evidence';
+  const title = document.createElement('span');
+  title.textContent = 'Evidence:';
+  evidence.append(title);
+  sources.forEach(source => {
+    if (!source?.url || !source?.label) return;
+    const link = document.createElement('a');
+    link.href = isGitHubPages && source.url.startsWith('/') ? `${PUBLIC_SITE_ORIGIN}${source.url}` : source.url;
+    link.textContent = source.label;
+    if (/^https?:\/\//.test(source.url)) {
+      link.target = '_blank';
+      link.rel = 'noopener noreferrer';
+    }
+    evidence.append(link);
+  });
+  message.append(evidence);
+}
+
 function createChatMessage(role, text, sources = []) {
   const message = document.createElement('div');
   message.className = `ai-message ai-message-${role}`;
@@ -151,26 +197,7 @@ function createChatMessage(role, text, sources = []) {
   body.className = 'ai-message-body';
   body.textContent = text;
   message.append(label, body);
-
-  if (sources.length) {
-    const evidence = document.createElement('div');
-    evidence.className = 'ai-evidence';
-    const title = document.createElement('span');
-    title.textContent = 'Evidence:';
-    evidence.append(title);
-    sources.forEach(source => {
-      if (!source?.url || !source?.label) return;
-      const link = document.createElement('a');
-      link.href = source.url;
-      link.textContent = source.label;
-      if (/^https?:\/\//.test(source.url)) {
-        link.target = '_blank';
-        link.rel = 'noopener noreferrer';
-      }
-      evidence.append(link);
-    });
-    message.append(evidence);
-  }
+  appendChatEvidence(message, sources);
   return message;
 }
 
@@ -200,6 +227,23 @@ function createThinkingMessage() {
   return message;
 }
 
+function initializeSiteAnalytics() {
+  if (location.pathname.startsWith('/admin/') || ['localhost', '127.0.0.1'].includes(location.hostname)) return;
+  const canonical = document.querySelector('link[rel="canonical"]')?.href;
+  if (!canonical) return;
+  let page;
+  try {
+    page = new URL(canonical).pathname;
+  } catch {
+    return;
+  }
+  fetch(apiEndpoint('/api/analytics/visit'), {
+    method:'POST',
+    headers:{ 'content-type':'application/json' },
+    body:JSON.stringify({ page, referrer:document.referrer, sessionId:getAnonymousSessionId() })
+  }).catch(() => {});
+}
+
 const localAssistantSources = Object.freeze({
   about: { label:'About Yahya', url:'/about' },
   work: { label:'Selected work', url:'/work' },
@@ -216,8 +260,9 @@ const localAssistantSources = Object.freeze({
   vrNeuroanatomy: { label:'VR Neuroanatomy — locked', url:'/work/vr-neuroanatomy' }
 });
 
-function localAssistantResponse(question, context, mode) {
+function localAssistantResponse(question, context, mode, history = []) {
   const value = question.toLowerCase();
+  const previousAnswer = [...history].reverse().find(item => item.role === 'assistant')?.content || '';
   const reply = (answer, ...sourceIds) => ({
     answer,
     sources: sourceIds.map(id => localAssistantSources[id]).filter(Boolean)
@@ -233,10 +278,24 @@ function localAssistantResponse(question, context, mode) {
   if (/\b(home address|exact address|password|passcode|api key|secret key|bank|credit card|family|private file|confidential|visitor ip|system prompt|hidden instruction|internal log)\b/.test(value)) {
     return reply("I can't provide private, confidential, security-related, or visitor information. I can only answer from Yahya's approved public portfolio data.");
   }
+  if (/\b(?:instagram|insta|ig handle|ig account)\b/.test(value)) {
+    return reply("Yahya's Instagram is @ya7ya_sawii.", 'contact');
+  }
+  if (/\bthreads?\b/.test(value)) {
+    return reply("Yahya's Threads handle is @ya7ya_sawii.", 'contact');
+  }
+  if (/\b(?:twitter|twi[a-z]*|x handle|x account)\b/.test(value)) {
+    return reply("Yahya's X (formerly Twitter) handle is @yahya_sawii.", 'contact');
+  }
+  if (/\b(?:social media|socials|social accounts|social handles)\b/.test(value)) {
+    return reply('Yahya is @ya7ya_sawii on Instagram and Threads, and @yahya_sawii on X. His LinkedIn and GitHub are available on the Contact page.', 'contact');
+  }
   if (/\b(salary|compensation|pay range|expected pay|hourly rate)\b/.test(value)) {
     return reply('Yahya prefers to discuss compensation directly once the role and responsibilities are clear. Please contact him to continue that conversation.', 'contact');
   }
-  if (/\b(contact|email|phone|whatsapp|linkedin|github|reach|get in touch)\b/.test(value)) {
+  const shortContactFollowUp = /^(?:how|how\?|how can i|how do i|where|where\?|what link|which link)[\s?.!]*$/.test(value)
+    && /\b(?:contact|reach|email|contact page)\b/i.test(previousAnswer);
+  if (/\b(contact|email|phone|whatsapp|linkedin|github|reach|get in touch)\b/.test(value) || shortContactFollowUp) {
     return reply('You can reach Yahya at yahyaelsawi1@gmail.com or +971 50 168 1229. His LinkedIn and GitHub profiles are also linked on the Contact page.', 'contact');
   }
   if (/\b(available|availability|start date|relocat|remote work|work authorization|golden visa|based|location|language|arabic|english)\b/.test(value)) {
@@ -363,13 +422,7 @@ function initializePortfolioAI() {
   }
 
   let history = [];
-  let sessionId;
-  try {
-    sessionId = sessionStorage.getItem('yahya-ai-session') || crypto.randomUUID();
-    sessionStorage.setItem('yahya-ai-session', sessionId);
-  } catch {
-    sessionId = crypto.randomUUID();
-  }
+  const sessionId = getAnonymousSessionId();
 
   const setBusy = busy => {
     input.disabled = busy;
@@ -385,6 +438,35 @@ function initializePortfolioAI() {
     messages.scrollTo({ top: messages.scrollHeight, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   };
 
+  const appendAssistant = async (text, sources = []) => {
+    const message = createChatMessage('assistant', '');
+    const body = message.querySelector('.ai-message-body');
+    messages.append(message);
+    const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (reducedMotion || !text) {
+      body.textContent = text;
+    } else {
+      const duration = Math.min(2800, Math.max(650, text.length * 13));
+      await new Promise(resolve => {
+        const startedAt = performance.now();
+        let visibleCharacters = 0;
+        const typeFrame = now => {
+          const nextCount = Math.min(text.length, Math.ceil(((now - startedAt) / duration) * text.length));
+          if (nextCount !== visibleCharacters) {
+            visibleCharacters = nextCount;
+            body.textContent = text.slice(0, visibleCharacters);
+            messages.scrollTop = messages.scrollHeight;
+          }
+          if (visibleCharacters < text.length) requestAnimationFrame(typeFrame);
+          else resolve();
+        };
+        requestAnimationFrame(typeFrame);
+      });
+    }
+    appendChatEvidence(message, sources);
+    messages.scrollTo({ top: messages.scrollHeight, behavior: reducedMotion ? 'auto' : 'smooth' });
+  };
+
   const localRoutes = isGitHubPages
     ? { home:'/portfolio/index.html', work:'/portfolio/work.html', experience:'/portfolio/work.html', about:'/portfolio/about.html', resume:'/portfolio/resume.html', recruiter:'/portfolio/recruiter.html', contact:'/portfolio/contact.html' }
     : { home:'/', work:'/work', experience:'/work', about:'/about', resume:'/resume', recruiter:'/recruiter', contact:'/contact' };
@@ -396,7 +478,7 @@ function initializePortfolioAI() {
     if (command === 'clear') {
       messages.innerHTML = '';
       history = [];
-      append('assistant', 'Conversation cleared. What would you like to know about Yahya?');
+      await appendAssistant('Conversation cleared. What would you like to know about Yahya?');
       return;
     }
     if (localRoutes[command]) {
@@ -404,7 +486,7 @@ function initializePortfolioAI() {
       return;
     }
     if (command === 'help') {
-      append('assistant', 'Ask a natural-language question, or use: home, work, experience, about, resume, recruiter, contact, and clear.');
+      await appendAssistant('Ask a natural-language question, or use: home, work, experience, about, resume, recruiter, contact, and clear.');
       return;
     }
 
@@ -423,7 +505,7 @@ function initializePortfolioAI() {
       const response = await fetch(apiEndpoint('/api/chat'), {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ message: cleanQuestion, history: history.slice(-4), sessionId, context: pageContext, mode: assistantMode }),
+        body: JSON.stringify({ message: cleanQuestion, history: history.slice(-8), sessionId, context: pageContext, mode: assistantMode }),
         signal: controller.signal
       }).finally(() => clearTimeout(timeout));
       const data = await response.json().catch(() => ({}));
@@ -434,23 +516,23 @@ function initializePortfolioAI() {
       }
 
       thinkingMessage.remove();
-      append('assistant', data.answer, Array.isArray(data.sources) ? data.sources : []);
+      await appendAssistant(data.answer, Array.isArray(data.sources) ? data.sources : []);
       setAssistantAvailability('online');
-      history.push({ role: 'user', content: cleanQuestion });
-      history = history.slice(-4);
+      history.push({ role: 'user', content: cleanQuestion }, { role: 'assistant', content: data.answer });
+      history = history.slice(-8);
       if (data.flag === 'salary') finalStatus = 'Flagged for Yahya';
     } catch (error) {
       thinkingMessage.remove();
       const recoverable = error.name === 'AbortError' || !Number.isFinite(error.status) || error.status === 404 || error.status >= 500;
-      const fallback = recoverable ? localAssistantResponse(cleanQuestion, pageContext, assistantMode) : null;
+      const fallback = recoverable ? localAssistantResponse(cleanQuestion, pageContext, assistantMode, history) : null;
       if (fallback) {
-        append('assistant', fallback.answer, fallback.sources);
+        await appendAssistant(fallback.answer, fallback.sources);
         setAssistantAvailability('offline');
-        history.push({ role:'user', content:cleanQuestion });
-        history = history.slice(-4);
+        history.push({ role:'user', content:cleanQuestion }, { role:'assistant', content:fallback.answer });
+        history = history.slice(-8);
         finalStatus = 'Local knowledge';
       } else {
-        append('assistant', error.message || 'The assistant is temporarily unavailable. Please try again.');
+        await appendAssistant(error.message || 'The assistant is temporarily unavailable. Please try again.');
         finalStatus = 'Connection unavailable';
       }
     } finally {
@@ -802,6 +884,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelector('.nav-link.active')?.setAttribute('aria-current', 'page');
   renderProjects('#featured-projects', 3); renderProjects('#all-projects'); renderProjectDetail();
   initializeBufferedMedia();
+  initializeSiteAnalytics();
   initializeImageLightbox();
   initializeScrollToTop();
   initializeWorkViews();

@@ -1,12 +1,12 @@
-export const KNOWLEDGE_VERSION = "2026-08-21.1";
+export const KNOWLEDGE_VERSION = "2026-08-24.2";
 
 export const SOURCES = {
-  about: { label: "About Yahya", url: "/about.html" },
-  work: { label: "Selected work", url: "/work.html" },
+  about: { label: "About Yahya", url: "/about" },
+  work: { label: "Selected work", url: "/work" },
   experience: { label: "Professional experience", url: "/work" },
-  recruiter: { label: "Recruiter quick view", url: "/recruiter.html" },
-  resume: { label: "Resume & credentials", url: "/resume.html" },
-  contact: { label: "Contact Yahya", url: "/contact.html" },
+  recruiter: { label: "Recruiter quick view", url: "/recruiter" },
+  resume: { label: "Resume & credentials", url: "/resume" },
+  contact: { label: "Contact Yahya", url: "/contact" },
   giftIt: { label: "Gift It Checkout & E-Invite Redesign", url: "/work/gift-it" },
   ritApp: { label: "RIT Student App 2.0", url: "/work/rit-app" },
   passwordless: { label: "Passwordless Login & Signup Redesign", url: "/work/passwordless" },

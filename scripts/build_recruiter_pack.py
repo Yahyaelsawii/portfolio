@@ -11,7 +11,7 @@ from reportlab.pdfgen import canvas
 
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "assets" / "pdfs" / "Yahya_ElSawi_Recruiter_Pack.pdf"
-SITE = "https://yahya-elsawi-portfolio-bnj.pages.dev"
+SITE = "https://yahyaelsawi.website"
 EMAIL = "yahyaelsawi1@gmail.com"
 PHONE = "+971 50 168 1229"
 

@@ -50,6 +50,14 @@ const server = createServer(async (request, response) => {
       response.end(JSON.stringify({ ready:false, ai:false, logging:false, privacyHashing:false, atomicRateLimiting:false }));
       return;
     }
+    if (pathname === "/api/analytics/visit") {
+      for await (const _chunk of request) {
+        // Consume the keepalive request before completing the local response.
+      }
+      response.writeHead(202, { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" });
+      response.end(JSON.stringify({ accepted:true }));
+      return;
+    }
     const file = await resolveRequest(pathname);
     if (!file) {
       response.writeHead(400).end("Bad request");
@@ -219,13 +227,65 @@ try {
     sidebar:document.querySelector(".ai-sidebar")?.getBoundingClientRect().height || 0
   }));
   if (Math.abs(terminalHeights.terminal - terminalHeights.sidebar) > 2) failures.push(`terminal height: ${terminalHeights.terminal}px vs ${terminalHeights.sidebar}px`);
+  const terminalInput = detailPage.getByLabel("Ask about Yahya");
+  const terminalHeightBeforeTyping = await detailPage.locator(".ai-terminal").evaluate(node => node.getBoundingClientRect().height);
+  const inputHeightBeforeTyping = await terminalInput.evaluate(node => node.getBoundingClientRect().height);
+  await terminalInput.fill("Line one\nLine two\nLine three\nLine four");
+  const terminalHeightAfterTyping = await detailPage.locator(".ai-terminal").evaluate(node => node.getBoundingClientRect().height);
+  const inputHeightAfterTyping = await terminalInput.evaluate(node => node.getBoundingClientRect().height);
+  if (Math.abs(terminalHeightBeforeTyping - terminalHeightAfterTyping) > 1) failures.push("terminal sizing: terminal changed height while typing");
+  if (Math.abs(inputHeightBeforeTyping - inputHeightAfterTyping) > 1) failures.push("terminal sizing: composer changed height while typing");
+  await terminalInput.fill("");
+
+  const typedAnswer = "Yahya's verified portfolio answer is being typed into the terminal.";
+  await detailPage.route("**/api/chat", route => route.fulfill({ status:200, contentType:"application/json", body:JSON.stringify({ answer:typedAnswer, sources:[] }) }));
+  await terminalInput.fill("Show me a typed response.");
+  await detailPage.getByRole("button", { name:"Ask Yahya'AI" }).click();
+  await detailPage.waitForFunction(expected => [...document.querySelectorAll(".ai-message-assistant .ai-message-body")].some(message => message.textContent.length > 0 && message.textContent.length < expected.length && expected.startsWith(message.textContent)), typedAnswer);
+  await detailPage.waitForFunction(expected => [...document.querySelectorAll(".ai-message-assistant .ai-message-body")].some(message => message.textContent === expected), typedAnswer);
+  await detailPage.unroute("**/api/chat");
+
   await detailPage.route("**/api/chat", route => route.fulfill({ status:503, contentType:"application/json", body:JSON.stringify({ message:"AI binding unavailable" }) }));
-  await detailPage.getByLabel("Ask about Yahya").fill("Is Yahya available to relocate?");
+  await terminalInput.fill("Is Yahya available to relocate?");
   await detailPage.getByRole("button", { name:"Ask Yahya'AI" }).click();
   await detailPage.waitForFunction(() => [...document.querySelectorAll(".ai-message-assistant .ai-message-body")].some(message => message.textContent.includes("open to remote work and relocation")));
+  await detailPage.waitForFunction(() => document.querySelector("#ai-request-status")?.textContent.trim() === "Local knowledge"
+    && document.querySelector("#ai-mode-indicator")?.textContent.trim() === "Offline / Prefilled answers");
   if (await detailPage.locator("#ai-request-status").innerText() !== "Local knowledge") failures.push("terminal fallback: local knowledge status was not shown");
   if (await detailPage.locator("#ai-mode-indicator").innerText() !== "Offline / Prefilled answers") failures.push("terminal fallback: availability tag did not stay offline");
   await detailPage.unroute("**/api/chat");
+
+  const dashboardPayload = {
+    viewer:"yahya@example.com",
+    range:"30 days",
+    generatedAt:"2026-08-24T12:00:00Z",
+    website:{
+      summary:{ pageviews:18, visitors:6, sessions:8, pages:5 },
+      daily:[{ day:"2026-08-24", pageviews:18, sessions:8 }],
+      pages:[{ page:"/work", pageviews:9, sessions:4 }],
+      regions:[{ country:"AE", pageviews:18 }],
+      devices:[{ label:"Mobile", pageviews:10 }],
+      browsers:[{ label:"Safari", pageviews:10 }],
+      referrers:[{ label:"Direct", pageviews:12 }],
+      recent:[{ created_at:"2026-08-24T12:00:00Z", session:"a1b2c3d4", page:"/work", country:"AE", region:"Dubai", city:"Dubai", device:"Mobile", browser:"Safari", referrer:"Direct" }]
+    },
+    ai:{
+      summary:{ questions:4, visitors:2, average_response_ms:125, salary_flags:1, privacy_blocks:0 },
+      daily:[{ day:"2026-08-24", questions:4 }],
+      regions:[{ country:"AE", questions:4 }],
+      recent:[{ created_at:"2026-08-24T12:00:00Z", question:"Role fit?", country:"AE", region:"Dubai", city:"Dubai", flag:"none", response_ms:125 }]
+    }
+  };
+  await detailPage.route("**/admin/api/analytics", route => route.fulfill({ status:200, contentType:"application/json", body:JSON.stringify(dashboardPayload) }));
+  await detailPage.goto(`${base}/admin/`, { waitUntil:"networkidle" });
+  await detailPage.waitForFunction(() => document.querySelector("#dashboard-content")?.hidden === false);
+  if (!await detailPage.locator("#website-analytics-panel").isVisible()) failures.push("admin analytics: Website Analytics did not open by default");
+  if (await detailPage.locator("#ai-analytics-panel").isVisible()) failures.push("admin analytics: AI Analytics should be hidden by default");
+  if (await detailPage.locator("#site-dashboard-rows tr").count() !== 1) failures.push("admin analytics: recent website activity was not rendered");
+  await detailPage.getByRole("tab", { name:"AI Analytics" }).click();
+  if (!await detailPage.locator("#ai-analytics-panel").isVisible()) failures.push("admin analytics: AI Analytics tab did not open");
+  if (await detailPage.locator("#website-analytics-panel").isVisible()) failures.push("admin analytics: Website Analytics remained visible after tab switch");
+  await detailPage.unroute("**/admin/api/analytics");
 
   await detailPage.route("**/api/contact", route => route.fulfill({ status:200, contentType:"application/json", body:JSON.stringify({ ok:true }) }));
   await detailPage.goto(`${base}/contact`, { waitUntil: "networkidle" });

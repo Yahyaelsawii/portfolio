@@ -43,7 +43,7 @@ const structuredDataTypeExpectations = new Map([
   ["work/vr-neuroanatomy/index.html", ["WebPage", "BreadcrumbList"]]
 ]);
 const expectedWorkProjectUrls = ["vr-neuroanatomy", "network-automation", "mood-insights", "rit-app", "gift-it", "passwordless", "vehicle-rental"]
-  .map(slug => `https://yahya-elsawi-portfolio-bnj.pages.dev/work/${slug}`);
+  .map(slug => `https://yahyaelsawi.website/work/${slug}`);
 
 async function walk(directory) {
   const files = [];

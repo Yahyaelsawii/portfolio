@@ -21,6 +21,26 @@ CREATE INDEX IF NOT EXISTS idx_ai_logs_session_recent ON ai_logs(session_hash, c
 CREATE INDEX IF NOT EXISTS idx_ai_logs_visitor_recent ON ai_logs(visitor_hash, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_ai_logs_flag ON ai_logs(flag, created_at DESC);
 
+CREATE TABLE IF NOT EXISTS site_events (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  event_key TEXT NOT NULL UNIQUE,
+  session_hash TEXT NOT NULL,
+  visitor_hash TEXT NOT NULL,
+  country TEXT,
+  region TEXT,
+  city TEXT,
+  page_path TEXT NOT NULL,
+  referrer_host TEXT NOT NULL DEFAULT 'Direct',
+  device_type TEXT NOT NULL,
+  browser_family TEXT NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_site_events_created_at ON site_events(created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_site_events_session_recent ON site_events(session_hash, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_site_events_page_recent ON site_events(page_path, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_site_events_country_recent ON site_events(country, created_at DESC);
+
 CREATE TABLE IF NOT EXISTS ai_rate_limits (
   identity_hash TEXT NOT NULL,
   window_start TEXT NOT NULL,

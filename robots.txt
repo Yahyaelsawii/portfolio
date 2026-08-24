@@ -8,4 +8,4 @@ Disallow: /project
 Disallow: /deep-scan
 Disallow: /infrastructure
 
-Sitemap: https://yahya-elsawi-portfolio-bnj.pages.dev/sitemap.xml
+Sitemap: https://yahyaelsawi.website/sitemap.xml

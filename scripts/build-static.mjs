@@ -4,7 +4,7 @@ import { fileURLToPath } from "node:url";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const output = path.join(root, "dist");
-const siteUrl = "https://yahya-elsawi-portfolio-bnj.pages.dev";
+const siteUrl = "https://yahyaelsawi.website";
 const personId = `${siteUrl}/#yahya-el-sawi`;
 
 if (output !== path.resolve(root, "dist")) throw new Error("Unexpected build output path");

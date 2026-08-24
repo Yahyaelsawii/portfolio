@@ -21,7 +21,7 @@ from reportlab.platypus import (
 ROOT = Path(__file__).resolve().parents[1]
 OUTPUT = ROOT / "output" / "pdf" / "Yahya_ElSawi_Portfolio_Roadmap_and_Sitemap.pdf"
 LOCAL_BASE = "http://127.0.0.1:4173"
-PRODUCTION_BASE = "https://yahya-elsawi-portfolio-bnj.pages.dev"
+PRODUCTION_BASE = "https://yahyaelsawi.website"
 
 INK = colors.HexColor("#111827")
 MUTED = colors.HexColor("#596164")

@@ -9,9 +9,9 @@ The production portfolio uses Cloudflare Pages, Pages Functions, Workers AI, D1,
 - `/functions/api/chat.js`: server-side assistant endpoint using fast Llama 3.1 8B with IBM Granite 4.0 Micro as an automatic fallback.
 - `/functions/api/contact.js`: validated, rate-limited contact delivery through Resend without opening the visitor's email application.
 - `/functions/_shared/profile.js`: approved public knowledge base.
-- `/schema.sql`: privacy-safe interaction logs and future monthly knowledge candidates.
+- `/schema.sql`: privacy-safe website and assistant analytics plus future monthly knowledge candidates.
 - `/functions/api/health.js`: binding status without revealing secrets.
-- `/admin/`: fail-closed private analytics dashboard for questions, coarse regions, flags, and response health.
+- `/admin/`: fail-closed two-tab dashboard for anonymous website activity and assistant performance.
 - `/admin/log/`: private developer log covered by the same Cloudflare Access application.
 - `/workers/retention.js`: daily D1 cleanup using the same retention policy as request-time cleanup.
 
@@ -66,7 +66,7 @@ D1 is required for the public assistant. The endpoint fails closed when logging,
 3. Use a randomly generated value of at least 32 characters. Do not commit it to Git.
 4. Save it for Production and Preview, then redeploy.
 
-This secret creates one-way, rotating visitor and session hashes for abuse control. The database never stores raw IP addresses, device hostnames, user-agent strings, or exact live locations. It stores only the question, answer, coarse Cloudflare country/region/city, timing, model, and review flag. Email addresses and phone-like values submitted in questions are redacted before logging; blocked private-topic wording is not saved.
+This secret creates one-way, rotating visitor and session hashes for abuse control and anonymous analytics. The database never stores raw IP addresses, device hostnames, user-agent strings, or exact live locations. Assistant records contain only the redacted question and answer, coarse Cloudflare country/region/city, timing, model, and review flag. Website records contain the public route, referrer domain, device category, browser family, and coarse Cloudflare location. Email addresses and phone-like values submitted in questions are redacted before logging; blocked private-topic wording is not saved.
 
 The public assistant fails closed when D1, the hashing secret, or the atomic rate-limit table is unavailable. Apply `schema.sql` before deploying code that depends on a newer schema.
 
@@ -92,13 +92,13 @@ npx wrangler deploy --config wrangler.retention.jsonc
 npx wrangler deployments list --config wrangler.retention.jsonc
 ```
 
-The policy deletes individual conversation records older than 90 days and rate-limit windows older than one day. Keep `functions/_shared/retention.js`, `privacy.html`, and the Worker schedule synchronized.
+The policy deletes detailed website visits and individual conversation records older than 90 days, and rate-limit windows older than one day. Keep `functions/_shared/retention.js`, `privacy.html`, and the Worker schedule synchronized.
 
 ## Verify the deployment
 
 Run `npm ci` and `npm run check:release` before deployment. This validates HTML, JavaScript, local references, unit tests, the public-only artifact, responsive layouts, accessibility, and key interactions. Deploy `dist/`, never the repository root.
 
-1. Visit `/api/health` on the `pages.dev` site. It should report `"ready": true`, `"ai": true`, `"contactDelivery": true`, `"logging": true`, `"privacyHashing": true`, `"atomicRateLimiting": true`, `"conversationRetentionDays": 90`, and `"scheduledRetention": true`.
+1. Visit `/api/health` on the canonical domain or `pages.dev` fallback. It should report `"ready": true`, `"ai": true`, `"contactDelivery": true`, `"logging": true`, `"privacyHashing": true`, `"atomicRateLimiting": true`, `"conversationRetentionDays": 90`, and `"scheduledRetention": true`.
 2. Open `/terminal.html` and ask: `What kind of roles is Yahya looking for?`
 3. Ask a salary question and confirm it is redirected with a flag.
 4. Inspect D1 and confirm no raw IP or hostname column exists.
@@ -107,11 +107,11 @@ Pages observability is configured in the Cloudflare dashboard. Do not add the Wo
 
 ## Protect the private dashboard with Cloudflare Access
 
-Cloudflare Access is configured for the production `pages.dev` host. The `Portfolio Admin` self-hosted application protects every page below `yahya-elsawi-portfolio-bnj.pages.dev/admin/*`, including `/admin/log/`, and every API below `yahya-elsawi-portfolio-bnj.pages.dev/api/admin/*`. Its Allow policy accepts only `yahyaelsawi1@gmail.com`.
+Cloudflare Access protects the private admin routes on the canonical `yahyaelsawi.website` host. The original `yahya-elsawi-portfolio-bnj.pages.dev` hostname remains available as the Cloudflare Pages service and fallback origin. The `Portfolio Admin` self-hosted application protects `/admin/*`, including `/admin/log/` and `/admin/api/*`, and its Allow policy accepts only `yahyaelsawi1@gmail.com`.
 
 `ACCESS_AUD`, `ACCESS_TEAM_DOMAIN`, and `ADMIN_EMAIL` are declared in `wrangler.jsonc`; they are application identifiers, not credentials. Keep the Access application destinations and audience synchronized with that file if the Pages hostname changes. After a relevant change, redeploy, confirm an unauthenticated request is redirected to Access, and authenticate at `/admin/` with the approved email.
 
-The API validates the Access JWT issuer, audience, lifetime, RS256 signature, and exact email. Missing or invalid configuration fails closed. The dashboard never returns raw IP addresses, hostnames, visitor hashes, or session hashes.
+The API validates the Access JWT issuer, audience, lifetime, RS256 signature, and exact email. Missing or invalid configuration fails closed. The dashboard never returns raw IP addresses, hostnames, visitor hashes, or complete session hashes. It shows only short anonymous session codes for grouping recent page views.
 
 ## How the AI improves safely
 

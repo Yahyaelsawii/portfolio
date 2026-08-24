@@ -1,4 +1,4 @@
-const CLOUDFLARE_ORIGIN = "https://yahya-elsawi-portfolio-bnj.pages.dev";
+const CLOUDFLARE_ORIGIN = "https://yahyaelsawi.website";
 
 if (location.hostname === "yahyaelsawii.github.io") {
   const developerLog = /\/admin\/log(?:\.html)?\/?$/.test(location.pathname);

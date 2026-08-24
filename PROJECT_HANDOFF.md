@@ -14,7 +14,7 @@ This file is the continuation guide for Yahya El-Sawi, Codex, or any other AI/de
 
 - V1 is gone from the active website. The former V2 design is now the only main website.
 - The current site is a static-first HTML/CSS/JavaScript portfolio with Cloudflare Pages Functions for AI, direct contact delivery, and the private analytics API.
-- The production site is `https://yahya-elsawi-portfolio-bnj.pages.dev`. Local servers are disposable processes and must be started from the repository when needed.
+- The production site is `https://yahyaelsawi.website`. Local servers are disposable processes and must be started from the repository when needed.
 - The Work page separates professional experience and case studies with Professional Experience open by default.
 - Yahya'AI is a real server-side Cloudflare Workers AI assistant grounded only in an approved profile. It is not a hard-coded fake terminal, although some safety-sensitive questions use deterministic policy replies.
 - The SmartMall network-automation project is published as a full collaborative case study.
@@ -423,9 +423,9 @@ Google Drive is not connected in the codebase and no Drive folder has been creat
 
 ## 14. Cloudflare production setup
 
-Hosting target: free Cloudflare Pages `pages.dev` address; no custom domain exists.
+Hosting target: free Cloudflare Pages with `https://yahyaelsawi.website` as the canonical custom domain. The `pages.dev` hostname remains the service and fallback origin.
 
-Current expected canonical host: `https://yahya-elsawi-portfolio-bnj.pages.dev`.
+Current expected canonical host: `https://yahyaelsawi.website`.
 
 Bindings in `wrangler.jsonc`:
 
@@ -450,8 +450,9 @@ Scheduled retention:
 
 The `Portfolio Admin` Cloudflare Access application protects all private admin pages and APIs, including:
 
-- `yahya-elsawi-portfolio-bnj.pages.dev/admin/*`
-- `yahya-elsawi-portfolio-bnj.pages.dev/api/admin/*`
+- `yahyaelsawi.website/admin/*`
+- `yahyaelsawi.website/admin/api/*`
+- `yahya-elsawi-portfolio-bnj.pages.dev/admin/*` (fallback host)
 
 The private developer log is available at `/admin/log/`. Legacy `/log` and `/log.html` requests redirect there and cannot bypass Access.
 
@@ -468,7 +469,7 @@ Production verification after every relevant deploy:
 
 After each release, verify public routes, private-file exclusions, security headers, health, AI policy behavior, D1 logging, scheduled retention, and both unauthenticated and approved Access behavior on production.
 
-If a custom domain is added later, replace the hard-coded canonical URLs, Open Graph URLs, `robots.txt` sitemap URL, and `sitemap.xml` locations globally.
+Canonical URLs, Open Graph URLs, `robots.txt`, and `sitemap.xml` use `https://yahyaelsawi.website`. Keep the `pages.dev` hostname only as the Cloudflare service origin and fallback.
 
 ## 15. New-PC setup
 
@@ -524,11 +525,12 @@ The dependency-free `npm run build` command creates an explicit `dist/` artifact
 | `functions/_shared/profile.js` | Public AI knowledge and approved evidence links. |
 | `functions/api/chat.js` | AI/security/logging behavior. |
 | `functions/api/contact.js` | Direct contact validation, rate limiting, and Resend delivery. |
-| `schema.sql` | D1 logging and future knowledge candidates. |
+| `schema.sql` | D1 website analytics, assistant logging, abuse controls, and future knowledge candidates. |
 | `functions/_shared/access.js` | Cloudflare Access JWT validation. |
-| `functions/api/admin/analytics.js` | Private analytics read API. |
+| `functions/api/analytics/visit.js` | Public privacy-safe website visit collector. |
+| `functions/api/admin/analytics.js` | Private website and assistant analytics read API. |
 | `admin/index.html`, `admin/log.html`, `dashboard.js` | Private analytics and developer-log UI. |
-| `functions/_shared/retention.js` | Shared 90-day conversation and one-day rate-limit cleanup policy. |
+| `functions/_shared/retention.js` | Shared 90-day site/assistant detail and one-day rate-limit cleanup policy. |
 | `workers/retention.js`, `wrangler.retention.jsonc` | Daily production cleanup Worker and schedule. |
 | `wrangler.jsonc` | Cloudflare Pages bindings and Access identifiers. |
 | `_headers`, `_routes.json` | Security/cache headers and Functions routing. |

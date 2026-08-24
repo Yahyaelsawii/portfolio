@@ -18,7 +18,78 @@ export async function onRequestGet({ request, env }) {
 
   try {
     await purgeExpiredData(env.DB);
-    const [summary, daily, regions, recent] = await env.DB.batch([
+    const results = await env.DB.batch([
+      env.DB.prepare(`
+        SELECT
+          COUNT(*) AS pageviews,
+          COUNT(DISTINCT visitor_hash) AS visitors,
+          COUNT(DISTINCT session_hash) AS sessions,
+          COUNT(DISTINCT page_path) AS pages
+        FROM site_events
+        WHERE created_at >= datetime('now', '-30 days')
+      `),
+      env.DB.prepare(`
+        SELECT date(created_at) AS day, COUNT(*) AS pageviews, COUNT(DISTINCT session_hash) AS sessions
+        FROM site_events
+        WHERE created_at >= datetime('now', '-30 days')
+        GROUP BY date(created_at)
+        ORDER BY day ASC
+      `),
+      env.DB.prepare(`
+        SELECT page_path AS page, COUNT(*) AS pageviews, COUNT(DISTINCT session_hash) AS sessions
+        FROM site_events
+        WHERE created_at >= datetime('now', '-30 days')
+        GROUP BY page_path
+        ORDER BY pageviews DESC, page ASC
+        LIMIT 12
+      `),
+      env.DB.prepare(`
+        SELECT COALESCE(country, 'Unknown') AS country, COUNT(*) AS pageviews
+        FROM site_events
+        WHERE created_at >= datetime('now', '-30 days')
+        GROUP BY country
+        ORDER BY pageviews DESC
+        LIMIT 10
+      `),
+      env.DB.prepare(`
+        SELECT device_type AS label, COUNT(*) AS pageviews
+        FROM site_events
+        WHERE created_at >= datetime('now', '-30 days')
+        GROUP BY device_type
+        ORDER BY pageviews DESC
+      `),
+      env.DB.prepare(`
+        SELECT browser_family AS label, COUNT(*) AS pageviews
+        FROM site_events
+        WHERE created_at >= datetime('now', '-30 days')
+        GROUP BY browser_family
+        ORDER BY pageviews DESC
+      `),
+      env.DB.prepare(`
+        SELECT referrer_host AS label, COUNT(*) AS pageviews
+        FROM site_events
+        WHERE created_at >= datetime('now', '-30 days')
+          AND referrer_host != 'Internal'
+        GROUP BY referrer_host
+        ORDER BY pageviews DESC
+        LIMIT 10
+      `),
+      env.DB.prepare(`
+        SELECT
+          created_at,
+          substr(session_hash, 1, 8) AS session,
+          country,
+          region,
+          city,
+          page_path AS page,
+          referrer_host AS referrer,
+          device_type AS device,
+          browser_family AS browser
+        FROM site_events
+        WHERE created_at >= datetime('now', '-90 days')
+        ORDER BY id DESC
+        LIMIT 75
+      `),
       env.DB.prepare(`
         SELECT
           COUNT(*) AS questions,
@@ -57,10 +128,22 @@ export async function onRequestGet({ request, env }) {
       viewer: access.email,
       range: "30 days",
       generatedAt: new Date().toISOString(),
-      summary: summary.results?.[0] || {},
-      daily: daily.results || [],
-      regions: regions.results || [],
-      recent: recent.results || []
+      website: {
+        summary: results[0]?.results?.[0] || {},
+        daily: results[1]?.results || [],
+        pages: results[2]?.results || [],
+        regions: results[3]?.results || [],
+        devices: results[4]?.results || [],
+        browsers: results[5]?.results || [],
+        referrers: results[6]?.results || [],
+        recent: results[7]?.results || []
+      },
+      ai: {
+        summary: results[8]?.results?.[0] || {},
+        daily: results[9]?.results || [],
+        regions: results[10]?.results || [],
+        recent: results[11]?.results || []
+      }
     });
   } catch (error) {
     console.error(JSON.stringify({ event: "admin_analytics_failed", error: error?.message || "Unknown error" }));

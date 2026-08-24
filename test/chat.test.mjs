@@ -22,12 +22,18 @@ class FakeStatement {
     this.database.requestCount += 1;
     return { request_count: this.database.requestCount };
   }
+
+  async all() {
+    if (!this.sql.includes("SELECT question, answer")) return { results: [] };
+    return { results: this.database.sessionRows };
+  }
 }
 
 class FakeDatabase {
-  constructor() {
+  constructor(sessionRows = []) {
     this.requestCount = 0;
     this.batches = [];
+    this.sessionRows = sessionRows;
   }
 
   prepare(sql) {
@@ -90,6 +96,41 @@ test("answers high-value availability questions without a model call", async () 
   assert.equal(result.body.model, "policy");
   assert.match(result.body.answer, /Dubai/);
   assert.match(result.body.answer, /Golden Visa/);
+});
+
+test("understands a short contact follow-up from trusted session history", async () => {
+  const database = new FakeDatabase([{
+    question: "Do you know Yahya's Twitter?",
+    answer: "I don't know that from Yahya's approved public information. Please contact Yahya."
+  }]);
+  const ai = { async run() { throw new Error("The model should not run"); } };
+  const result = await invoke("how?", { database, ai });
+  assert.equal(result.response.status, 200);
+  assert.equal(result.body.model, "policy");
+  assert.match(result.body.answer, /yahyaelsawi1@gmail\.com/);
+});
+
+test("answers typo-tolerant Twitter questions deterministically", async () => {
+  const ai = { async run() { throw new Error("The model should not run"); } };
+  const result = await invoke("twiitwe?", { ai });
+  assert.equal(result.response.status, 200);
+  assert.equal(result.body.model, "policy");
+  assert.match(result.body.answer, /@yahya_sawii/);
+});
+
+test("rewrites unexpected Arabic output into the default English language", async () => {
+  let calls = 0;
+  const ai = {
+    async run() {
+      calls += 1;
+      return { response: calls === 1 ? "مرحبا، هذه إجابة." : "This is the approved English answer." };
+    }
+  };
+  const result = await invoke("Tell me about Yahya's portfolio.", { ai });
+  assert.equal(result.response.status, 200);
+  assert.equal(calls, 2);
+  assert.equal(result.body.answer, "This is the approved English answer.");
+  assert.doesNotMatch(result.body.answer, /[\u0600-\u06ff]/);
 });
 
 test("accepts only user messages from client-supplied history", async () => {
