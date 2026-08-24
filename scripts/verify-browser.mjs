@@ -273,6 +273,7 @@ try {
       summary:{ questions:4, visitors:2, average_response_ms:125, salary_flags:1, privacy_blocks:0 },
       daily:[{ day:"2026-08-24", questions:4 }],
       regions:[{ country:"AE", questions:4 }],
+      sessions:[{ id:"a1b2c3d4e5f60718", score:9, band:"strong", summary:"Hiring and role fit / Gift It", reason:"Strong role intent with specific, sustained questions.", questionCount:3, startedAt:"2026-08-24T11:55:00Z", lastActiveAt:"2026-08-24T12:00:00Z", location:{ country:"AE", region:"Dubai", city:"Dubai" } }],
       recent:[{ created_at:"2026-08-24T12:00:00Z", question:"Role fit?", country:"AE", region:"Dubai", city:"Dubai", flag:"none", response_ms:125 }]
     }
   };
@@ -282,6 +283,16 @@ try {
     await new Promise(resolve => setTimeout(resolve, 80));
     await route.fulfill({ status:200, contentType:"application/json", body:JSON.stringify(dashboardPayload) });
   });
+  await detailPage.route("**/admin/api/session?session=a1b2c3d4e5f60718", route => route.fulfill({
+    status:200,
+    contentType:"application/json",
+    body:JSON.stringify({
+      viewer:"yahya@example.com",
+      id:"a1b2c3d4e5f60718",
+      insight:dashboardPayload.ai.sessions[0],
+      messages:[{ created_at:"2026-08-24T12:00:00Z", question:"Would Yahya fit this product role?", answer:"Yahya combines product thinking with implementation-aware UX.", flag:"none", model:"policy", response_ms:42 }]
+    })
+  }));
   await detailPage.goto(`${base}/admin/`, { waitUntil:"networkidle" });
   await detailPage.waitForFunction(() => document.querySelector("#dashboard-content")?.hidden === false);
   if (!await detailPage.locator("#website-analytics-panel").isVisible()) failures.push("admin analytics: Website Analytics did not open by default");
@@ -290,10 +301,21 @@ try {
   await detailPage.getByRole("tab", { name:"AI Analytics" }).click();
   if (!await detailPage.locator("#ai-analytics-panel").isVisible()) failures.push("admin analytics: AI Analytics tab did not open");
   if (await detailPage.locator("#website-analytics-panel").isVisible()) failures.push("admin analytics: Website Analytics remained visible after tab switch");
+  if (await detailPage.locator("#ai-session-rows tr").count() !== 1) failures.push("admin analytics: conversation sessions were not grouped");
+  await detailPage.getByRole("button", { name:"Open session a1b2c3d4e5f60718" }).click();
+  await detailPage.waitForFunction(() => document.querySelector("#ai-session-content")?.hidden === false);
+  if (!await detailPage.locator("#ai-session-dialog").getByText("9/10", { exact:true }).isVisible()) failures.push("admin analytics: session engagement score was not shown");
+  if (!await detailPage.getByText("Strong role intent with specific, sustained questions.", { exact:true }).isVisible()) failures.push("admin analytics: score explanation was not shown");
+  await detailPage.setViewportSize({ width:390, height:844 });
+  const dialogOverflow = await detailPage.locator("#ai-session-dialog").evaluate(node => node.scrollWidth - node.clientWidth);
+  if (dialogOverflow > 1) failures.push(`admin analytics: mobile session dialog overflowed by ${dialogOverflow}px`);
+  await detailPage.getByRole("button", { name:"Close session details" }).click();
+  await detailPage.setViewportSize({ width:1440, height:900 });
   await detailPage.getByRole("button", { name:"Refresh" }).click();
   await detailPage.waitForFunction(() => document.querySelector("#dashboard-refresh")?.textContent === "Refreshed");
   if (dashboardRequests !== 2) failures.push(`admin analytics: refresh made ${dashboardRequests} requests instead of 2 total`);
   await detailPage.unroute("**/admin/api/analytics");
+  await detailPage.unroute("**/admin/api/session?session=a1b2c3d4e5f60718");
 
   await detailPage.route("**/api/contact", route => route.fulfill({ status:200, contentType:"application/json", body:JSON.stringify({ ok:true }) }));
   await detailPage.goto(`${base}/contact`, { waitUntil: "networkidle" });

@@ -16,7 +16,7 @@ function respond(body, status = 200) {
 
 function normalizeText(value, limit) {
   return typeof value === "string"
-    ? value.replace(/[\u0000-\u001f\u007f]/g, "").trim().slice(0, limit)
+    ? value.normalize("NFKC").replace(/[\u0000-\u001f\u007f]/g, "").trim().slice(0, limit)
     : "";
 }
 
@@ -144,7 +144,7 @@ export async function onRequestPost({ request, env }) {
 
   const pagePath = normalizePagePath(payload?.page);
   const sessionId = normalizeText(payload?.sessionId, 120);
-  if (!pagePath || !sessionId) return respond({ error: "INVALID_EVENT" }, 400);
+  if (!pagePath || !/^[A-Za-z0-9_-]{8,120}$/.test(sessionId)) return respond({ error: "INVALID_EVENT" }, 400);
 
   const userAgent = request.headers.get("user-agent") || "";
   if (/bot|crawler|spider|preview|headless/i.test(userAgent)) return respond({ accepted: false }, 202);

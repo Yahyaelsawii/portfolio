@@ -19,8 +19,8 @@ export function onRequestGet({ env }) {
     atomicRateLimiting: privacyControlsReady,
     conversationRetentionDays: CONVERSATION_RETENTION_DAYS,
     scheduledRetention: true,
-    model: "@cf/meta/llama-3.1-8b-instruct-fast",
-    fallbackModel: "@cf/ibm-granite/granite-4.0-h-micro",
+    model: "@cf/openai/gpt-oss-120b",
+    fallbackModel: "@cf/openai/gpt-oss-20b",
     knowledgeVersion: KNOWLEDGE_VERSION
   }, {
     headers: publicCorsHeaders({

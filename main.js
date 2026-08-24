@@ -21,7 +21,8 @@ if (isGitHubPages) {
 
 function getAnonymousSessionId() {
   try {
-    const sessionId = sessionStorage.getItem('yahya-ai-session') || crypto.randomUUID();
+    const storedSessionId = sessionStorage.getItem('yahya-ai-session') || '';
+    const sessionId = /^[A-Za-z0-9_-]{8,120}$/.test(storedSessionId) ? storedSessionId : crypto.randomUUID();
     sessionStorage.setItem('yahya-ai-session', sessionId);
     return sessionId;
   } catch {

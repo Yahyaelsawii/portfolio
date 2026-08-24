@@ -46,7 +46,7 @@ async function readJsonBody(request) {
 
 function cleanText(value, limit) {
   return typeof value === "string"
-    ? value.replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, "").trim().slice(0, limit)
+    ? value.normalize("NFKC").replace(/[\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, "").trim().slice(0, limit)
     : "";
 }
 

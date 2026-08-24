@@ -1,5 +1,6 @@
 import { verifyAdminAccess } from "../../_shared/access.js";
 import { purgeExpiredData } from "../../_shared/retention.js";
+import { groupSessionInsights } from "../../_shared/session-insights.js";
 
 const headers = {
   "content-type": "application/json; charset=utf-8",
@@ -121,6 +122,14 @@ export async function onRequestGet({ request, env }) {
         WHERE created_at >= datetime('now', '-90 days')
         ORDER BY id DESC
         LIMIT 50
+      `),
+      env.DB.prepare(`
+        SELECT created_at, session_hash, country, region, city, question, answer, flag
+        FROM ai_logs
+        WHERE created_at >= datetime('now', '-90 days')
+          AND session_hash IS NOT NULL
+        ORDER BY id DESC
+        LIMIT 500
       `)
     ]);
 
@@ -142,7 +151,8 @@ export async function onRequestGet({ request, env }) {
         summary: results[8]?.results?.[0] || {},
         daily: results[9]?.results || [],
         regions: results[10]?.results || [],
-        recent: results[11]?.results || []
+        recent: results[11]?.results || [],
+        sessions: groupSessionInsights(results[12]?.results || [])
       }
     });
   } catch (error) {

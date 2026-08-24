@@ -6,7 +6,7 @@ The production portfolio uses Cloudflare Pages, Pages Functions, Workers AI, D1,
 
 - `/terminal.html`: public AI chat with recruiter-focused prompts and evidence links.
 - Page-aware and recruiter modes passed from approved portfolio links; context never expands the public knowledge boundary.
-- `/functions/api/chat.js`: server-side assistant endpoint using fast Llama 3.1 8B with IBM Granite 4.0 Micro as an automatic fallback.
+- `/functions/api/chat.js`: server-side assistant endpoint using GPT-OSS 120B, with GPT-OSS 20B, Llama 3.1 8B, and IBM Granite 4.0 Micro as ordered fallbacks.
 - `/functions/api/contact.js`: validated, rate-limited contact delivery through Resend without opening the visitor's email application.
 - `/functions/_shared/profile.js`: approved public knowledge base.
 - `/schema.sql`: privacy-safe website and assistant analytics plus future monthly knowledge candidates.
@@ -15,7 +15,7 @@ The production portfolio uses Cloudflare Pages, Pages Functions, Workers AI, D1,
 - `/admin/log/`: private developer log covered by the same Cloudflare Access application.
 - `/workers/retention.js`: daily D1 cleanup using the same retention policy as request-time cleanup.
 
-The assistant answers only from the approved profile. Unknown facts are declined. Salary questions are redirected and flagged. Private/security questions are blocked before reaching the model.
+The assistant answers only from the approved profile. Unknown facts are declined. Salary questions are redirected and flagged. Private, security, and prompt-injection requests are blocked before reaching the model. Up to eight previous server-trusted turns are used to resolve follow-ups within the current browser session.
 
 ## Connect the GitHub repository to Cloudflare Pages
 
@@ -123,8 +123,8 @@ That approval workflow is the safe version of “forever learning”: continuous
 
 - Workers AI pricing: https://developers.cloudflare.com/workers-ai/platform/pricing/
 - Workers AI models: https://developers.cloudflare.com/workers-ai/models/
-- Llama 3.1 8B Instruct Fast: https://developers.cloudflare.com/workers-ai/models/llama-3.1-8b-instruct-fast/
-- Granite 4.0 H Micro: https://developers.cloudflare.com/workers-ai/models/granite-4.0-h-micro/
+- GPT-OSS 120B: https://developers.cloudflare.com/workers-ai/models/gpt-oss-120b/
+- GPT-OSS 20B: https://developers.cloudflare.com/workers-ai/models/gpt-oss-20b/
 - Pages Functions bindings: https://developers.cloudflare.com/pages/functions/bindings/
 - Pages Git integration: https://developers.cloudflare.com/pages/get-started/git-integration/
 - Cloudflare Web Analytics setup: https://developers.cloudflare.com/web-analytics/get-started/

@@ -1,4 +1,4 @@
-export const KNOWLEDGE_VERSION = "2026-08-24.3";
+export const KNOWLEDGE_VERSION = "2026-08-24.4";
 
 export const SOURCES = {
   about: { label: "About Yahya", url: "/about" },

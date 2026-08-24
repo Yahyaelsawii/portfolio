@@ -327,23 +327,25 @@ Relevant files:
 
 Models:
 
-1. `@cf/meta/llama-3.1-8b-instruct-fast`
-2. `@cf/ibm-granite/granite-4.0-h-micro` fallback
+1. `@cf/openai/gpt-oss-120b`
+2. `@cf/openai/gpt-oss-20b` fallback
+3. `@cf/meta/llama-3.1-8b-instruct-fast` fallback
+4. `@cf/ibm-granite/granite-4.0-h-micro` fallback
 
 Behavior:
 
 - Answers only from the approved serialized profile.
 - Says it does not know when a fact is absent.
-- Replies in the visitor’s language; Arabic and English are expected.
+- English is the default. Arabic is used only when the visitor explicitly requests it.
 - Recruiter mode prioritizes role fit, evidence, availability, and a next step.
 - Page context prioritizes approved facts but never expands the public boundary.
 - Evidence links are attached by the application, not invented by the model.
-- Salary, VR embargo, and private-topic requests are handled before the model call.
-- Same-origin requests only; JSON body limit 16 KB; message limit 800 characters; up to four prior user messages.
+- Salary, VR embargo, private-topic, and prompt-injection requests are handled before the model call.
+- Same-origin requests only; JSON body limit 16 KB; message limit 800 characters; up to eight server-trusted session turns.
 - Low-temperature responses, maximum 500 tokens.
-- Rate limit is an atomic six questions/minute per daily privacy-hashed visitor. The assistant fails closed if D1, hashing, or the rate-limit table is unavailable.
+- Rate limits are an atomic six questions/minute and 30 questions/hour per daily privacy-hashed visitor. The assistant fails closed if D1, hashing, or the rate-limit table is unavailable.
 - Email addresses and phone-like content in visitor questions are redacted from logs.
-- Blocked private-topic wording is stored only as `[blocked private-topic request]`.
+- Blocked private-topic and injection wording is stored only as `[blocked safety-boundary request]`.
 - Client-supplied assistant-role history is discarded before model calls.
 - Availability, target-role, and contact questions have deterministic approved fallbacks that do not require a model call.
 
@@ -374,7 +376,9 @@ The hashing secret must be at least 32 random characters and must never be commi
 Dashboard implementation:
 
 - `/admin/` UI in `admin/index.html` and `dashboard.js`.
-- `/api/admin/analytics` returns a minimized 30-day summary, daily volume, coarse regions, and up to 50 recent records within the 90-day window.
+- `/api/admin/analytics` returns a minimized 30-day summary, daily volume, coarse regions, recent records, and grouped conversation sessions within the 90-day window.
+- `/api/admin/session` returns one owner-only transcript by a truncated 16-character session prefix. It never returns the full HMAC, visitor hash, or location fields per message.
+- Session engagement scores are deterministic and cost no AI quota: 1–3 light, 4–6 developing, and 7–10 strong. Each session includes a short topic summary and scoring reason.
 - `functions/_shared/access.js` verifies Cloudflare Access JWT algorithm, issuer, audience, lifetime, signature, and exact approved email.
 - Approved dashboard email: `yahyaelsawi1@gmail.com`.
 - Missing Access configuration fails closed.
@@ -524,11 +528,12 @@ The dependency-free `npm run build` command creates an explicit `dist/` artifact
 | `resume.html` | Web skills and grouped credentials. |
 | `functions/_shared/profile.js` | Public AI knowledge and approved evidence links. |
 | `functions/api/chat.js` | AI/security/logging behavior. |
-| `functions/api/contact.js` | Direct contact validation, rate limiting, and Resend delivery. |
+| `functions/api/contact.js` | Direct contact validation, rate limiting, and Resend or approved FormSubmit delivery. |
 | `schema.sql` | D1 website analytics, assistant logging, abuse controls, and future knowledge candidates. |
 | `functions/_shared/access.js` | Cloudflare Access JWT validation. |
 | `functions/api/analytics/visit.js` | Public privacy-safe website visit collector. |
 | `functions/api/admin/analytics.js` | Private website and assistant analytics read API. |
+| `functions/api/admin/session.js`, `functions/_shared/session-insights.js` | Owner-only transcript detail and deterministic session scoring. |
 | `admin/index.html`, `admin/log.html`, `dashboard.js` | Private analytics and developer-log UI. |
 | `functions/_shared/retention.js` | Shared 90-day site/assistant detail and one-day rate-limit cleanup policy. |
 | `workers/retention.js`, `wrangler.retention.jsonc` | Daily production cleanup Worker and schedule. |

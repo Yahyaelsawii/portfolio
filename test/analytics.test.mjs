@@ -29,7 +29,8 @@ class AnalyticsDatabase {
       { results: [{ questions: 5, visitors: 3, average_response_ms: 120, salary_flags: 1, privacy_blocks: 0 }] },
       { results: [{ day: "2026-08-20", questions: 5 }] },
       { results: [{ country: "AE", questions: 5 }] },
-      { results: [{ created_at: "2026-08-20T00:00:00Z", country: "AE", region: "Dubai", city: "Dubai", question: "Role fit?", flag: "none", response_ms: 120 }] }
+      { results: [{ created_at: "2026-08-20T00:00:00Z", country: "AE", region: "Dubai", city: "Dubai", question: "Role fit?", flag: "none", response_ms: 120 }] },
+      { results: [{ created_at: "2026-08-20T00:00:00Z", session_hash: "a".repeat(64), country: "AE", region: "Dubai", city: "Dubai", question: "Is Yahya available for this role?", answer: "Yes, he is available.", flag: "none" }] }
     ];
   }
 }
@@ -53,6 +54,10 @@ test("returns a minimized analytics payload after enforcing retention", async ()
     assert.deepEqual(Object.keys(body).sort(), ["ai", "generatedAt", "range", "viewer", "website"]);
     assert.equal(body.website.summary.pageviews, 12);
     assert.equal(body.ai.summary.questions, 5);
+    assert.equal(body.ai.sessions[0].id, "a".repeat(16));
+    assert.equal(body.ai.sessions[0].summary, "Hiring and role fit / Availability");
+    assert.equal(body.ai.sessions[0].score, 7);
+    assert.equal("session_hash" in body.ai.sessions[0], false);
     assert.equal(database.batches.length, 2);
     assert.equal(database.batches[0].every(statement => statement.sql.includes("DELETE FROM")), true);
 
@@ -62,6 +67,9 @@ test("returns a minimized analytics payload after enforcing retention", async ()
     assert.doesNotMatch(websiteRecentSql, /SELECT\s+.*visitor_hash/is);
     assert.match(aiRecentSql, /-90 days/);
     assert.doesNotMatch(aiRecentSql, /\banswer\b|\bmodel\b|\bvisitor_hash\b|\bsession_hash\b/);
+    const aiSessionsSql = database.batches[1][12].sql;
+    assert.match(aiSessionsSql, /session_hash/);
+    assert.doesNotMatch(aiSessionsSql, /visitor_hash/);
     assert.deepEqual(Object.keys(body.ai.recent[0]).sort(), ["city", "country", "created_at", "flag", "question", "region", "response_ms"]);
   } finally {
     globalThis.fetch = originalFetch;
