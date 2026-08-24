@@ -133,6 +133,22 @@ test("rewrites unexpected Arabic output into the default English language", asyn
   assert.doesNotMatch(result.body.answer, /[\u0600-\u06ff]/);
 });
 
+test("turns unknown-fact prompt echoes into a natural contact suggestion", async () => {
+  const ai = {
+    async run() {
+      return { response: "I don't know that from Yahya's approved public information. Then suggest contacting Yahya." };
+    }
+  };
+  const result = await invoke("What is Yahya's favourite cereal?", { ai });
+  assert.equal(result.response.status, 200);
+  assert.equal(
+    result.body.answer,
+    "I don't know that from Yahya's approved public information. You can contact him through the Contact page for anything not covered here."
+  );
+  assert.equal(result.body.sources[0].label, "Contact Yahya");
+  assert.doesNotMatch(result.body.answer, /Then suggest/i);
+});
+
 test("accepts only user messages from client-supplied history", async () => {
   const result = await invoke("Explain the vehicle rental backup strategy.", {
     payload: {

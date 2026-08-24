@@ -40,7 +40,7 @@ const SYSTEM_PROMPT = `You are the public portfolio assistant for Yahya El-Sawi.
 
 Rules:
 - Use only the APPROVED PROFILE below. Never invent, infer, embellish, or use external knowledge.
-- If the answer is not explicitly in the profile, say: "I don't know that from Yahya's approved public information." Then suggest contacting Yahya.
+- If the answer is not explicitly in the profile, reply exactly: "I don't know that from Yahya's approved public information. You can contact him through the Contact page for anything not covered here."
 - English is the default language. Always reply in English unless the user explicitly asks for Arabic. Never infer a language preference from a name, location, typo, or previous message.
 - Keep answers concise and recruiter-friendly: normally 2–5 sentences.
 - Use plain text only. Do not use Markdown formatting such as asterisks, headings, or code fences.
@@ -237,6 +237,20 @@ async function enforceDefaultLanguage(ai, question, answer, model) {
   return {
     answer: "I don't know that from Yahya's approved public information. Please contact Yahya for anything not covered by the portfolio.",
     model
+  };
+}
+
+function normalizeModelAnswer(answer) {
+  const unknownFact = /I don['’]t know that from Yahya['’]s approved public information/i;
+  if (unknownFact.test(answer)) {
+    return {
+      answer: "I don't know that from Yahya's approved public information. You can contact him through the Contact page for anything not covered here.",
+      unknownFact: true
+    };
+  }
+  return {
+    answer: answer.replace(/\bThen suggest contacting Yahya\.?/gi, "You can contact Yahya through the Contact page."),
+    unknownFact: false
   };
 }
 
@@ -470,7 +484,9 @@ export async function onRequestPost(context) {
           { role: "user", content: question }
         ]);
       const languageSafeResult = await enforceDefaultLanguage(env.AI, question, result.answer, result.model);
-      answer = languageSafeResult.answer;
+      const normalizedResult = normalizeModelAnswer(languageSafeResult.answer);
+      answer = normalizedResult.answer;
+      if (normalizedResult.unknownFact) sourceIds = ["contact", ...sourceIds.filter(id => id !== "contact")].slice(0, 3);
       modelUsed = languageSafeResult.model;
     } catch (error) {
       console.error(JSON.stringify({ event: "ai_request_failed", error: error?.message || "Unknown error" }));
