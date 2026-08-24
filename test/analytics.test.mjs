@@ -1,6 +1,6 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { onRequestGet } from "../functions/api/admin/analytics.js";
+import { onRequestGet } from "../functions/admin/api/analytics.js";
 import { accessEnvironment, accessRequest, createAccessFixture } from "./helpers/access-token.mjs";
 
 class AnalyticsDatabase {

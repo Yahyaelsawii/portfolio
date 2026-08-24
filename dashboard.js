@@ -77,16 +77,39 @@ function showError(code) {
   if (!gate) return;
   gate.replaceChildren();
   gate.className = 'dashboard-gate dashboard-gate-error';
-  const title = code === 'ADMIN_AUTH_NOT_CONFIGURED' ? 'Private access setup is not complete.' : 'Cloudflare Access sign-in is required.';
-  gate.append(makeNode('h2', title), makeNode('p', code === 'ADMIN_AUTH_NOT_CONFIGURED'
-    ? 'The dashboard is fail-closed. Add the Access team domain and application audience before analytics can be viewed.'
-    : 'Only Yahya’s approved email can open this data. Sign in through the protected dashboard route and try again.'));
+  const errors = {
+    ADMIN_AUTH_NOT_CONFIGURED: [
+      'Private access setup is not complete.',
+      'The dashboard is fail-closed. Add the Access team domain and application audience before analytics can be viewed.'
+    ],
+    ACCESS_LOGIN_REQUIRED: [
+      'Cloudflare Access sign-in is required.',
+      'Only Yahya’s approved email can open this data. Sign in through the protected dashboard route and try again.'
+    ],
+    INVALID_ACCESS_TOKEN: [
+      'Your private session could not be verified.',
+      'Request a fresh email code and sign in again.'
+    ],
+    ADMIN_EMAIL_NOT_APPROVED: [
+      'This email is not approved.',
+      'Use the owner email configured for this dashboard.'
+    ]
+  };
+  const [title, message] = errors[code] || [
+    'Analytics could not be loaded.',
+    'The private service is temporarily unavailable. Refresh the page and try again.'
+  ];
+  gate.append(makeNode('h2', title), makeNode('p', message));
 }
 
 async function loadDashboard() {
   refresh.disabled = true;
   try {
-    const response = await fetch('/api/admin/analytics', { headers: { accept: 'application/json' }, cache: 'no-store' });
+    const response = await fetch('/admin/api/analytics', {
+      headers: { accept: 'application/json' },
+      credentials: 'same-origin',
+      cache: 'no-store'
+    });
     const data = await response.json().catch(() => ({}));
     if (!response.ok) throw new Error(data.error || 'ANALYTICS_UNAVAILABLE');
     setText('#dashboard-viewer', data.viewer);
