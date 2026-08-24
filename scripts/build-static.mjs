@@ -117,6 +117,22 @@ async function copyCleanRoute(sourcePath, routePath) {
   await writeFile(destination, html);
 }
 
+async function copyPrivateLogRoute(sourcePath, routePath) {
+  const source = await readFile(path.join(root, sourcePath), "utf8");
+  const html = source
+    .replace('href="../styles.css', 'href="/styles.css')
+    .replace('src="../main.js', 'src="/main.js')
+    .replace('href="../assets/', 'href="/assets/')
+    .replaceAll('href="index.html"', 'href="/admin/"')
+    .replace('href="../index.html"', 'href="/"');
+  if (html === source) throw new Error(`Private route source was not normalized: ${sourcePath}`);
+  for (const destinationPath of [sourcePath, routePath]) {
+    const destination = path.join(output, destinationPath);
+    await mkdir(path.dirname(destination), { recursive:true });
+    await writeFile(destination, html);
+  }
+}
+
 async function injectStructuredData(routePath, data) {
   const destination = path.join(output, routePath);
   const source = await readFile(destination, "utf8");
@@ -214,7 +230,7 @@ for (const [sourcePath, routePath] of Object.entries(cleanRoutes)) {
 }
 
 for (const [sourcePath, routePath] of Object.entries(privateCleanRoutes)) {
-  await copyCleanRoute(sourcePath, routePath);
+  await copyPrivateLogRoute(sourcePath, routePath);
 }
 
 for (const [sourcePath, routePath] of Object.entries(projectRoutes)) {
