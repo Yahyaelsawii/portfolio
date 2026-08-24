@@ -304,6 +304,18 @@ try {
   await detailPage.waitForFunction(() => document.querySelector("#form-success")?.textContent.includes("Message sent"));
   const contactStatus = await detailPage.locator("#form-success").innerText();
   if (!contactStatus.includes("Message sent")) failures.push(`contact form: ${contactStatus}`);
+  await detailPage.unroute("**/api/contact");
+
+  await detailPage.route("**/api/contact", route => route.fulfill({ status:502, contentType:"application/json", body:JSON.stringify({ error:"DELIVERY_FAILED" }) }));
+  await detailPage.route("https://formsubmit.co/ajax/**", route => route.fulfill({ status:200, contentType:"application/json", body:JSON.stringify({ success:"true" }) }));
+  await detailPage.getByLabel("Your name").fill("Fallback Test");
+  await detailPage.getByLabel("Email address").fill("fallback@example.com");
+  await detailPage.getByLabel("Message", { exact:true }).fill("This verifies the provider fallback path.");
+  await detailPage.getByRole("button", { name:"Send message" }).click();
+  await detailPage.waitForFunction(() => document.querySelector("#form-success")?.textContent.includes("Message sent"));
+  if (!await detailPage.locator("#form-success").innerText().then(text => text.includes("Message sent"))) failures.push("contact form: provider fallback did not succeed");
+  await detailPage.unroute("**/api/contact");
+  await detailPage.unroute("https://formsubmit.co/ajax/**");
 
   await detailPage.goto(`${base}/`, { waitUntil: "networkidle" });
   const featuredCards = detailPage.locator("#featured-projects .project-card");

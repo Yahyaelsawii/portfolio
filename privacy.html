@@ -7,8 +7,8 @@
   <meta name="description" content="How Yahya El-Sawi's portfolio handles contact information, AI conversations, privacy-safe analytics, and data retention.">
   <link rel="canonical" href="https://yahyaelsawi.website/privacy">
   <meta name="robots" content="index,follow">
-  <link rel="stylesheet" href="styles.css?v=20260824.4">
-  <script defer src="main.js?v=20260824.4"></script>
+  <link rel="stylesheet" href="styles.css?v=20260824.5">
+  <script defer src="main.js?v=20260824.5"></script>
   <link rel="icon" href="assets/favicon/logo.svg" type="image/svg+xml">
 </head>
 <body>
@@ -64,8 +64,8 @@
           <article class="story-block" id="contact">
             <span class="eyebrow">03 / Contact</span>
             <h2>The site sends your message directly</h2>
-            <p>When you submit the contact form, the name, email address, subject, and message you provide are sent to Yahya through Resend. The message content is not stored in the portfolio database. Short-lived rate-limit records contain only a one-way identity hash, time window, and request count.</p>
-            <p>Resend and Yahya's email provider process the delivered message under their own privacy terms. Please do not submit confidential or unnecessary personal information.</p>
+            <p>When you submit the contact form, the name, email address, subject, and message you provide are sent to Yahya through the configured delivery provider. The first-party server validates and rate-limits the request first; FormSubmit may receive a browser-side retry only when its server-to-server delivery path is unavailable. The message content is not stored in the portfolio database. Short-lived rate-limit records contain only a one-way identity hash, time window, and request count.</p>
+            <p>FormSubmit, any configured email-delivery provider, and Yahya's email provider process the delivered message under their own privacy terms. Please do not submit confidential or unnecessary personal information.</p>
           </article>
 
           <article class="story-block" id="analytics">
@@ -77,8 +77,8 @@
 
           <article class="story-block" id="services">
             <span class="eyebrow">05 / Service providers</span>
-            <h2>Cloudflare and Resend operate essential services</h2>
-            <p>Cloudflare Pages, Pages Functions, Workers AI, D1, and Web Analytics provide hosting, assistant responses, abuse protection, conversation storage, and site-performance measurement. Cloudflare may process standard network information needed to deliver and secure the site. Resend delivers contact-form messages.</p>
+            <h2>Cloudflare and FormSubmit operate essential services</h2>
+            <p>Cloudflare Pages, Pages Functions, Workers AI, D1, and Web Analytics provide hosting, assistant responses, abuse protection, conversation storage, and site-performance measurement. Cloudflare may process standard network information needed to deliver and secure the site. FormSubmit, or a configured replacement delivery provider, delivers contact-form messages.</p>
             <p>The site does not sell personal information and does not use third-party advertising trackers.</p>
           </article>
 

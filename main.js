@@ -1,6 +1,7 @@
 const A = '/assets/Pictures/';
 const CLOUDFLARE_SERVICE_ORIGIN = 'https://yahya-elsawi-portfolio-bnj.pages.dev';
 const PUBLIC_SITE_ORIGIN = 'https://yahyaelsawi.website';
+const CONTACT_FALLBACK_ENDPOINT = 'https://formsubmit.co/ajax/75adad6ce5e399fb72fe44ae27bd0d55';
 const isGitHubPages = location.hostname === 'yahyaelsawii.github.io';
 const apiEndpoint = path => `${isGitHubPages ? CLOUDFLARE_SERVICE_ORIGIN : ''}${path}`;
 
@@ -820,6 +821,28 @@ function initializeContactForm() {
   const submitButton = form?.querySelector('button[type="submit"]');
   if (!form || !status || !submitButton) return;
 
+  const deliverThroughFallback = async payload => {
+    const response = await fetch(CONTACT_FALLBACK_ENDPOINT, {
+      method:'POST',
+      headers:{ accept:'application/json', 'content-type':'application/json' },
+      body:JSON.stringify({
+        ...payload,
+        _subject:`Portfolio: ${payload.subject} - ${payload.name}`,
+        _template:'table',
+        _captcha:'false'
+      })
+    });
+    const text = await response.text();
+    let result = {};
+    try { result = JSON.parse(text); } catch { result = {}; }
+    if (!response.ok || String(result.success).toLowerCase() !== 'true') {
+      const activationPending = /activation|activate form/i.test(result.message || '');
+      throw new Error(activationPending
+        ? 'Contact delivery is awaiting owner activation. Please use the email link above for now.'
+        : 'Your message could not be sent. Please try again.');
+    }
+  };
+
   form.addEventListener('submit', async event => {
     event.preventDefault();
     status.hidden = false;
@@ -836,7 +859,10 @@ function initializeContactForm() {
         body:JSON.stringify(payload)
       });
       const result = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(result.message || 'Your message could not be sent. Please try again.');
+      if (!response.ok) {
+        if (response.status >= 500) await deliverThroughFallback(payload);
+        else throw new Error(result.message || 'Your message could not be sent. Please try again.');
+      }
       status.textContent = 'Message sent. Thank you — I’ll get back to you soon.';
       form.reset();
     } catch (error) {
