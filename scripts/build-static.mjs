@@ -63,7 +63,12 @@ const publicPaths = [
   "assets/Pictures/about-portrait-960.webp",
   "assets/Pictures/about-portrait-1440.avif",
   "assets/Pictures/about-portrait-1440.webp",
-  "assets/Pictures/head_shot.webp",
+  "assets/Pictures/home-portrait-480.avif",
+  "assets/Pictures/home-portrait-480.webp",
+  "assets/Pictures/home-portrait-768.avif",
+  "assets/Pictures/home-portrait-768.webp",
+  "assets/Pictures/home-portrait-1200.avif",
+  "assets/Pictures/home-portrait-1200.webp",
   "covers",
   "fonts",
   "output/pdf"
