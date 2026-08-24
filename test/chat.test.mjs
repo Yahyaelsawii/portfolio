@@ -135,6 +135,21 @@ test("rewrites unexpected Arabic output into the default English language", asyn
   assert.doesNotMatch(result.body.answer, /[\u0600-\u06ff]/);
 });
 
+test("returns model answers as clean plain text", async () => {
+  const ai = {
+    async run() {
+      return { response: "## Profile\nYahya's public name is **Yahya El-Sawi**. See [his portfolio](https://yahyaelsawi.website)." };
+    }
+  };
+  const result = await invoke("What is Yahya's full public name?", { ai });
+  assert.equal(result.response.status, 200);
+  assert.equal(
+    result.body.answer,
+    "Profile\nYahya's public name is Yahya El-Sawi. See his portfolio (https://yahyaelsawi.website)."
+  );
+  assert.doesNotMatch(result.body.answer, /\*\*|^##|\[[^\]]+\]\(/);
+});
+
 test("turns unknown-fact prompt echoes into a natural contact suggestion", async () => {
   const ai = {
     async run() {

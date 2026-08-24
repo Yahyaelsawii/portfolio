@@ -265,15 +265,21 @@ async function enforceDefaultLanguage(ai, question, answer, model) {
 }
 
 function normalizeModelAnswer(answer) {
+  const plainTextAnswer = answer
+    .replace(/\*\*([^*]+)\*\*/g, "$1")
+    .replace(/__([^_]+)__/g, "$1")
+    .replace(/`([^`]+)`/g, "$1")
+    .replace(/^#{1,6}\s+/gm, "")
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, "$1 ($2)");
   const unknownFact = /I don['’]t know that from Yahya['’]s approved public information/i;
-  if (unknownFact.test(answer)) {
+  if (unknownFact.test(plainTextAnswer)) {
     return {
       answer: "I don't know that from Yahya's approved public information. You can contact him through the Contact page for anything not covered here.",
       unknownFact: true
     };
   }
   return {
-    answer: answer.replace(/\bThen suggest contacting Yahya\.?/gi, "You can contact Yahya through the Contact page."),
+    answer: plainTextAnswer.replace(/\bThen suggest contacting Yahya\.?/gi, "You can contact Yahya through the Contact page."),
     unknownFact: false
   };
 }
