@@ -1,5 +1,6 @@
 import { KNOWLEDGE_VERSION } from "../_shared/profile.js";
 import { CONVERSATION_RETENTION_DAYS } from "../_shared/retention.js";
+import { publicCorsHeaders, publicPreflightResponse } from "../_shared/cors.js";
 
 export function onRequestGet({ env }) {
   const privacyControlsReady = Boolean(env.DB && typeof env.LOG_HASH_SECRET === "string" && env.LOG_HASH_SECRET.length >= 32);
@@ -22,9 +23,13 @@ export function onRequestGet({ env }) {
     fallbackModel: "@cf/ibm-granite/granite-4.0-h-micro",
     knowledgeVersion: KNOWLEDGE_VERSION
   }, {
-    headers: {
+    headers: publicCorsHeaders({
       "cache-control": "no-store, max-age=0",
       "x-content-type-options": "nosniff"
-    }
+    })
   });
+}
+
+export function onRequestOptions({ request }) {
+  return publicPreflightResponse(request, "GET, OPTIONS");
 }

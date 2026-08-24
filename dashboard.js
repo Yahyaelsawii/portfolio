@@ -1,6 +1,7 @@
 const gate = document.querySelector('#dashboard-gate');
 const content = document.querySelector('#dashboard-content');
 const refresh = document.querySelector('#dashboard-refresh');
+const isGitHubPagesAdmin = location.hostname === 'yahyaelsawii.github.io';
 
 function setText(selector, value) {
   const node = document.querySelector(selector);
@@ -108,5 +109,7 @@ async function loadDashboard() {
   }
 }
 
-refresh?.addEventListener('click', loadDashboard);
-loadDashboard();
+if (!isGitHubPagesAdmin) {
+  refresh?.addEventListener('click', loadDashboard);
+  loadDashboard();
+}

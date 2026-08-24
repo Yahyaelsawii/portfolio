@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { onRequestGet } from "../functions/api/health.js";
+import { onRequestGet, onRequestOptions } from "../functions/api/health.js";
+
+const GITHUB_PAGES_ORIGIN = "https://yahyaelsawii.github.io";
 
 test("reports privacy, rate limiting, and retention readiness", async () => {
   const response = onRequestGet({
@@ -16,6 +18,17 @@ test("reports privacy, rate limiting, and retention readiness", async () => {
   assert.equal(body.atomicRateLimiting, true);
   assert.equal(body.conversationRetentionDays, 90);
   assert.equal(body.scheduledRetention, true);
+  assert.equal(response.headers.get("access-control-allow-origin"), GITHUB_PAGES_ORIGIN);
+});
+
+test("answers approved GitHub Pages health preflight requests", () => {
+  const request = new Request("https://portfolio.test/api/health", {
+    method:"OPTIONS",
+    headers:{ origin:GITHUB_PAGES_ORIGIN, "access-control-request-method":"GET" }
+  });
+  const response = onRequestOptions({ request });
+  assert.equal(response.status, 204);
+  assert.equal(response.headers.get("access-control-allow-origin"), GITHUB_PAGES_ORIGIN);
 });
 
 test("reports safety controls unavailable for a weak secret", async () => {

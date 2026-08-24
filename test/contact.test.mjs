@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { onRequestPost } from "../functions/api/contact.js";
+import { onRequestOptions, onRequestPost } from "../functions/api/contact.js";
+
+const GITHUB_PAGES_ORIGIN = "https://yahyaelsawii.github.io";
 
 class FakeStatement {
   constructor(database, sql) {
@@ -100,6 +102,25 @@ test("uses the approved V1 server-side form handler when Resend is unavailable",
 test("rejects cross-origin submissions", async () => {
   const response = await onRequestPost({ request:contactRequest({}, { origin:"https://attacker.test" }), env:environment() });
   assert.equal(response.status, 403);
+});
+
+test("accepts submissions from the GitHub Pages frontend origin", async () => {
+  const response = await onRequestPost({
+    request:contactRequest({ company:"bot-field" }, { origin:GITHUB_PAGES_ORIGIN }),
+    env:environment()
+  });
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get("access-control-allow-origin"), GITHUB_PAGES_ORIGIN);
+});
+
+test("answers approved GitHub Pages contact preflight requests", async () => {
+  const request = new Request("https://portfolio.test/api/contact", {
+    method:"OPTIONS",
+    headers:{ origin:GITHUB_PAGES_ORIGIN, "access-control-request-method":"POST" }
+  });
+  const response = onRequestOptions({ request });
+  assert.equal(response.status, 204);
+  assert.equal(response.headers.get("access-control-allow-origin"), GITHUB_PAGES_ORIGIN);
 });
 
 test("rejects invalid form fields", async () => {

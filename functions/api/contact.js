@@ -1,3 +1,5 @@
+import { isApprovedPublicOrigin, publicCorsHeaders, publicPreflightResponse } from "../_shared/cors.js";
+
 const MAX_BODY_BYTES = 8 * 1024;
 const RATE_LIMIT_PER_WINDOW = 4;
 const ALLOWED_SUBJECTS = new Set([
@@ -7,24 +9,14 @@ const ALLOWED_SUBJECTS = new Set([
   "Just saying hi"
 ]);
 
-const jsonHeaders = {
+const jsonHeaders = publicCorsHeaders({
   "content-type": "application/json; charset=utf-8",
   "cache-control": "no-store, max-age=0",
   "x-content-type-options": "nosniff"
-};
+});
 
 function respond(body, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: jsonHeaders });
-}
-
-function approvedOrigin(request) {
-  const origin = request.headers.get("origin");
-  if (!origin) return true;
-  try {
-    return new URL(origin).host === new URL(request.url).host;
-  } catch {
-    return false;
-  }
 }
 
 async function readJsonBody(request) {
@@ -94,7 +86,7 @@ async function reserveRateLimit(db, identityHash) {
 }
 
 export async function onRequestPost({ request, env }) {
-  if (!approvedOrigin(request)) return respond({ error:"INVALID_ORIGIN", message:"This request is not allowed." }, 403);
+  if (!isApprovedPublicOrigin(request)) return respond({ error:"INVALID_ORIGIN", message:"This request is not allowed." }, 403);
   if (!request.headers.get("content-type")?.toLowerCase().startsWith("application/json")) {
     return respond({ error:"INVALID_CONTENT_TYPE", message:"Please submit the website contact form." }, 415);
   }
@@ -172,4 +164,8 @@ export async function onRequestPost({ request, env }) {
     return respond({ error:"DELIVERY_FAILED", message:"Your message could not be delivered. Please try again shortly." }, 502);
   }
   return respond({ ok:true });
+}
+
+export function onRequestOptions({ request }) {
+  return publicPreflightResponse(request, "POST, OPTIONS");
 }

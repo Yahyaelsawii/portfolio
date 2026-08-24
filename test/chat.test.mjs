@@ -1,6 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
-import { onRequestPost } from "../functions/api/chat.js";
+import { onRequestOptions, onRequestPost } from "../functions/api/chat.js";
+
+const GITHUB_PAGES_ORIGIN = "https://yahyaelsawii.github.io";
 
 class FakeStatement {
   constructor(database, sql) {
@@ -112,6 +114,28 @@ test("rejects cross-origin requests", async () => {
   });
   assert.equal(response.status, 403);
   assert.equal((await response.json()).error, "INVALID_ORIGIN");
+});
+
+test("accepts the GitHub Pages frontend origin", async () => {
+  const response = await onRequestPost({
+    request:customRequest({
+      origin:GITHUB_PAGES_ORIGIN,
+      body:JSON.stringify({ message:"Is Yahya available to relocate?", sessionId:"github-pages-test" })
+    }),
+    env:{ DB:new FakeDatabase(), AI:{}, LOG_HASH_SECRET:"a".repeat(32) }
+  });
+  assert.equal(response.status, 200);
+  assert.equal(response.headers.get("access-control-allow-origin"), GITHUB_PAGES_ORIGIN);
+});
+
+test("answers approved GitHub Pages preflight requests", async () => {
+  const request = new Request("https://portfolio.test/api/chat", {
+    method:"OPTIONS",
+    headers:{ origin:GITHUB_PAGES_ORIGIN, "access-control-request-method":"POST" }
+  });
+  const response = onRequestOptions({ request });
+  assert.equal(response.status, 204);
+  assert.equal(response.headers.get("access-control-allow-origin"), GITHUB_PAGES_ORIGIN);
 });
 
 test("requires JSON requests", async () => {

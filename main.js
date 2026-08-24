@@ -1,4 +1,7 @@
 const A = '/assets/Pictures/';
+const CLOUDFLARE_SERVICE_ORIGIN = 'https://yahya-elsawi-portfolio-bnj.pages.dev';
+const isGitHubPages = location.hostname === 'yahyaelsawii.github.io';
+const apiEndpoint = path => `${isGitHubPages ? CLOUDFLARE_SERVICE_ORIGIN : ''}${path}`;
 
 const projects = [
   {
@@ -309,7 +312,7 @@ function initializePortfolioAI() {
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 5000);
     try {
-      const response = await fetch('/api/health', { cache:'no-store', signal:controller.signal });
+      const response = await fetch(apiEndpoint('/api/health'), { cache:'no-store', signal:controller.signal });
       const health = await response.json().catch(() => ({}));
       const online = response.ok && health.ai && health.logging && health.privacyHashing && health.atomicRateLimiting;
       setAssistantAvailability(online ? 'online' : 'offline');
@@ -382,7 +385,9 @@ function initializePortfolioAI() {
     messages.scrollTo({ top: messages.scrollHeight, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   };
 
-  const localRoutes = { home:'/', work:'/work', experience:'/work', about:'/about', resume:'/resume', recruiter:'/recruiter', contact:'/contact' };
+  const localRoutes = isGitHubPages
+    ? { home:'/portfolio/index.html', work:'/portfolio/work.html', experience:'/portfolio/work.html', about:'/portfolio/about.html', resume:'/portfolio/resume.html', recruiter:'/portfolio/recruiter.html', contact:'/portfolio/contact.html' }
+    : { home:'/', work:'/work', experience:'/work', about:'/about', resume:'/resume', recruiter:'/recruiter', contact:'/contact' };
 
   async function ask(question) {
     const cleanQuestion = question.trim();
@@ -415,7 +420,7 @@ function initializePortfolioAI() {
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 30000);
-      const response = await fetch('/api/chat', {
+      const response = await fetch(apiEndpoint('/api/chat'), {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
         body: JSON.stringify({ message: cleanQuestion, history: history.slice(-4), sessionId, context: pageContext, mode: assistantMode }),
@@ -743,7 +748,7 @@ function initializeContactForm() {
 
     try {
       const payload = Object.fromEntries(new FormData(form));
-      const response = await fetch('/api/contact', {
+      const response = await fetch(apiEndpoint('/api/contact'), {
         method:'POST',
         headers:{ 'content-type':'application/json' },
         body:JSON.stringify(payload)

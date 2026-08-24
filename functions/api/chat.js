@@ -1,5 +1,6 @@
 import { KNOWLEDGE_VERSION, PROFILE_CONTEXT, SOURCES } from "../_shared/profile.js";
 import { retentionStatements } from "../_shared/retention.js";
+import { isApprovedPublicOrigin, publicCorsHeaders, publicPreflightResponse } from "../_shared/cors.js";
 
 const MODELS = [
   "@cf/meta/llama-3.1-8b-instruct-fast",
@@ -51,11 +52,11 @@ Rules:
 APPROVED PROFILE:
 ${PROFILE_CONTEXT}`;
 
-const jsonHeaders = {
+const jsonHeaders = publicCorsHeaders({
   "content-type": "application/json; charset=utf-8",
   "cache-control": "no-store, max-age=0",
   "x-content-type-options": "nosniff"
-};
+});
 
 function respond(body, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: jsonHeaders });
@@ -68,16 +69,6 @@ function normalizeText(value, limit = MAX_MESSAGE_LENGTH) {
 function normalizeContext(value) {
   const context = normalizeText(value, 80).toLowerCase();
   return Object.hasOwn(CONTEXT_HINTS, context) ? context : "";
-}
-
-function approvedOrigin(request) {
-  const origin = request.headers.get("origin");
-  if (!origin) return true;
-  try {
-    return new URL(origin).host === new URL(request.url).host;
-  } catch {
-    return false;
-  }
 }
 
 async function readJsonBody(request) {
@@ -303,7 +294,7 @@ export async function onRequestPost(context) {
   const { request, env } = context;
   const startedAt = Date.now();
 
-  if (!approvedOrigin(request)) return respond({ error: "INVALID_ORIGIN", message: "This request was rejected." }, 403);
+  if (!isApprovedPublicOrigin(request)) return respond({ error: "INVALID_ORIGIN", message: "This request was rejected." }, 403);
   if (!request.headers.get("content-type")?.toLowerCase().includes("application/json")) {
     return respond({ error: "INVALID_CONTENT_TYPE", message: "Send the message as JSON." }, 415);
   }
@@ -421,6 +412,6 @@ export async function onRequestPost(context) {
   });
 }
 
-export function onRequestOptions() {
-  return new Response(null, { status: 204, headers: { ...jsonHeaders, allow: "POST, OPTIONS" } });
+export function onRequestOptions({ request }) {
+  return publicPreflightResponse(request, "POST, OPTIONS");
 }

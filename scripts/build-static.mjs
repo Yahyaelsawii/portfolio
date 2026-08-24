@@ -39,6 +39,7 @@ const publicFiles = [
   "_headers",
   "_redirects",
   "_routes.json",
+  "admin-router.js",
   "dashboard.js",
   "main.js",
   "redirect.js",
@@ -121,6 +122,7 @@ async function copyPrivateLogRoute(sourcePath, routePath) {
   const source = await readFile(path.join(root, sourcePath), "utf8");
   const html = source
     .replace('href="../styles.css', 'href="/styles.css')
+    .replace('src="../admin-router.js', 'src="/admin-router.js')
     .replace('src="../main.js', 'src="/main.js')
     .replace('href="../assets/', 'href="/assets/')
     .replaceAll('href="index.html"', 'href="/admin/"')
