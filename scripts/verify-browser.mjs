@@ -342,6 +342,17 @@ try {
   await detailPage.goto(`${base}/`, { waitUntil: "networkidle" });
   const featuredCards = detailPage.locator("#featured-projects .project-card");
   if (await featuredCards.count() !== 3) failures.push(`home projects: expected 3 featured cards, found ${await featuredCards.count()}`);
+  const featuredProjectOrder = await featuredCards.evaluateAll(cards => cards.map(card => new URL(card.dataset.projectUrl, location.origin).pathname));
+  const expectedFeaturedOrder = ["/work/gift-it", "/work/rit-app", "/work/network-automation"];
+  if (JSON.stringify(featuredProjectOrder) !== JSON.stringify(expectedFeaturedOrder)) failures.push(`home projects: unexpected featured order ${featuredProjectOrder.join(", ")}`);
+  for (const projectPath of expectedFeaturedOrder) {
+    const projectLink = detailPage.locator(`#featured-projects a[href="${projectPath}"]`).first();
+    if (!await projectLink.count()) failures.push(`home projects: missing link to ${projectPath}`);
+  }
+  const heroText = await detailPage.locator(".hero-copy").textContent();
+  for (const expectedText of ["Product Design / UX / Technical Products", "I turn complex systems into clear digital experiences.", "My work spans product design, frontend development and emerging AI experiences."]) {
+    if (!heroText.includes(expectedText)) failures.push(`home hero: missing approved copy ${expectedText}`);
+  }
   const featuredTops = await featuredCards.evaluateAll(cards => cards.map(card => Math.round(card.getBoundingClientRect().top)));
   if (Math.max(...featuredTops) - Math.min(...featuredTops) > 2) failures.push(`home projects: cards are not on one desktop row (${featuredTops.join(", ")})`);
   const primaryButton = detailPage.locator(".btn-primary").first();

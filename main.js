@@ -111,6 +111,11 @@ const sortedProjects = [...projects]
   })
   .map((project, index) => ({ ...project, number:String(index + 1).padStart(2, '0') }));
 
+const featuredProjectIds = ['gift-it', 'rit-app', 'network-automation'];
+const featuredProjects = featuredProjectIds
+  .map(id => sortedProjects.find(project => project.id === id))
+  .filter(Boolean);
+
 function projectCard(project) {
   const figmaLink = project.figmaUrl ? `<a class="text-link project-figma-link" href="${project.figmaUrl}" target="_blank" rel="noopener noreferrer">Open Figma file</a>` : '';
   return `<article class="project-card" data-category="${project.category.toLowerCase()} ${project.tags.join(' ').toLowerCase()}" data-project-url="${project.url}">
@@ -121,7 +126,7 @@ function projectCard(project) {
 
 function renderProjects(target, limit) {
   const node = document.querySelector(target);
-  const availableProjects = target === '#featured-projects' ? sortedProjects.filter(project => !project.locked) : sortedProjects;
+  const availableProjects = target === '#featured-projects' ? featuredProjects : sortedProjects;
   if (node) node.innerHTML = availableProjects.slice(0, limit || availableProjects.length).map(projectCard).join('');
 }
 

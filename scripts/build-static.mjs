@@ -155,7 +155,7 @@ const person = {
   name: "Yahya El-Sawi",
   url: `${siteUrl}/about`,
   image: `${siteUrl}/assets/Pictures/about-portrait-960.webp`,
-  description: "Dubai-based UI/UX designer and frontend developer with cybersecurity, database, and network automation experience.",
+  description: "Dubai-based product and UX designer with a software development background and evidence across frontend, AI, cybersecurity, databases, XR, and network automation.",
   alumniOf: {
     "@type": "CollegeOrUniversity",
     name: "Rochester Institute of Technology Dubai"
