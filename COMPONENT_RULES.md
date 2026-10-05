@@ -1,0 +1,17 @@
+# Component rules
+
+Read `AI_SETUP.md`, `BRAND_SYSTEM.md`, and `VISUAL_QA.md` before editing components.
+
+- **Navigation:** keep Home, Work, About, Resume, Contact, and Terminal in the primary navigation. A visible Menu control and its expanded state must work by pointer and keyboard on small screens. Keep active and focus states distinct. Avoid decorative badges in the header.
+- **Buttons and links:** primary buttons are ink and mark the main action; secondary buttons or underlined links support it. Use action labels that name the destination. Keep tap targets at least 44px where practical. Text links remain recognizable without hover. Do not append animated arrows to every button.
+- **Project cards:** an approved cover, title, concise scope, and clear case-study link are enough. State Locked or Interactive when that affects expectations. Do not repeat three tags when the title, client, and summary already convey them. Cards can contain a clickable cover for image expansion, but the title remains a normal page link.
+- **Capabilities:** present as concise editorial columns or rows. No arbitrary icon substitutes or numbered badges unless an ordered process is actually being described. A capability needs a concrete description tied to the work.
+- **Tags and metadata:** use only when they help filtering or clarify scope. Use normal readable type, restrained surfaces, and avoid microtext. Do not turn every piece of metadata into a pill. Preserve any metadata needed for truth boundaries.
+- **Status indicators:** label status in words. Colour reinforces meaning but never carries it alone. The locked status uses the exact approved disclosure language wherever the message appears.
+- **Images and diagrams:** use real, approved assets with captions, alt text, responsive formats, and dimensions. Diagrams must explain a specific system, sequence, or result; label synthetic demonstrations. Avoid decorative connector lines and floating nodes.
+- **Icons:** only use an icon when its meaning is familiar and it improves speed of recognition. Pair uncommon symbols with text. Do not use emoji or typographic symbols as generic capability art.
+- **CTAs:** connect the action to an actual task: review a case study, open a recruiter brief, ask a portfolio question, or contact Yahya. Avoid generic collaboration slogans or a mandatory closing banner on every page.
+- **Containers:** use them for controls, forms, distinct image surfaces, and genuinely grouped information. For prose, principles, proof records, and lists, prefer spacing and dividers. Avoid a grid of equal cards for content with unequal importance.
+- **Responsive behavior:** maintain the reading hierarchy at 1440, 1024, 768, 430, 390, and 375px. Reflow columns and actions; never simply shrink all type. Keep mobile gutters consistent, avoid horizontal scrolling, and prevent compressed or overlapping controls.
+- **Line length and wrapping:** body copy roughly 55–75 characters per line on wide screens. Use balanced headings, flexible widths, and natural wrapping; do not insert brittle manual line breaks or force a headline into an undersized column. Inspect orphan words and long project titles at every target width.
+- **Accessibility:** preserve semantic headings, lists, buttons, links, visible keyboard focus, sufficient contrast, reduced motion, and readable labels. An image-expansion button must have a useful name and a separate route link.
