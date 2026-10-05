@@ -6,6 +6,8 @@ import { featuredProjects, findProject, galleryImageDimensions, orderedProjects,
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const output = path.join(root, "dist");
 const siteUrl = "https://yahyaelsawi.website";
+const environment = process.env.PORTFOLIO_ENV || (process.env.CF_PAGES_BRANCH && process.env.CF_PAGES_BRANCH !== "main" ? "staging" : "production");
+if (!["production", "staging"].includes(environment)) throw new Error("PORTFOLIO_ENV must be production or staging");
 const personId = `${siteUrl}/#yahya-el-sawi`;
 const buildTargets = Object.freeze({
   featuredProjects: '<div class="project-grid" id="featured-projects"></div>',
@@ -386,5 +388,22 @@ for (const project of projects) {
 }
 
 for (const [routePath, data] of structuredRoutes) await injectStructuredData(routePath, data);
+
+if (environment === "staging") {
+  const walk = async directory => (await Promise.all((await readdir(directory, { withFileTypes: true })).map(async entry => {
+    const full = path.join(directory, entry.name);
+    return entry.isDirectory() ? walk(full) : [full];
+  }))).flat();
+  for (const file of await walk(output)) {
+    if (!file.endsWith(".html")) continue;
+    let html = await readFile(file, "utf8");
+    html = html.replace(/<html\b/i, '<html data-environment="staging"');
+    html = html.replace(/<head>/i, '<head><meta name="robots" content="noindex,nofollow,noarchive">');
+    html = html.replace(/<body([^>]*)>/i, '<body$1><div class="staging-indicator" role="status">STAGING · PRIVATE PREVIEW</div>');
+    await writeFile(file, html);
+  }
+  await writeFile(path.join(output, "robots.txt"), "User-agent: *\nDisallow: /\n");
+  await writeFile(path.join(output, "_headers"), `${await readFile(path.join(output, "_headers"), "utf8")}\n/*\n  X-Robots-Tag: noindex, nofollow, noarchive\n`);
+}
 
 console.log(`Built ${htmlFiles.length} source pages, ${Object.keys(cleanRoutes).length + 1} public clean page routes, ${Object.keys(privateCleanRoutes).length} private clean page route, ${Object.keys(projectRoutes).length} project routes, ${structuredRoutes.size} structured-data documents, and public assets in ${path.relative(root, output)}/.`);

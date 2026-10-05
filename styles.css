@@ -587,3 +587,6 @@ a.contact-item:hover{background:transparent;border-color:var(--line)}
   .skills-grid{gap:0}
   .skill-group{padding:20px 0}
 }
+
+/* The badge is injected into staging builds only. */
+.staging-indicator{position:fixed;z-index:99999;right:12px;bottom:12px;padding:6px 10px;border:1px solid #0f766e;border-radius:3px;background:#0f172a;color:#fff;font:700 11px/1.2 monospace;letter-spacing:.08em;box-shadow:0 2px 12px #0003}

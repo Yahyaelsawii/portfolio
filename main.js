@@ -93,6 +93,7 @@ function createThinkingMessage() {
 }
 
 function initializeSiteAnalytics() {
+  if (document.documentElement.dataset.environment === 'staging') return;
   if (location.pathname.startsWith('/admin/') || ['localhost', '127.0.0.1'].includes(location.hostname)) return;
   const canonical = document.querySelector('link[rel="canonical"]')?.href;
   if (!canonical) return;
@@ -684,6 +685,11 @@ function initializeContactForm() {
   const status = document.querySelector('#form-success');
   const submitButton = form?.querySelector('button[type="submit"]');
   if (!form || !status || !submitButton) return;
+  if (document.documentElement.dataset.environment === 'staging') {
+    submitButton.disabled = true;
+    submitButton.textContent = 'Disabled on staging';
+    return;
+  }
 
   const deliverThroughFallback = async payload => {
     const response = await fetch(CONTACT_FALLBACK_ENDPOINT, {

@@ -1,12 +1,18 @@
 # Portfolio Project Handoff
 
-Last prepared: 4 October 2026
+Last prepared: 5 October 2026
 
 Repository: `https://github.com/Yahyaelsawii/portfolio`
 
 Production branch: `main`
 
 Working branches may change. Use `git branch --show-current`, `git status`, and `git log -1 --oneline` to inspect the checkout and release state.
+
+At the environment audit, remote `main` was `3bb886ce8a2d2016613496bd8cd969525cf809a2`; remote `staging` and `codex/p0-hardening` were `e8b5c61d072b522f073cd2c7281f9fb1c669e2d7`. Verify live deployments again before release.
+
+**Deployment reconciliation:** The current Cloudflare Pages production deployment (`6ee149b9-0184-486e-9efa-eaf5be96c081`, 4 October 2026) was compared with the visual cleanup commit `a667b00` and reproduced by its public build, aside from Cloudflare email protection and analytics injection. The Pages project showed no Git connection during the audit. An active, Access-protected `staging.yahyaelsawi.website` custom domain is attached as a production alias; the requested `stg.yahyaelsawi.website` is not deployed. Recheck the deployment and branch state before release.
+
+Qwerty is a separate private repository (`Yahyaelsawii/qwerty`) and Worker, planned for the `/qwerty` route under the public domain. The public repository must contain no Qwerty application code or private data. Staging is prepared in code, but `stg.yahyaelsawi.website` and Qwerty routing still require Cloudflare setup. See `ENVIRONMENTS.md` for the branch map, staging protections, route configuration, archive method, and exact remaining actions.
 
 This file is the continuation guide for Yahya El-Sawi, Codex, or any other AI/developer working on the portfolio from another computer. Read it before changing public facts, project attribution, AI behavior, analytics, Cloudflare configuration, or the locked VR page.
 
