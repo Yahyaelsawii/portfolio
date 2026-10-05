@@ -479,3 +479,5 @@ picture.media-buffering::after{position:absolute;inset:0;background:linear-gradi
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}.reveal{opacity:1;transform:none}
 }
+/* The badge is injected into staging builds only. */
+.staging-indicator{position:fixed;z-index:99999;right:12px;bottom:12px;padding:6px 10px;border:1px solid #0f766e;border-radius:3px;background:#0f172a;color:#fff;font:700 11px/1.2 monospace;letter-spacing:.08em;box-shadow:0 2px 12px #0003}

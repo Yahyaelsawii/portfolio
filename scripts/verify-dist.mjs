@@ -7,6 +7,7 @@ const output = path.join(root, "dist");
 const forbiddenNames = new Set([
   ".dev.vars",
   "AI_SETUP.md",
+  "ENVIRONMENTS.md",
   "PROJECT_HANDOFF.md",
   "schema.sql",
   "wrangler.jsonc",
@@ -99,6 +100,15 @@ for (const publicLogPath of ["log.html", "log/index.html"]) {
     failures.push(`public developer log must not exist: ${publicLogPath}`);
   } catch {
     // Expected: the developer log is only published below the protected admin path.
+  }
+}
+
+for (const privatePath of ["qwerty", "qwerty/index.html", "qwerty.html"]) {
+  try {
+    await access(path.join(output, privatePath));
+    failures.push(`Qwerty must stay outside the public artifact: ${privatePath}`);
+  } catch {
+    // Qwerty is deployed from a separate private repository.
   }
 }
 
