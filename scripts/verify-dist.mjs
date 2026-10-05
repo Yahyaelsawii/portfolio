@@ -11,6 +11,7 @@ const forbiddenNames = new Set([
   "PROJECT_HANDOFF.md",
   "schema.sql",
   "wrangler.jsonc",
+  "wrangler.staging.jsonc",
   "wrangler.retention.jsonc"
 ]);
 const forbiddenDirectories = new Set([".git", "functions", "scripts", "test", "workers"]);
