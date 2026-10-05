@@ -46,6 +46,12 @@ const structuredDataTypeExpectations = new Map([
 ]);
 const expectedWorkProjectUrls = ["vr-neuroanatomy", "network-automation", "mood-insights", "rit-app", "gift-it", "passwordless", "vehicle-rental"]
   .map(slug => `https://yahyaelsawi.website/work/${slug}`);
+const prerenderedProjectPaths = ["gift-it", "rit-app", "passwordless", "vehicle-rental", "mood-insights"]
+  .map(slug => `work/${slug}/index.html`);
+
+function countMatches(value, pattern) {
+  return [...value.matchAll(pattern)].length;
+}
 
 async function walk(directory) {
   const files = [];
@@ -91,6 +97,45 @@ for (const structuredDataPath of structuredDataPaths) {
   }
 }
 
+const homeHtml = await readFile(path.join(output, "index.html"), "utf8");
+if (countMatches(homeHtml, /<article class="project-card"/g) !== 3) {
+  throw new Error("Homepage must contain exactly three pre-rendered featured project cards");
+}
+const expectedFeaturedProjectUrls = ["/work/gift-it", "/work/rit-app", "/work/network-automation"];
+const featuredProjectUrls = [...homeHtml.matchAll(/<article class="project-card"[^>]*data-project-url="([^"]+)"/g)]
+  .map(match => match[1]);
+if (JSON.stringify(featuredProjectUrls) !== JSON.stringify(expectedFeaturedProjectUrls)) {
+  throw new Error(`Homepage featured projects are not in the approved order: ${featuredProjectUrls.join(", ")}`);
+}
+for (const heroText of [
+  "I’m Yahya El-Sawi. I design digital products and understand how they’re built.",
+  "I work across product design and UX, with a background in software development.",
+  "Gift It Checkout &amp; E-Invite Redesign"
+]) {
+  if (!homeHtml.includes(heroText)) throw new Error(`Homepage is missing approved hero copy: ${heroText}`);
+}
+if (homeHtml.includes("project-image-button")) {
+  throw new Error("Homepage project covers must link to their case studies instead of opening a lightbox");
+}
+
+const workHtml = await readFile(path.join(output, "work/index.html"), "utf8");
+if (countMatches(workHtml, /<article class="project-card"/g) !== 7) {
+  throw new Error("Work must contain exactly seven pre-rendered project cards");
+}
+if (workHtml.includes("project-image-button")) {
+  throw new Error("Work project covers must link to their case studies instead of opening a lightbox");
+}
+
+for (const projectPath of prerenderedProjectPaths) {
+  const html = await readFile(path.join(output, projectPath), "utf8");
+  if (html.includes('<main id="project-detail"></main>')) {
+    throw new Error(`${projectPath} still relies on client-side project rendering`);
+  }
+  if (countMatches(html, /<h1(?:\s|>)/g) !== 1) throw new Error(`${projectPath} must contain one pre-rendered h1`);
+  if (countMatches(html, /class="project-proof-card"/g) !== 5) throw new Error(`${projectPath} must contain five pre-rendered proof cards`);
+  if (!html.includes('class="story-block"')) throw new Error(`${projectPath} is missing pre-rendered case-study content`);
+}
+
 const files = await walk(output);
 const failures = [];
 let totalBytes = 0;
@@ -121,6 +166,7 @@ for (const file of files) {
   if (forbiddenNames.has(path.basename(file))) failures.push(`forbidden file: ${relative}`);
   if (segments.some(segment => forbiddenDirectories.has(segment))) failures.push(`forbidden directory: ${relative}`);
   if (/\.(?:md|py|sql)$/i.test(relative)) failures.push(`source-only extension: ${relative}`);
+  if (relative === "assets/logos/starlink-infinigate.svg") failures.push("unapproved StarLink logo must not be published");
 }
 
 if (failures.length) {

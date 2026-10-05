@@ -1,5 +1,9 @@
 # Yahya'AI — Cloudflare setup
 
+## UI change prerequisite
+
+Before any AI or developer changes the public UI, read `PROJECT_HANDOFF.md`, `BRAND_SYSTEM.md`, `COMPONENT_RULES.md`, and `VISUAL_QA.md`, then inspect the affected pages and reusable components. Preserve the current identity and verified content. Reject generic AI portfolio treatments: floating technical nodes, fake diagrams or charts, arbitrary icon glyphs, decorative grids, purple-blue gradients, multiple accent colours, tiny monospace labels, endless matching cards, vanity statistics, and generic motivational CTAs. Use actual work and evidence instead. Run the visual QA checklist after implementation and refine the result. The privacy, security, cost, attribution, and embargo boundaries below and in `PROJECT_HANDOFF.md` still apply.
+
 The production portfolio uses Cloudflare Pages, Pages Functions, Workers AI, D1, Access, and a scheduled retention Worker. It does not require an OpenAI API subscription and it does not train on visitor conversations.
 
 ## What is already built

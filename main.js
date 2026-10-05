@@ -1,4 +1,3 @@
-const A = '/assets/Pictures/';
 const CLOUDFLARE_SERVICE_ORIGIN = 'https://yahya-elsawi-portfolio-bnj.pages.dev';
 const PUBLIC_SITE_ORIGIN = 'https://yahyaelsawi.website';
 const CONTACT_FALLBACK_ENDPOINT = 'https://formsubmit.co/ajax/75adad6ce5e399fb72fe44ae27bd0d55';
@@ -28,147 +27,6 @@ function getAnonymousSessionId() {
   } catch {
     return crypto.randomUUID();
   }
-}
-
-const projects = [
-  {
-    id:'gift-it', url:'/work/gift-it', cover:'gift-it', title:'Gift It Checkout & E-Invite Redesign', client:'Gift It', category:'UX + Growth', role:'UX / Product (Web)', image:'/covers/gift-it-960.webp', summary:'Redesigning the purchase flow and e-invite experience to reduce drop-offs, improve trust, and strengthen post-purchase confirmation and transactional emails.', tags:['Conversion','Trust','Figma + HTML/CSS'],
-    meta:[['Goal','Reduce drop-off'],['Role','UX / Product (Web)'],['Focus','Conversion & Trust'],['Tools','Figma + HTML/CSS'],['Also','Transactional Emails']],
-    verification:[['Problem','Checkout friction, trust questions, and unclear post-purchase communication.'],['Contribution','UX and product decisions informed by frontend implementation constraints.'],['Delivery','Design artifacts and frontend-informed product work.'],['Evidence','Funnel observations, redesigned flows, final UI, and a defined A/B test plan.'],['Outcome','Success metrics are defined; no verified public conversion lift is claimed.']],
-    sections:[
-      {title:'Funnel + Drop-offs', text:'The checkout funnel showed the biggest drop-offs around shipping and contact details, payment selection, and the e-invite setup step. The goal was to reduce friction and improve confidence at each step.', facts:['Key funnel: Product → Amount → Recipient → Payment → Confirmation','Hypothesis: unclear steps and trust questions cause abandonment']},
-      {title:'Friction Points', text:'Reviewing the flow and support patterns revealed three central problems.', cards:[['Too much input','Too many fields appear before users understand code delivery, the recipient flow, or refund rules.'],['Trust questions','Users need reassurance about when the code arrives, whether the service is legitimate, and how gifting works.'],['Post-purchase gap','Confirmation and transactional emails must clearly explain order status, delivery, and who receives what.']]},
-      {title:'Redesigned Flow', text:'The redesign simplifies steps, adds reassurance at key moments, and makes the e-invite feel intentional rather than like extra work.', cards:[['Step clarity','A visible stepper and “What happens next” microcopy.'],['Trust blocks','Code delivery, refund policy, and support information visible early.'],['E-invite defaults','Smart defaults with optional message, scheduling, and preview.']]},
-      {title:'A/B Test Plan', columns:[['Primary metrics','Checkout completion rate|Payment-step completion|E-invite completion|Time to complete purchase'],['Secondary metrics','“Where is my code?” support tickets|Email open and click rate|Refund/dispute rate|Post-purchase feedback']]},
-      {title:'Final UI', text:'High-fidelity screens showing the simplified checkout, e-invite setup, and clear confirmation states.', cropDeviceFrame:true, images:[[A+'Checkout.webp','Checkout step'],[A+'E_invite_steps.webp','E-invite setup'],[A+'E_invite_confirmation.webp','Confirmation']]},
-      {title:'Transaction Emails + Order Confirmation UX', text:'To reduce “Where is my code?” confusion, confirmation pages and emails were treated as part of the product, not an afterthought.', facts:['Order confirmation: clear status, expected delivery, and next actions','E-invite email: sender/recipient clarity and what happens when opened','Order updates: payment confirmed → code delivered → resend/support'], images:[[A+'Order_confirmation0.webp','Order confirmation'],[A+'E_invite_payment_confirmation0.webp','Payment confirmation']]}
-    ]
-  },
-  {
-    id:'rit-app', url:'/work/rit-app', cover:'rit-app', date:'2023-12', title:'RIT Student App 2.0', client:'RIT Dubai', category:'Mobile Product', role:'Product / UX', image:'/covers/rit-app-960.webp', figmaUrl:'https://www.figma.com/design/0ef9IT13nGfsHzgzvUhZLx/RIT-App?m=auto&t=bsViZxEi1Rshr1Xb-6', summary:'Reimagining the student experience by fixing recurring sign-in issues, improving notifications, and unifying myCourses and SIS access.', tags:['Student UX','myCourses + SIS','Sign-in + Alerts'],
-    meta:[['Focus','Student UX'],['Role','Product / UX'],['Timeline','Sep–Dec 2023'],['Systems','myCourses + SIS'],['Fixes','Sign-in + Alerts']],
-    verification:[['Problem','Recurring sign-in failures, delayed notifications, and fragmented academic access.'],['Contribution','Led product and UX work across research, information architecture, flows, and interface design.'],['Delivery','Academic product proposal and high-fidelity prototype.'],['Evidence','Student interviews, revised flows, and key-screen designs.'],['Outcome','Intended improvements are documented; no production adoption or measured lift is claimed.']],
-    sections:[
-      {title:'The Problem', text:'Students relied on the existing “Pulse” platform, but recurring sign-in errors, delayed notifications, and missing features made it unreliable for daily academic use. The goal was a unified experience with quick access to myCourses, SIS, timely alerts, and cleaner navigation.', facts:['Sign-in: recurring errors','Notifications: delayed updates','Core access: important features missing']},
-      {title:'User Interviews & Insights', text:'We spoke with students about daily tasks, failure points, and what an ideal flow should feel like.', cards:[['Access first','If login breaks, the app is dead. Reliability beats extra features.'],['Time matters','Notifications must be quick and relevant to deadlines, announcements, and classes.'],['Unified hub','Students want one app that quickly routes to myCourses, SIS, schedules, and announcements.']]},
-      {title:'Information Architecture + Flows', text:'Navigation was reorganized around top student tasks to reduce “Where do I go?” moments.', cards:[['Home as hub','Today’s classes, deadlines, and quick actions.'],['Academics','myCourses, assignments, grades, and resources.'],['Admin','SIS access for enrollment, payments, and official information.']], images:[[A+'Updated_user_flows.webp','Updated login, home, myCourses, and SIS flows']]},
-      {title:'Final UI', text:'Core screens were designed for speed, clarity, and daily use.', images:[[A+'Login.webp','Reliable sign-in'],[A+'Homescreen.webp','Home hub'],[A+'Notifications.webp','Notifications']]},
-      {title:'Outcomes', text:'A more reliable and unified student experience designed around real student tasks.', facts:['Improve sign-in reliability','Unify myCourses and SIS access','Improve notifications and updates']}
-    ]
-  },
-  {
-    id:'passwordless', url:'/work/passwordless', cover:'passwordless', title:'Passwordless Login & Signup Redesign', client:'Gift It', category:'Mobile-first UX', role:'Lead Designer (Design-only)', image:'/covers/passwordless-960.webp', figmaUrl:'https://www.figma.com/design/Hf5el7dkl19VVS7DvtknQK/Gifit?m=auto&t=bsViZxEi1Rshr1Xb-6', summary:'A mobile-first redesign focused on faster registration and passwordless email verification while aligning web and mobile on one API.', tags:['Authentication','Email OTP','Unified API'], note:'Scope: I was responsible for the full UX/UI design and handoff specifications. I was not involved in production implementation.',
-    meta:[['Registration','3–4 min → 1–2 min'],['Role','Lead Designer'],['Focus','Mobile-first simplicity'],['Auth','Passwordless email OTP'],['Platform','Unified API']],
-    verification:[['Problem','Long mobile registration and inconsistent authentication behavior across platforms.'],['Contribution','Owned the complete UX/UI design, edge cases, flow logic, and handoff specifications.'],['Delivery','Design and handoff only; no production implementation claim.'],['Evidence','Full flow map, error states, final UI, and Figma source.'],['Outcome','The 1–2 minute registration figure is a design target, not a verified production result.']],
-    sections:[
-      {title:'The Problem', text:'The existing experience was not optimized for mobile and the registration page was too long, creating friction and increasing completion time.', facts:['Dense mobile layout, difficult typing, unclear progress','Registration took roughly 3–4 minutes','Mobile and desktop used different APIs, producing mismatched behavior']},
-      {title:'Goals', text:'The redesign followed one main idea: reduce steps, typing, and mistakes.', cards:[['Faster registration','Reduce completion time from 3–4 minutes to 1–2 minutes.'],['Mobile-first clarity','Improve readability, spacing, and tap targets.'],['Passwordless login','Users receive an email code with no password required.'],['Unified behavior','Use one API for consistent web and mobile experiences.']]},
-      {title:'The Solution', text:'The experience was redesigned end to end with one clear decision per screen.', cards:[['Shorter registration','Cleaner steps reduce decision fatigue.'],['Email OTP login','Email → code → verification → continue.'],['Clear error states','Predictable invalid-code, resend-timer, and captcha feedback.'],['Same API','Consistent behavior and fewer edge-case bugs across platforms.']]},
-      {title:'New Flows', text:'The full flow map includes happy paths and edge cases for login and registration.', facts:['Invalid email format','Expired or incorrect OTP','Resend timer and throttling','Captcha not accepted','Existing email routes to login'], images:[[A+'flowmap.webp','Login and registration flow map']]},
-      {title:'Final UI', text:'Screens minimize typing, clarify progression, and provide predictable feedback.', cropDeviceFrame:true, images:[[A+'Login_giftiti.webp','Login screen'],[A+'Sign_up_giftit.webp','Registration'],[A+'Verification.webp','Email verification']]},
-      {title:'Impact', text:'The redesign simplified authentication and aligned both platforms.', facts:['New registration target: 1–2 minutes','Passwordless OTP authentication','One API shared by web and mobile']},
-      {title:'Notes & Learnings', cards:[['Simplicity is a feature','Cutting steps and clarifying states improves speed and confidence.'],['Consistency reduces bugs','One API supports predictable UX and fewer edge-case inconsistencies.']], columns:[['What I’d measure next','Signup completion rate|Time to complete signup|OTP success vs password login|Drop-off from email → OTP → completion']]}
-    ]
-  },
-  {
-    id:'vehicle-rental', url:'/work/vehicle-rental', cover:'vehicle-rental', title:'Vehicle Rental Operations Database', client:'RIT Dubai', category:'Backend + Data', role:'Database Developer', image:'/covers/vehicle-rental-960.webp', summary:'Turning an Oracle database—schema, roles, transactions, and queries—into a product story for rental operations.', tags:['Oracle DB','Role Security','Backup → S3'], note:'This project shipped backend and database operations. The dashboard UI is a concept showing how the data could support a real product.',
-    meta:[['Built','Oracle DB'],['Role','Database Developer'],['Domain','Car Rental Ops'],['Security','Roles + Privileges'],['Reliability','Cold Backup → S3']],
-    verification:[['Problem','Rental operations needed reliable data for customers, vehicles, rentals, maintenance, and availability.'],['Contribution','Designed and implemented the relational model, access controls, queries, views, transactions, and backup approach.'],['Delivery','Oracle backend implemented; dashboard interface remains a concept.'],['Evidence','ERD, schema structure, operational tasks, privileges, queries, and backup plan.'],['Outcome','The backend supports the documented workflows; no commercial deployment claim is made.']],
-    sections:[
-      {title:'The Problem', text:'Car-rental operations need a single source of truth for customers, vehicles, rentals, and maintenance, with accurate availability and cost tracking. We implemented an Oracle relational database to enable operational visibility through queries and views.', facts:['Four core areas: customers, vehicles, rentals, maintenance','Role-based access control','Cold-backup reliability strategy']},
-      {title:'Schema Snapshot', text:'The ERD models the business: rentals connect customers, vehicles, and employees, supported by maintenance history and daily cost tracking.', cards:[['Core entities','Customer, Vehicle, Rental, and Maintenance track availability, scheduling, and cost per day.'],['Supporting entities','Employee and AvgDailyCost support ownership and pricing trends.']], images:[[A+'ERD.webp','Vehicle rental ERD and schema']]},
-      {title:'User Tasks', text:'Database capabilities were translated into practical operations tasks.', cards:[['Create a rental','Find available vehicles, create the rental, and calculate total cost from the date range.'],['Track maintenance','Log events and retain full vehicle maintenance history.'],['Revenue & reporting','Summarize rentals, average costs, and totals using queries and views.'],['Role-based access','Customers view, employees insert rentals, supervisors create reporting views.']]},
-      {title:'Dashboard Concept', text:'The database supports one operations view with exactly the data exposed by its schema and queries.', cards:[['Fleet Status','Available, rented, and maintenance counts from Vehicle.Status.'],['Active Rentals','Current rentals with customer, date range, and total cost.'],['Maintenance Queue','Recent entries with cost and description.']]},
-      {title:'Backend Highlights', cards:[['Users & Privileges','SYS, DEV_USER, CUSTOMER_USER, EMPLOYEE_USER, and SUPERVISOR_USER enforce least-privilege access.'],['Remote Connections','Secure remote access was verified while maintaining permission boundaries.'],['Queries & Views','Operational reports cover customer and employee rentals, vehicles by price, revenue, and a rental-summary view.'],['Transactions','Core transactions create rentals, average daily cost records, and maintenance logs.'],['Backup Strategy','A cold-backup approach with automated S3 upload supports recovery and reliability.']]},
-      {title:'Outcome', text:'A production-style backend foundation: structured schema, controlled access, operational queries and views, transaction logic, and a backup plan ready to power an operations dashboard.', facts:['Model: real operations entities','Secure: role-based access','Ready: queries can feed dashboard reporting']}
-    ]
-  },
-  {
-    id:'mood-insights', url:'/work/mood-insights', cover:'mood-insights', date:'2024-11', title:'Mood Insights & Stress Alerts', client:'RIT Dubai', category:'UX Case Study', role:'UX Designer', image:'/covers/mood-insights-960.webp', figmaUrl:'https://www.figma.com/design/pzCPmk9lmXVHZouLufMmeq/Project?m=auto&t=bsViZxEi1Rshr1Xb-1', summary:'A mental-health companion concept that turns mood check-ins into trends, time filters, and gentle stress-pattern alerts.', tags:['Data Visualization','Wellbeing','Insights UX'],
-    meta:[['Focus','Insights UX'],['Role','UX Designer'],['Timeline','Nov 2024'],['Core','Graphs + Filters'],['Outcome','Clearer patterns']],
-    verification:[['Problem','Mood patterns and stress triggers were difficult to understand from inconsistent check-ins.'],['Contribution','Designed the UX concept, information hierarchy, filters, trends, and supportive alert patterns.'],['Delivery','Academic UX concept and high-fidelity prototype.'],['Evidence','Research goals, interaction model, key screens, and Figma source.'],['Outcome','Clarity and supportive guidance are intended outcomes; no clinical or production result is claimed.']],
-    sections:[
-      {title:'The Problem', text:'People often track mood inconsistently and struggle to understand what causes stress over time. The challenge was turning daily check-ins into meaningful insight without overwhelming users.', facts:['Mood trends are hard to see','Stress triggers remain unclear','Typical insight views feel too complex']},
-      {title:'Research & Goals', text:'The focus was clarity rather than complexity.', cards:[['Make patterns visible','Users should notice good and difficult weeks without digging.'],['Natural filters','Day, week, and month toggles should reduce noise.'],['Support, not overwhelm','Alerts should be gentle and actionable, suggesting coping steps rather than warning users.']]},
-      {title:'The Solution', text:'A clean Insights dashboard pairs understandable mood trends with stress patterns and supportive nudges.', cards:[['Mood trend graph','Spot changes across day, week, and month.'],['Filters','Switch time ranges with one tap.'],['Stress alerts','Provide supportive prompts based on recurring patterns.']]},
-      {title:'Key Screens', text:'The UI prioritizes readable charts, obvious filters, and personal-feeling insights.', images:[[A+'Home_screen.webp','Home screen'],[A+'Daily_checkins.webp','Daily check-ins'],[A+'Mood_avg.webp','Mood average and trends']]},
-      {title:'Outcomes', text:'A calmer Insights experience where users can spot trends, compare time ranges, and receive gentle support when stress patterns repeat.', facts:['See mood trends clearly','Filter by day, week, or month','Receive gentle stress nudges']}
-    ]
-  },
-  {
-    id:'vr-neuroanatomy', url:'/work/vr-neuroanatomy', cover:'vr-neuroanatomy', date:'2026-08', title:'VR Neuroanatomy', client:'Locked case study', category:'Locked', role:'Details under embargo', image:'/covers/vr-neuroanatomy-960.webp', summary:'This is an ongoing research project. Further details cannot be disclosed at this stage.', tags:['Locked','Ongoing research'], locked:true
-  },
-  {
-    id:'network-automation', url:'/work/network-automation', cover:'network-automation', date:'2026-05', title:'SmartMall AI Network Automation', client:'RIT Dubai · Collaborative project', category:'Networks + AI Automation', role:'Equal team contribution', image:'/covers/network-automation-960.webp', summary:'A five-person proof of concept for conversational network operations, dynamic tenant orchestration, validation, and closed-loop recovery.', tags:['GNS3','Python + Netmiko','Closed-loop recovery'], demo:true
-  }
-];
-
-const sortedProjects = [...projects]
-  .sort((left, right) => {
-    if (left.date && right.date && left.date !== right.date) return right.date.localeCompare(left.date);
-    if (left.date !== right.date) return left.date ? -1 : 1;
-    return left.title.localeCompare(right.title);
-  })
-  .map((project, index) => ({ ...project, number:String(index + 1).padStart(2, '0') }));
-
-const featuredProjectIds = ['gift-it', 'rit-app', 'network-automation'];
-const featuredProjects = featuredProjectIds
-  .map(id => sortedProjects.find(project => project.id === id))
-  .filter(Boolean);
-
-function projectCard(project) {
-  const figmaLink = project.figmaUrl ? `<a class="text-link project-figma-link" href="${project.figmaUrl}" target="_blank" rel="noopener noreferrer">Open Figma file</a>` : '';
-  return `<article class="project-card" data-category="${project.category.toLowerCase()} ${project.tags.join(' ').toLowerCase()}" data-project-url="${project.url}">
-    <button class="project-art project-image-button" type="button" aria-label="Expand ${project.title} project cover" title="Expand image" data-full-src="/covers/${project.cover}-1440.webp" data-lightbox-caption="${project.title} project cover"><span class="project-number">${project.number} / ${project.category}</span>${project.locked ? '<span class="project-state project-state-locked">Locked</span>' : project.demo ? '<span class="project-state">Interactive</span>' : ''}<picture><source type="image/avif" srcset="/covers/${project.cover}-640.avif 640w, /covers/${project.cover}-960.avif 960w, /covers/${project.cover}-1440.avif 1440w" sizes="(max-width: 820px) 100vw, 50vw"><source type="image/webp" srcset="/covers/${project.cover}-640.webp 640w, /covers/${project.cover}-960.webp 960w, /covers/${project.cover}-1440.webp 1440w" sizes="(max-width: 820px) 100vw, 50vw"><img src="/covers/${project.cover}-960.webp" alt="${project.title} project cover" width="960" height="640" loading="lazy" decoding="async"></picture></button>
-    <div class="project-body"><span class="eyebrow">${project.client}</span><h3><a href="${project.url}">${project.title}</a></h3><p>${project.summary}</p><div class="tags">${project.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}</div><div class="actions project-actions"><a class="text-link" data-project-link href="${project.url}">Open case study</a>${figmaLink}</div></div>
-  </article>`;
-}
-
-function renderProjects(target, limit) {
-  const node = document.querySelector(target);
-  const availableProjects = target === '#featured-projects' ? featuredProjects : sortedProjects;
-  if (node) node.innerHTML = availableProjects.slice(0, limit || availableProjects.length).map(projectCard).join('');
-}
-
-const galleryImageDimensions = {
-  Checkout:[1440,2932], Daily_checkins:[1440,2932], ERD:[1022,689], E_invite_confirmation:[1440,2932],
-  E_invite_payment_confirmation0:[793,1141], E_invite_steps:[1440,2932], flowmap:[1108,944],
-  Homescreen:[1440,2932], Home_screen:[1440,2932], Login:[1440,2932], Login_giftiti:[1440,2932],
-  Mood_avg:[1440,2932], Notifications:[1440,2932], Order_confirmation0:[793,1160],
-  Sign_up_giftit:[1440,2932], Updated_user_flows:[1499,816], Verification:[1440,2932]
-};
-
-function renderGalleryImage(src, alt) {
-  const filename = src.split('/').pop() || '';
-  const stem = filename.replace(/\.[^.]+$/, '');
-  const [width, height] = galleryImageDimensions[stem] || [1200, 900];
-  const responsivePath = '/assets/Pictures/responsive/';
-  const sizes = '(max-width: 760px) calc(100vw - 68px), (max-width: 1180px) 33vw, 360px';
-  return `<figure><picture><source type="image/avif" srcset="${responsivePath}${stem}-480.avif 480w, ${responsivePath}${stem}-768.avif 768w, ${responsivePath}${stem}-1200.avif 1200w" sizes="${sizes}"><source type="image/webp" srcset="${responsivePath}${stem}-480.webp 480w, ${responsivePath}${stem}-768.webp 768w, ${responsivePath}${stem}-1200.webp 1200w" sizes="${sizes}"><img src="${responsivePath}${stem}-1200.webp" alt="${alt}" width="${width}" height="${height}" loading="lazy" decoding="async"></picture><figcaption>${alt}</figcaption></figure>`;
-}
-
-function renderSection(section, index) {
-  const facts = section.facts ? `<ul class="fact-list">${section.facts.map(x=>`<li>${x}</li>`).join('')}</ul>` : '';
-  const cards = section.cards ? `<div class="insight-grid">${section.cards.map(([title,text])=>`<div class="insight"><h3>${title}</h3><p>${text}</p></div>`).join('')}</div>` : '';
-  const columns = section.columns ? `<div class="metric-grid">${section.columns.map(([title,items])=>`<div class="metric"><h3>${title}</h3><ul>${items.split('|').map(x=>`<li>${x}</li>`).join('')}</ul></div>`).join('')}</div>` : '';
-  const images = section.images ? `<div class="gallery${section.cropDeviceFrame ? ' gallery-screen-crop' : ''}">${section.images.map(([src,alt])=>renderGalleryImage(src,alt)).join('')}</div>` : '';
-  return `<article class="story-block" id="section-${index+1}"><span class="eyebrow">${String(index+1).padStart(2,'0')} / Case study</span><h2>${section.title}</h2>${section.text?`<p>${section.text}</p>`:''}${facts}${cards}${columns}${images}</article>`;
-}
-
-function renderProjectDetail() {
-  const mount = document.querySelector('#project-detail');
-  if (!mount) return;
-  const requestedId = document.body.dataset.projectId || new URLSearchParams(location.search).get('id');
-  const project = sortedProjects.find(item => item.id === requestedId) || sortedProjects[0];
-  if (project.locked) return;
-  document.title = `${project.title} — Yahya El-Sawi`;
-  const meta = project.meta.map(([label,value])=>`<div class="meta"><small>${label}</small>${value}</div>`).join('');
-  const verification = project.verification.map(([label,value])=>`<article class="project-proof-card"><span class="eyebrow">${label}</span><p>${value}</p></article>`).join('');
-  const nav = project.sections.map((s,i)=>`<a href="#section-${i+1}">${String(i+1).padStart(2,'0')} / ${s.title}</a>`).join('');
-  const figmaButton = project.figmaUrl ? `<a class="btn btn-secondary" href="${project.figmaUrl}" target="_blank" rel="noopener noreferrer">Open Figma file</a>` : '';
-  mount.innerHTML = `<section class="shell detail-hero"><div><span class="eyebrow">Case study ${project.number} / ${project.client}</span><h1>${project.title}</h1><p class="lead">${project.summary}</p>${project.note?`<p class="scope-note">${project.note}</p>`:''}${figmaButton ? `<div class="actions detail-actions">${figmaButton}</div>` : ''}<div class="meta-grid">${meta}</div></div><div class="detail-visual"><picture><source type="image/avif" srcset="/covers/${project.cover}-640.avif 640w, /covers/${project.cover}-960.avif 960w, /covers/${project.cover}-1440.avif 1440w" sizes="(max-width: 820px) 100vw, 45vw"><source type="image/webp" srcset="/covers/${project.cover}-640.webp 640w, /covers/${project.cover}-960.webp 960w, /covers/${project.cover}-1440.webp 1440w" sizes="(max-width: 820px) 100vw, 45vw"><img src="${project.image}" data-full-src="/covers/${project.cover}-1440.webp" alt="${project.title} cover artwork" width="960" height="640" decoding="async"></picture></div></section>
-  <section class="section project-proof"><div class="shell"><div class="section-head"><div><span class="eyebrow">Verified project record</span><h2>Evidence, scope, and outcome.</h2></div></div><div class="project-proof-grid">${verification}</div></div></section>
-  <section class="section-soft"><div class="shell content-grid"><aside class="content-nav"><span class="eyebrow">Contents</span>${nav}<a href="/terminal?context=${encodeURIComponent(project.id)}">Ask Yahya'AI about this project</a><a href="/contact">Discuss this project</a></aside><div class="story">${project.sections.map(renderSection).join('')}<article class="story-block next-project"><span class="eyebrow">End of scan</span><h2>Continue exploring.</h2><div class="actions"><a class="btn btn-primary" href="/work?view=case-studies">All projects</a><a class="btn btn-secondary" href="/terminal?context=${encodeURIComponent(project.id)}">Ask Yahya'AI</a></div></article></div></div></section>`;
 }
 
 function appendChatEvidence(message, sources = []) {
@@ -920,7 +778,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.addEventListener('click', event => { if (!event.target.closest('.nav')) closeMenu(); });
   }
   document.querySelector('.nav-link.active')?.setAttribute('aria-current', 'page');
-  renderProjects('#featured-projects', 3); renderProjects('#all-projects'); renderProjectDetail();
   initializeBufferedMedia();
   initializeSiteAnalytics();
   initializeImageLightbox();

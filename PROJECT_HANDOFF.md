@@ -1,18 +1,22 @@
 # Portfolio Project Handoff
 
-Last environment audit: 5 October 2026. See `ENVIRONMENTS.md` before any deployment or branch promotion.
+Last prepared: 5 October 2026
 
 Repository: `https://github.com/Yahyaelsawii/portfolio`
 
 Production branch: `main`
 
+Working branches may change. Use `git branch --show-current`, `git status`, and `git log -1 --oneline` to inspect the checkout and release state.
+
 At the environment audit, remote `main` was `3bb886ce8a2d2016613496bd8cd969525cf809a2`; remote `staging` and `codex/p0-hardening` were `e8b5c61d072b522f073cd2c7281f9fb1c669e2d7`. Verify live deployments again before release.
 
-**Deployment divergence:** The current Cloudflare Pages production deployment (`6ee149b9-0184-486e-9efa-eaf5be96c081`, 4 October 2026) is newer than the last GitHub `main` deployment, and the Pages project currently shows no Git connection. Its homepage matches the uncommitted visual cleanup in the original `codex/high-priority` checkout. Preserve and review that work before attempting to make `main` the exact production source. An active, Access-protected `staging.yahyaelsawi.website` custom domain is attached as a production alias; the requested `stg.yahyaelsawi.website` is not deployed.
+**Deployment reconciliation:** The current Cloudflare Pages production deployment (`6ee149b9-0184-486e-9efa-eaf5be96c081`, 4 October 2026) was compared with the visual cleanup commit `a667b00` and reproduced by its public build, aside from Cloudflare email protection and analytics injection. The Pages project showed no Git connection during the audit. An active, Access-protected `staging.yahyaelsawi.website` custom domain is attached as a production alias; the requested `stg.yahyaelsawi.website` is not deployed. Recheck the deployment and branch state before release.
 
 Qwerty is a separate private repository (`Yahyaelsawii/qwerty`) and Worker, planned for the `/qwerty` route under the public domain. The public repository must contain no Qwerty application code or private data. Staging is prepared in code, but `stg.yahyaelsawi.website` and Qwerty routing still require Cloudflare setup. See `ENVIRONMENTS.md` for the branch map, staging protections, route configuration, archive method, and exact remaining actions.
 
 This file is the continuation guide for Yahya El-Sawi, Codex, or any other AI/developer working on the portfolio from another computer. Read it before changing public facts, project attribution, AI behavior, analytics, Cloudflare configuration, or the locked VR page.
+
+Before any UI work, also read `AI_SETUP.md`, `BRAND_SYSTEM.md`, `COMPONENT_RULES.md`, and `VISUAL_QA.md`. Apply their design rules to the real pages and complete the viewport checklist; preserve the privacy and disclosure boundaries in this handoff.
 
 ## 1. Executive state
 
@@ -142,10 +146,10 @@ Core tokens live at the top of `styles.css`:
 - Secondary slate: `#334155`
 - Accent teal: `#38b2ac`
 - Dark accent: `#226b68`
-- Font pairing: local Plus Jakarta Sans + Space Mono
+- Primary type: local Plus Jakarta Sans; Space Mono is reserved for real terminal or code identifiers
 - Main content width: 1280px
 - Small radii: 2–8px, not large bubbly cards
-- Background: very light technical grid
+- Background: quiet off-white, without a decorative site-wide grid
 
 Design principles used:
 

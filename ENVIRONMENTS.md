@@ -4,7 +4,7 @@ Last audited: 5 October 2026. This file describes verified state and the intende
 
 | Surface | URL | Git source | Access | Current state |
 | --- | --- | --- | --- | --- |
-| Production | `https://yahyaelsawi.website` | Intended: `main` | Public | Live on Cloudflare Pages deployment `6ee149b9-0184-486e-9efa-eaf5be96c081` from 4 October. Its public homepage matches local uncommitted work, not remote `main`; the exact deployed Git SHA is unverified. GitHub Pages separately has `main` at `3bb886c`. |
+| Production | `https://yahyaelsawi.website` | Intended: `main` | Public | Live on Cloudflare Pages deployment `6ee149b9-0184-486e-9efa-eaf5be96c081` from 4 October. Its public static content is reproduced by visual cleanup commit `a667b00` after Cloudflare email protection, analytics injection, and redirects. The deployment's source SHA and server-side Functions remain unverified. `main` remains `3bb886c`. |
 | Staging | `https://stg.yahyaelsawi.website` | Intended: `staging` | Owner-only Cloudflare Access | Prepared in code; requested hostname did not resolve at audit. The existing `staging.yahyaelsawi.website` is a protected **production alias**, not an isolated staging deployment. |
 | Lab | Branches such as `lab/homepage-experiment`, `feature/qwerty-connection`, `fix/mobile-layout` | Separate short-lived branches | Git access and protected previews | No permanent generic lab branch. |
 | Archive | Versioned snapshot URLs, later linked from Qwerty | Reviewed immutable Git tags and commit SHAs | Public portfolio snapshots only | `V1` at `cfd16d1867f899ae0baafe5ccda17d5de44b721a` is historical evidence; no version tag or snapshot is published yet. |
@@ -16,8 +16,8 @@ Last audited: 5 October 2026. This file describes verified state and the intende
 - `staging` and `codex/p0-hardening`: both `e8b5c61d072b522f073cd2c7281f9fb1c669e2d7` at audit. `staging` has no verified deployment at the staging URL.
 - `V1`: `cfd16d1867f899ae0baafe5ccda17d5de44b721a`, older design with a distinct HTML/CSS structure. Preserve it.
 - `agent/portfolio-redesign`: `4ec53662d318769a304e69d4d1c5e4539091eeaf`, an August redesign milestone. It is 1 commit ahead and 24 behind `main` relative to its merge base. Later redesign, security, AI, and release work already lives on `main`; do not merge this old branch wholesale.
-- The local `main` branch in the owner's original checkout was 13 commits behind the remote at audit. A separate working tree contained uncommitted work and must not be reset or discarded.
-- The newer visual cleanup is in the original `codex/high-priority` working tree as uncommitted changes. Its `npm run check:release` passed on 5 October (53 unit tests and 16 desktop/mobile routes), but it needs review and an intentional commit before it can be promoted through staging. The live Cloudflare homepage matches its current headline; the exact full deployed artifact-to-commit correspondence is unverified.
+- The original checkout was branched to `feature/visual-system-cleanup` to preserve the visual work. Commit `a667b00` is pushed; unrelated AI and analytics experiments remain uncommitted in that checkout and must not be discarded.
+- `codex/visual-integration` combines current `main` and the cleanup commit without changing the verified cleanup tree. PR #3 merged it into `staging`. PR #2 adds the environment architecture on top of that history. The cleanup candidate passed `npm ci` and `npm run check:release` on 5 October (53 unit tests and 16 desktop/mobile routes).
 
 ## Actual Cloudflare state at audit
 
@@ -30,7 +30,7 @@ Last audited: 5 October 2026. This file describes verified state and the intende
 
 1. Branch from current `main` or `staging` with a purposeful `lab/`, `feature/`, or `fix/` name. Keep experiments out of `main`.
 2. Open a PR into `staging`; run `npm ci`, `npm run check:release`, and inspect the staging deployment, including access denial without login and approved-user access.
-3. Promote the tested commit from `staging` to `main` by reviewed PR. Because the current Cloudflare Pages project has no Git connection and has a newer direct deployment, reconcile that artifact with committed source **before** changing production deployment. Wait for GitHub Pages and Cloudflare Pages deployments and verify the live routes, Functions, Access, and headers. Do not assume a push equals a successful release.
+3. Promote the tested commit from `staging` to `main` by reviewed PR. The public static artifact has been reconciled with commit `a667b00`; before changing production, verify the deployed Functions and source SHA, and account for Cloudflare's direct-deployment workflow. Wait for GitHub Pages and Cloudflare Pages deployments and verify the live routes, Functions, Access, and headers. Do not assume a push equals a successful release.
 4. Roll back by reverting the faulty commit on `main` through a reviewed PR. For an urgent Cloudflare Pages incident, restore a known-good deployment in the dashboard and reconcile `main` immediately afterward. Never force-push or rewrite history.
 
 Do not automatically merge `agent/portfolio-redesign`. Preserve all existing branches. `main` should be production-only.
