@@ -1,14 +1,16 @@
 # Portfolio Project Handoff
 
-Last prepared: 20 August 2026
+Last prepared: 4 October 2026
 
 Repository: `https://github.com/Yahyaelsawii/portfolio`
 
 Production branch: `main`
 
-Current hardening branch: `codex/p0-hardening`. Use `git log -1 --oneline` as the authoritative release commit.
+Working branches may change. Use `git branch --show-current`, `git status`, and `git log -1 --oneline` to inspect the checkout and release state.
 
 This file is the continuation guide for Yahya El-Sawi, Codex, or any other AI/developer working on the portfolio from another computer. Read it before changing public facts, project attribution, AI behavior, analytics, Cloudflare configuration, or the locked VR page.
+
+Before any UI work, also read `AI_SETUP.md`, `BRAND_SYSTEM.md`, `COMPONENT_RULES.md`, and `VISUAL_QA.md`. Apply their design rules to the real pages and complete the viewport checklist; preserve the privacy and disclosure boundaries in this handoff.
 
 ## 1. Executive state
 
@@ -138,10 +140,10 @@ Core tokens live at the top of `styles.css`:
 - Secondary slate: `#334155`
 - Accent teal: `#38b2ac`
 - Dark accent: `#226b68`
-- Font pairing: local Plus Jakarta Sans + Space Mono
+- Primary type: local Plus Jakarta Sans; Space Mono is reserved for real terminal or code identifiers
 - Main content width: 1280px
 - Small radii: 2–8px, not large bubbly cards
-- Background: very light technical grid
+- Background: quiet off-white, without a decorative site-wide grid
 
 Design principles used:
 

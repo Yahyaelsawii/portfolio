@@ -140,10 +140,9 @@ try {
   await interactionPage.getByRole("button", { name: "UX", exact: true }).click();
   const visibleProjects = await interactionPage.locator("#all-projects .project-card:visible").count();
   if (visibleProjects !== 4) failures.push(`work filter: expected 4 UX projects, found ${visibleProjects}`);
-  await interactionPage.locator("#all-projects .project-image-button:visible").first().click();
-  if (!await interactionPage.locator("dialog.image-lightbox[open]").isVisible()) failures.push("project lightbox: did not open from a project card on mobile");
-  await interactionPage.keyboard.press("Escape");
-  if (await interactionPage.locator("dialog.image-lightbox[open]").count()) failures.push("project lightbox: Escape did not close it");
+  if (await interactionPage.locator("#all-projects .project-image-button").count()) failures.push("project cards: cover images must not be lightbox buttons");
+  if (await interactionPage.locator("#all-projects a.project-art").count() !== 7) failures.push("project cards: every cover should link to its case study");
+  if (await interactionPage.locator("dialog.image-lightbox").count()) failures.push("project cards: general work imagery initialized a lightbox");
 
   await interactionPage.goto(`${base}/`, { waitUntil: "networkidle" });
   const menu = interactionPage.getByRole("button", { name: "Toggle navigation" });
@@ -159,6 +158,24 @@ try {
   await interactionPage.waitForFunction(() => document.querySelector("#network-demo")?.dataset.state === "healthy");
   await interactionPage.close();
   await interactionContext.close();
+
+  const noScriptContext = await browser.newContext({
+    javaScriptEnabled:false,
+    viewport:{ width:390, height:844 }
+  });
+  const noScriptPage = await noScriptContext.newPage();
+  await noScriptPage.goto(`${base}/`, { waitUntil:"load" });
+  if (await noScriptPage.locator("#featured-projects .project-card").count() !== 3) failures.push("no-JS homepage: featured projects were not pre-rendered");
+  await noScriptPage.goto(`${base}/work`, { waitUntil:"load" });
+  if (await noScriptPage.locator("#all-projects .project-card").count() !== 7) failures.push("no-JS work: project index was not pre-rendered");
+  for (const route of ["/work/gift-it", "/work/rit-app", "/work/passwordless", "/work/vehicle-rental", "/work/mood-insights"]) {
+    await noScriptPage.goto(`${base}${route}`, { waitUntil:"load" });
+    if (await noScriptPage.locator("h1").count() !== 1) failures.push(`no-JS ${route}: project title was not pre-rendered`);
+    if (await noScriptPage.locator(".project-proof-card").count() !== 5) failures.push(`no-JS ${route}: proof record was not pre-rendered`);
+    if (!await noScriptPage.locator(".story-block").count()) failures.push(`no-JS ${route}: case-study content was not pre-rendered`);
+  }
+  await noScriptPage.close();
+  await noScriptContext.close();
 
   const detailContext = await browser.newContext({ viewport: { width: 1440, height: 900 } });
   const detailPage = await detailContext.newPage();
@@ -191,11 +208,15 @@ try {
   if (!await detailPage.locator("dialog.image-lightbox[open]").isVisible()) failures.push("network automation: case-study image did not open in the lightbox");
   await detailPage.keyboard.press("Escape");
 
-  for (const route of ["/work/gift-it", "/work/rit-app", "/work/passwordless", "/work/vehicle-rental", "/work/mood-insights", "/work/network-automation", "/work/vr-neuroanatomy"]) {
+  for (const route of ["/work/gift-it", "/work/rit-app", "/work/passwordless", "/work/vehicle-rental", "/work/mood-insights", "/work/network-automation"]) {
     await detailPage.goto(`${base}${route}`, { waitUntil: "networkidle" });
     const proofCards = await detailPage.locator(".project-proof-card").count();
     if (proofCards !== 5) failures.push(`${route}: expected 5 verified project-record cards, found ${proofCards}`);
   }
+
+  await detailPage.goto(`${base}/work/vr-neuroanatomy`, { waitUntil: "networkidle" });
+  if (await detailPage.locator(".project-proof-card").count()) failures.push("locked project: proof details must not be shown");
+  if (!await detailPage.getByText("This is an ongoing research project. Further details cannot be disclosed at this stage.").isVisible()) failures.push("locked project: approved disclosure message is missing");
 
   await detailPage.goto(`${base}/recruiter`, { waitUntil: "networkidle" });
   if (!await detailPage.locator("#product-role-panel").isVisible()) failures.push("recruiter roles: Product & UX should be open by default");
@@ -342,6 +363,13 @@ try {
   await detailPage.goto(`${base}/`, { waitUntil: "networkidle" });
   const featuredCards = detailPage.locator("#featured-projects .project-card");
   if (await featuredCards.count() !== 3) failures.push(`home projects: expected 3 featured cards, found ${await featuredCards.count()}`);
+  const featuredProjectOrder = await featuredCards.evaluateAll(cards => cards.map(card => new URL(card.dataset.projectUrl, location.origin).pathname));
+  const expectedFeaturedOrder = ["/work/gift-it", "/work/rit-app", "/work/network-automation"];
+  if (JSON.stringify(featuredProjectOrder) !== JSON.stringify(expectedFeaturedOrder)) failures.push(`home projects: unexpected featured order ${featuredProjectOrder.join(", ")}`);
+  for (const projectPath of expectedFeaturedOrder) {
+    const projectLink = detailPage.locator(`#featured-projects a[href="${projectPath}"]`).first();
+    if (!await projectLink.count()) failures.push(`home projects: missing link to ${projectPath}`);
+  }
   const featuredTops = await featuredCards.evaluateAll(cards => cards.map(card => Math.round(card.getBoundingClientRect().top)));
   if (Math.max(...featuredTops) - Math.min(...featuredTops) > 2) failures.push(`home projects: cards are not on one desktop row (${featuredTops.join(", ")})`);
   const primaryButton = detailPage.locator(".btn-primary").first();

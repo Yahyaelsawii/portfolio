@@ -1,11 +1,72 @@
 import { cp, lstat, mkdir, readFile, readdir, rm, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
+import { featuredProjects, findProject, galleryImageDimensions, orderedProjects, projects } from "../data/projects.js";
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "..");
 const output = path.join(root, "dist");
 const siteUrl = "https://yahyaelsawi.website";
 const personId = `${siteUrl}/#yahya-el-sawi`;
+const buildTargets = Object.freeze({
+  featuredProjects: '<div class="project-grid" id="featured-projects"></div>',
+  allProjects: '<div class="project-grid" id="all-projects"></div>',
+  projectDetail: '<main id="project-detail"></main>'
+});
+
+function escapeHtml(value) {
+  return String(value ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
+function renderProjectCard(project) {
+  const category = `${project.category} ${project.tags.join(" ")}`.toLowerCase();
+  const figmaLink = project.figmaUrl
+    ? `<a class="text-link project-figma-link" href="${escapeHtml(project.figmaUrl)}" target="_blank" rel="noopener noreferrer">Open Figma file</a>`
+    : "";
+  return `<article class="project-card" data-category="${escapeHtml(category)}" data-project-url="${escapeHtml(project.url)}">
+    <a class="project-art" href="${escapeHtml(project.url)}" aria-label="Open ${escapeHtml(project.title)} case study"><span class="project-number">${escapeHtml(project.number)} / ${escapeHtml(project.category)}</span>${project.locked ? '<span class="project-state project-state-locked">Locked</span>' : project.demo ? '<span class="project-state">Interactive</span>' : ""}<picture><source type="image/avif" srcset="/covers/${escapeHtml(project.cover)}-640.avif 640w, /covers/${escapeHtml(project.cover)}-960.avif 960w, /covers/${escapeHtml(project.cover)}-1440.avif 1440w" sizes="(max-width: 820px) 100vw, 50vw"><source type="image/webp" srcset="/covers/${escapeHtml(project.cover)}-640.webp 640w, /covers/${escapeHtml(project.cover)}-960.webp 960w, /covers/${escapeHtml(project.cover)}-1440.webp 1440w" sizes="(max-width: 820px) 100vw, 50vw"><img src="/covers/${escapeHtml(project.cover)}-960.webp" alt="${escapeHtml(project.title)} project cover" width="960" height="640" loading="lazy" decoding="async"></picture></a>
+    <div class="project-body"><span class="eyebrow">${escapeHtml(project.client)}</span><h3><a href="${escapeHtml(project.url)}">${escapeHtml(project.title)}</a></h3><p>${escapeHtml(project.summary)}</p><div class="actions project-actions"><a class="text-link" data-project-link href="${escapeHtml(project.url)}">Open case study</a>${figmaLink}</div></div>
+  </article>`;
+}
+
+function renderGalleryImage(src, alt) {
+  const filename = src.split("/").pop() || "";
+  const stem = filename.replace(/\.[^.]+$/, "");
+  const [width, height] = galleryImageDimensions[stem] || [1200, 900];
+  const responsivePath = "/assets/Pictures/responsive/";
+  const sizes = "(max-width: 760px) calc(100vw - 68px), (max-width: 1180px) 33vw, 360px";
+  return `<figure><picture><source type="image/avif" srcset="${responsivePath}${escapeHtml(stem)}-480.avif 480w, ${responsivePath}${escapeHtml(stem)}-768.avif 768w, ${responsivePath}${escapeHtml(stem)}-1200.avif 1200w" sizes="${sizes}"><source type="image/webp" srcset="${responsivePath}${escapeHtml(stem)}-480.webp 480w, ${responsivePath}${escapeHtml(stem)}-768.webp 768w, ${responsivePath}${escapeHtml(stem)}-1200.webp 1200w" sizes="${sizes}"><img src="${responsivePath}${escapeHtml(stem)}-1200.webp" data-full-src="${responsivePath}${escapeHtml(stem)}-1200.webp" alt="${escapeHtml(alt)}" width="${width}" height="${height}" loading="lazy" decoding="async"></picture><figcaption>${escapeHtml(alt)}</figcaption></figure>`;
+}
+
+function renderProjectSection(section, index) {
+  const facts = section.facts ? `<ul class="fact-list">${section.facts.map(fact => `<li>${escapeHtml(fact)}</li>`).join("")}</ul>` : "";
+  const cards = section.cards ? `<div class="insight-grid">${section.cards.map(([title, text]) => `<div class="insight"><h3>${escapeHtml(title)}</h3><p>${escapeHtml(text)}</p></div>`).join("")}</div>` : "";
+  const columns = section.columns ? `<div class="metric-grid">${section.columns.map(([title, items]) => `<div class="metric"><h3>${escapeHtml(title)}</h3><ul>${items.split("|").map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div>`).join("")}</div>` : "";
+  const images = section.images ? `<div class="gallery${section.cropDeviceFrame ? " gallery-screen-crop" : ""}">${section.images.map(([src, alt]) => renderGalleryImage(src, alt)).join("")}</div>` : "";
+  return `<article class="story-block" id="section-${index + 1}"><span class="eyebrow">${String(index + 1).padStart(2, "0")} / Case study</span><h2>${escapeHtml(section.title)}</h2>${section.text ? `<p>${escapeHtml(section.text)}</p>` : ""}${facts}${cards}${columns}${images}</article>`;
+}
+
+function renderProjectDetail(project) {
+  if (!project?.sections?.length) return "";
+  const metadata = project.meta.map(([label, value]) => `<div class="meta"><small>${escapeHtml(label)}</small>${escapeHtml(value)}</div>`).join("");
+  const verification = project.verification.map(([label, value]) => `<div class="project-proof-card"><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`).join("");
+  const contents = project.sections.map((section, index) => `<a href="#section-${index + 1}">${String(index + 1).padStart(2, "0")} / ${escapeHtml(section.title)}</a>`).join("");
+  const figmaButton = project.figmaUrl ? `<a class="btn btn-secondary" href="${escapeHtml(project.figmaUrl)}" target="_blank" rel="noopener noreferrer">Open Figma file</a>` : "";
+  return `<section class="shell detail-hero"><div><span class="eyebrow">Case study ${escapeHtml(project.number)} / ${escapeHtml(project.client)}</span><h1>${escapeHtml(project.title)}</h1><p class="lead">${escapeHtml(project.summary)}</p>${project.note ? `<p class="scope-note">${escapeHtml(project.note)}</p>` : ""}${figmaButton ? `<div class="actions detail-actions">${figmaButton}</div>` : ""}<div class="meta-grid">${metadata}</div></div><div class="detail-visual"><picture><source type="image/avif" srcset="/covers/${escapeHtml(project.cover)}-640.avif 640w, /covers/${escapeHtml(project.cover)}-960.avif 960w, /covers/${escapeHtml(project.cover)}-1440.avif 1440w" sizes="(max-width: 820px) 100vw, 45vw"><source type="image/webp" srcset="/covers/${escapeHtml(project.cover)}-640.webp 640w, /covers/${escapeHtml(project.cover)}-960.webp 960w, /covers/${escapeHtml(project.cover)}-1440.webp 1440w" sizes="(max-width: 820px) 100vw, 45vw"><img src="${escapeHtml(project.image)}" data-full-src="/covers/${escapeHtml(project.cover)}-1440.webp" alt="${escapeHtml(project.title)} cover artwork" width="960" height="640" decoding="async"></picture></div></section>
+  <section class="section project-proof"><div class="shell"><div class="section-head"><div><span class="eyebrow">Verified project record</span><h2>Evidence, scope, and outcome.</h2></div></div><dl class="project-proof-grid">${verification}</dl></div></section>
+  <section class="section-soft"><div class="shell content-grid"><aside class="content-nav"><span class="eyebrow">Contents</span>${contents}<a href="/terminal?context=${encodeURIComponent(project.id)}">Ask Yahya&#39;AI about this project</a><a href="/contact">Discuss this project</a></aside><div class="story">${project.sections.map(renderProjectSection).join("")}<article class="story-block next-project"><span class="eyebrow">More work</span><h2>Explore another project.</h2><div class="actions"><a class="btn btn-primary" href="/work?view=case-studies">All projects</a><a class="btn btn-secondary" href="/terminal?context=${encodeURIComponent(project.id)}">Ask Yahya&#39;AI</a></div></article></div></div></section>`;
+}
+
+function replaceBuildTarget(source, target, content, sourcePath) {
+  if (!source.includes(target)) throw new Error(`Missing static-render target in ${sourcePath}`);
+  const closingTag = target.startsWith("<main") ? "</main>" : "</div>";
+  const openingTag = target.slice(0, -closingTag.length);
+  return source.replace(target, `${openingTag}${content}${closingTag}`);
+}
 
 if (output !== path.resolve(root, "dist")) throw new Error("Unexpected build output path");
 
@@ -51,7 +112,7 @@ const publicPaths = [
   ...publicFiles,
   "admin",
   "assets/favicon",
-  "assets/logos",
+  "assets/logos/gift-it-official.png",
   "assets/pdfs",
   "assets/Pictures/credentials",
   "assets/Pictures/resume",
@@ -83,12 +144,24 @@ async function assertNoSymlinks(source) {
   for (const entry of await readdir(source)) await assertNoSymlinks(path.join(source, entry));
 }
 
+async function copyWithRetry(source, destination, options = {}, attempts = 3) {
+  for (let attempt = 1; attempt <= attempts; attempt += 1) {
+    try {
+      await cp(source, destination, options);
+      return;
+    } catch (error) {
+      if (!["ECANCELED", "EBUSY", "EIO"].includes(error.code) || attempt === attempts) throw error;
+      await new Promise(resolve => setTimeout(resolve, attempt * 250));
+    }
+  }
+}
+
 for (const relativePath of publicPaths) {
   const source = path.join(root, relativePath);
   const destination = path.join(output, relativePath);
   await assertNoSymlinks(source);
   await mkdir(path.dirname(destination), { recursive: true });
-  await cp(source, destination, { recursive: true });
+  await copyWithRetry(source, destination, { recursive: true });
 }
 
 const projectRoutes = {
@@ -155,7 +228,7 @@ const person = {
   name: "Yahya El-Sawi",
   url: `${siteUrl}/about`,
   image: `${siteUrl}/assets/Pictures/about-portrait-960.webp`,
-  description: "Dubai-based UI/UX designer and frontend developer with cybersecurity, database, and network automation experience.",
+  description: "Dubai-based product and UX designer with a software development background and evidence across frontend, AI, cybersecurity, databases, XR, and network automation.",
   alumniOf: {
     "@type": "CollegeOrUniversity",
     name: "Rochester Institute of Technology Dubai"
@@ -167,29 +240,16 @@ const person = {
   ]
 };
 
-const projects = [
-  { slug: "gift-it", name: "Gift It Checkout & E-Invite Redesign", description: "A production-informed UX case study covering checkout friction, trust, confirmation, and transactional communication." },
-  { slug: "rit-app", name: "RIT Student App 2.0", description: "An academic mobile product proposal focused on unified student access, sign-in reliability, and notifications." },
-  { slug: "passwordless", name: "Passwordless Login & Signup Redesign", description: "A mobile-first UX/UI design and handoff for a clearer passwordless authentication flow." },
-  { slug: "vehicle-rental", name: "Vehicle Rental Operations Database", description: "An Oracle-backed academic operations system with relational design, access control, transactions, and reporting queries." },
-  { slug: "mood-insights", name: "Mood Insights & Stress Alerts", description: "A non-clinical UX concept for daily check-ins, mood patterns, and reflective insights." },
-  { slug: "network-automation", name: "SmartMall AI Network Automation", description: "An equal-contribution academic proof of concept for evidence-led network diagnosis, correction, and validation.", collaborative: true },
-  { slug: "vr-neuroanatomy", name: "VR Neuroanatomy", description: "This is an ongoing research project. Further details cannot be disclosed at this stage." }
-];
-const orderedProjects = ["vr-neuroanatomy", "network-automation", "mood-insights", "rit-app", "gift-it", "passwordless", "vehicle-rental"]
-  .map(slug => projects.find(project => project.slug === slug));
-if (orderedProjects.some(project => !project)) throw new Error("Structured-data project order references an unknown project");
-
 function projectSchema(project) {
-  const url = `${siteUrl}/work/${project.slug}`;
-  if (project.slug === "vr-neuroanatomy") {
+  const url = `${siteUrl}${project.url}`;
+  if (project.id === "vr-neuroanatomy") {
     return {
       "@context": "https://schema.org",
       "@graph": [
         {
           "@type": "WebPage",
-          name: project.name,
-          description: project.description,
+          name: project.title,
+          description: project.summary,
           url
         },
         {
@@ -197,7 +257,7 @@ function projectSchema(project) {
           itemListElement: [
             { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
             { "@type": "ListItem", position: 2, name: "Work", item: `${siteUrl}/work` },
-            { "@type": "ListItem", position: 3, name: project.name, item: url }
+            { "@type": "ListItem", position: 3, name: project.title, item: url }
           ]
         }
       ]
@@ -206,11 +266,11 @@ function projectSchema(project) {
   const work = {
     "@type": "CreativeWork",
     "@id": `${url}#project`,
-    name: project.name,
-    description: project.description,
+    name: project.title,
+    description: project.summary,
     url,
     inLanguage: "en",
-    ...(project.collaborative ? { contributor: { "@id": personId } } : { author: { "@id": personId } })
+    ...(project.id === "network-automation" ? { contributor: { "@id": personId } } : { author: { "@id": personId } })
   };
   return {
     "@context": "https://schema.org",
@@ -222,15 +282,32 @@ function projectSchema(project) {
         itemListElement: [
           { "@type": "ListItem", position: 1, name: "Home", item: siteUrl },
           { "@type": "ListItem", position: 2, name: "Work", item: `${siteUrl}/work` },
-          { "@type": "ListItem", position: 3, name: project.name, item: url }
+          { "@type": "ListItem", position: 3, name: project.title, item: url }
         ]
       }
     ]
   };
 }
 
+const homepageSource = await readFile(path.join(root, "index.html"), "utf8");
+const homepageHtml = replaceBuildTarget(
+  homepageSource,
+  buildTargets.featuredProjects,
+  featuredProjects.map(renderProjectCard).join(""),
+  "index.html"
+);
+await writeFile(path.join(output, "index.html"), homepageHtml);
+
+const workSource = await readFile(path.join(root, "work.html"), "utf8");
+const workHtml = replaceBuildTarget(
+  workSource,
+  buildTargets.allProjects,
+  orderedProjects.map(renderProjectCard).join(""),
+  "work.html"
+);
+await writeFile(path.join(output, "work.html"), workHtml);
 await mkdir(path.join(output, "work"), { recursive:true });
-await cp(path.join(root, "work.html"), path.join(output, "work", "index.html"));
+await writeFile(path.join(output, "work", "index.html"), workHtml);
 
 for (const [sourcePath, routePath] of Object.entries(cleanRoutes)) {
   await copyCleanRoute(sourcePath, routePath);
@@ -241,9 +318,17 @@ for (const [sourcePath, routePath] of Object.entries(privateCleanRoutes)) {
 }
 
 for (const [sourcePath, routePath] of Object.entries(projectRoutes)) {
-  const destination = path.join(output, routePath);
-  await mkdir(path.dirname(destination), { recursive:true });
-  await cp(path.join(root, sourcePath), destination);
+  const project = findProject(path.basename(sourcePath, ".html"));
+  if (!project) throw new Error(`Project route has no structured data: ${sourcePath}`);
+  const source = await readFile(path.join(root, sourcePath), "utf8");
+  const html = project.sections?.length
+    ? replaceBuildTarget(source, buildTargets.projectDetail, renderProjectDetail(project), sourcePath)
+    : source;
+  for (const destinationPath of [sourcePath, routePath]) {
+    const destination = path.join(output, destinationPath);
+    await mkdir(path.dirname(destination), { recursive:true });
+    await writeFile(destination, html);
+  }
 }
 
 const personGraph = {
@@ -270,8 +355,8 @@ const workGraph = {
         itemListElement: orderedProjects.map((project, index) => ({
           "@type": "ListItem",
           position: index + 1,
-          name: project.name,
-          url: `${siteUrl}/work/${project.slug}`
+          name: project.title,
+          url: `${siteUrl}${project.url}`
         }))
       }
     }
@@ -297,7 +382,7 @@ const structuredRoutes = new Map([
 ]);
 
 for (const project of projects) {
-  structuredRoutes.set(`work/${project.slug}/index.html`, projectSchema(project));
+  structuredRoutes.set(`work/${project.id}/index.html`, projectSchema(project));
 }
 
 for (const [routePath, data] of structuredRoutes) await injectStructuredData(routePath, data);
