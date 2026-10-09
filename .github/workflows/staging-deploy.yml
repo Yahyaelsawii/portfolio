@@ -27,9 +27,14 @@ jobs:
       - run: npm run check
       - run: PORTFOLIO_ENV=staging npm run build
       - run: npm run check:dist
+      - name: Prepare isolated Pages configuration
+        run: |
+          mkdir .staging-pages
+          cp wrangler.staging.jsonc .staging-pages/wrangler.jsonc
+          cp -R dist functions .staging-pages/
       - name: Deploy isolated staging build
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_STAGING_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name yahya-portfolio-staging --branch staging --config wrangler.staging.jsonc
+          command: pages deploy dist --cwd .staging-pages --project-name yahya-portfolio-staging --branch staging --commit-hash ${{ github.sha }}
