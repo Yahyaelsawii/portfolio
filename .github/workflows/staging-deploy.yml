@@ -37,4 +37,6 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_STAGING_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --cwd .staging-pages --project-name yahya-portfolio-staging --branch staging --commit-hash ${{ github.sha }}
+          workingDirectory: .staging-pages
+          wranglerVersion: "4.149.0"
+          command: pages deploy dist --project-name yahya-portfolio-staging --branch staging --commit-hash ${{ github.sha }}
