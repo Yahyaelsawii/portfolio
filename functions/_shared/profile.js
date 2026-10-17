@@ -1,4 +1,4 @@
-export const KNOWLEDGE_VERSION = "2026-08-24.4";
+export const KNOWLEDGE_VERSION = "2026-09-05.1";
 
 export const SOURCES = {
   about: { label: "About Yahya", url: "/about" },
@@ -33,7 +33,8 @@ export const PROFILE = {
     location: "Dubai, United Arab Emirates",
     nationality: "Egyptian",
     languages: ["Arabic — native", "English — native"],
-    summary: "A UI/UX designer, frontend developer, product associate, and computing graduate who designs and builds clear digital products across product UX, web, databases, and technical systems."
+    primaryRole: "Product-minded frontend developer",
+    summary: "A product-minded frontend developer and computing graduate who combines product thinking, UX design, and implementation to build clear, responsive digital products."
   },
   availability: {
     status: "Available to start as soon as needed.",
@@ -42,11 +43,10 @@ export const PROFILE = {
     outsideDubai: true,
     workAuthorization: "Self-sponsored UAE Golden Visa.",
     targetRoles: [
-      "UI/UX and product design",
+      "product-minded frontend development",
       "frontend and web development",
-      "software and product roles",
-      "XR or immersive learning",
-      "network automation when the role is a strong fit"
+      "product design and UX roles with implementation responsibility",
+      "selected technical product roles where interface clarity and systems thinking are central"
     ],
     salaryPolicy: "Do not quote a salary or range. Redirect compensation questions to Yahya and mark the conversation for his private review."
   },
@@ -186,10 +186,10 @@ export const PROFILE = {
     "My Marketing Experience Business Simulation — Edumundo / White Feathers, November 2024",
     "Odoo Technical Bootcamp — May 2026",
     "RIT Dubai and ZainTECH Data Challenge — October 2023",
-    "Students Conducting No More Than Minimal Risk Research (Students - Class Projects) — CITI Program / RIT, completed July 28, 2026; expires July 28, 2029; record 78576184",
-    "Social & Behavioral Research - Basic/Refresher — CITI Program / RIT, completed July 28, 2026; expires July 28, 2029; record 78576355",
-    "Export Compliance (EC) — CITI Program / RIT, completed July 28, 2026; expires July 28, 2029; record 78576186",
-    "Research Security Training (Combined) — CITI Program / RIT, completed July 28, 2026; expires July 28, 2027; record 78576185"
+    "Students Conducting No More Than Minimal Risk Research (Students - Class Projects) — CITI Program / RIT, completed July 28, 2026; expires July 28, 2029",
+    "Social & Behavioral Research - Basic/Refresher — CITI Program / RIT, completed July 28, 2026; expires July 28, 2029",
+    "Export Compliance (EC) — CITI Program / RIT, completed July 28, 2026; expires July 28, 2029",
+    "Research Security Training (Combined) — CITI Program / RIT, completed July 28, 2026; expires July 28, 2027"
   ],
   contact: {
     email: "yahyaelsawi1@gmail.com",
@@ -223,3 +223,35 @@ export const PROFILE_CONTEXT = JSON.stringify({
   knowledgeVersion: KNOWLEDGE_VERSION,
   profile: PROFILE
 }, null, 2);
+
+const PROJECT_EVIDENCE_KEYS = Object.freeze({
+  giftIt: "Gift It Checkout & E-Invite Redesign",
+  ritApp: "RIT Student App 2.0",
+  passwordless: "Passwordless Login & Signup Redesign",
+  vehicleRental: "Vehicle Rental Operations Database",
+  moodInsights: "Mood Insights & Stress Alerts",
+  vrNeuroanatomy: "VR Neuroanatomy",
+  networkAutomation: "SmartMall AI Network Automation"
+});
+
+export function buildApprovedContext(sourceIds = []) {
+  const ids = new Set(Array.isArray(sourceIds) ? sourceIds : []);
+  const includeAbout = ["about", "recruiter", "resume"].some(id => ids.has(id));
+  const includeWork = ["work", "experience", "recruiter", "resume"].some(id => ids.has(id));
+  const includeContact = ["contact", "linkedin", "github"].some(id => ids.has(id));
+  const projectNames = [...ids].map(id => PROJECT_EVIDENCE_KEYS[id]).filter(Boolean);
+  const selectedProjects = PROFILE.projects.filter(project => projectNames.includes(project.name));
+
+  return JSON.stringify({
+    knowledgeVersion: KNOWLEDGE_VERSION,
+    disclosureRule: PROFILE.privacy.publicRule,
+    neverReveal: PROFILE.privacy.neverReveal,
+    identity: PROFILE.identity,
+    ...(includeAbout ? { availability: PROFILE.availability, education: PROFILE.education } : {}),
+    ...(includeWork ? { experience: PROFILE.experience, skills: PROFILE.skills } : {}),
+    ...(ids.has("resume") ? { credentials: PROFILE.credentials } : {}),
+    ...(includeContact ? { contact: PROFILE.contact } : {}),
+    ...(selectedProjects.length ? { projects: selectedProjects } : {}),
+    evidenceSources: [...ids].map(id => SOURCES[id]).filter(Boolean)
+  }, null, 2);
+}

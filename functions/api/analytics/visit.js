@@ -3,6 +3,7 @@ import { SITE_EVENT_PURGE_SQL } from "../../_shared/retention.js";
 
 const MAX_BODY_BYTES = 4 * 1024;
 const ALLOWED_PAGE = /^\/(?:|about|contact|privacy|recruiter|resume|terminal|work(?:\/[a-z0-9-]+)?)\/?$/;
+const ALLOWED_EVENT_TYPES = new Set(["page_view", "click", "download", "ai_open", "ai_submit"]);
 const headers = publicCorsHeaders({
   "content-type": "application/json; charset=utf-8",
   "cache-control": "no-store, max-age=0",
@@ -56,6 +57,24 @@ function normalizePagePath(value) {
   return supplied.length > 1 ? supplied.replace(/\/$/, "") : supplied;
 }
 
+function normalizeEventType(value) {
+  const eventType = normalizeText(value, 32) || "page_view";
+  return ALLOWED_EVENT_TYPES.has(eventType) ? eventType : "";
+}
+
+function normalizeTarget(value, requestUrl) {
+  const supplied = normalizeText(value, 240);
+  if (!supplied) return null;
+  try {
+    const url = new URL(supplied, requestUrl);
+    const requestOrigin = new URL(requestUrl).origin;
+    if (url.origin === requestOrigin) return `${url.pathname}${url.hash}`.slice(0, 180);
+    return `external:${url.hostname}`.slice(0, 120);
+  } catch {
+    return null;
+  }
+}
+
 function normalizeReferrer(value, requestUrl) {
   const supplied = normalizeText(value, 500);
   if (!supplied) return "Direct";
@@ -107,19 +126,29 @@ async function ensureSchema(db) {
           page_path TEXT NOT NULL,
           referrer_host TEXT NOT NULL DEFAULT 'Direct',
           device_type TEXT NOT NULL,
-          browser_family TEXT NOT NULL
+          browser_family TEXT NOT NULL,
+          event_type TEXT NOT NULL DEFAULT 'page_view',
+          target TEXT
         )
       `),
       db.prepare("CREATE INDEX IF NOT EXISTS idx_site_events_created_at ON site_events(created_at DESC)"),
       db.prepare("CREATE INDEX IF NOT EXISTS idx_site_events_session_recent ON site_events(session_hash, created_at DESC)"),
       db.prepare("CREATE INDEX IF NOT EXISTS idx_site_events_page_recent ON site_events(page_path, created_at DESC)"),
-      db.prepare("CREATE INDEX IF NOT EXISTS idx_site_events_country_recent ON site_events(country, created_at DESC)")
+      db.prepare("CREATE INDEX IF NOT EXISTS idx_site_events_country_recent ON site_events(country, created_at DESC)"),
+      db.prepare("CREATE INDEX IF NOT EXISTS idx_site_events_type_recent ON site_events(event_type, created_at DESC)")
     ]).catch(error => {
       schemaPromise = undefined;
       throw error;
     });
   }
   await schemaPromise;
+  const tableInfo = db.prepare("PRAGMA table_info(site_events)");
+  if (typeof tableInfo.all === "function") {
+    const columns = await tableInfo.all();
+    const names = new Set((columns?.results || []).map(column => column.name));
+    if (!names.has("event_type")) await db.prepare("ALTER TABLE site_events ADD COLUMN event_type TEXT NOT NULL DEFAULT 'page_view'").run();
+    if (!names.has("target")) await db.prepare("ALTER TABLE site_events ADD COLUMN target TEXT").run();
+  }
 }
 
 export async function onRequestOptions({ request }) {
@@ -143,8 +172,10 @@ export async function onRequestPost({ request, env }) {
   }
 
   const pagePath = normalizePagePath(payload?.page);
+  const eventType = normalizeEventType(payload?.eventType);
+  const target = normalizeTarget(payload?.target, request.url);
   const sessionId = normalizeText(payload?.sessionId, 120);
-  if (!pagePath || !/^[A-Za-z0-9_-]{8,120}$/.test(sessionId)) return respond({ error: "INVALID_EVENT" }, 400);
+  if (!pagePath || !eventType || !/^[A-Za-z0-9_-]{8,120}$/.test(sessionId)) return respond({ error: "INVALID_EVENT" }, 400);
 
   const userAgent = request.headers.get("user-agent") || "";
   if (/bot|crawler|spider|preview|headless/i.test(userAgent)) return respond({ accepted: false }, 202);
@@ -156,15 +187,15 @@ export async function onRequestPost({ request, env }) {
     const minute = now.toISOString().slice(0, 16);
     const rawIp = request.headers.get("cf-connecting-ip") || "unavailable";
     const [eventKey, sessionHash, visitorHash] = await Promise.all([
-      hmac(`view:${rawIp}:${pagePath}:${minute}`, env.LOG_HASH_SECRET),
+      hmac(`${eventType}:${rawIp}:${pagePath}:${target || "page"}:${minute}`, env.LOG_HASH_SECRET),
       hmac(`session:${sessionId}`, env.LOG_HASH_SECRET),
       hmac(`visitor:${rawIp}:${day}`, env.LOG_HASH_SECRET)
     ]);
     const insert = env.DB.prepare(`
       INSERT OR IGNORE INTO site_events (
         event_key, session_hash, visitor_hash, country, region, city,
-        page_path, referrer_host, device_type, browser_family
-      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        page_path, referrer_host, device_type, browser_family, event_type, target
+      ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     `).bind(
       eventKey,
       sessionHash,
@@ -175,7 +206,9 @@ export async function onRequestPost({ request, env }) {
       pagePath,
       normalizeReferrer(payload?.referrer, request.url),
       deviceType(userAgent),
-      browserFamily(userAgent)
+      browserFamily(userAgent),
+      eventType,
+      target
     );
     await env.DB.batch([insert, env.DB.prepare(SITE_EVENT_PURGE_SQL)]);
     return respond({ accepted: true }, 202);

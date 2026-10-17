@@ -5,6 +5,9 @@ const tabs = [...document.querySelectorAll('[role="tab"][aria-controls]')];
 const sessionDialog = document.querySelector('#ai-session-dialog');
 const sessionDialogClose = document.querySelector('.dashboard-dialog-close');
 const isGitHubPagesAdmin = location.hostname === 'yahyaelsawii.github.io';
+const DASHBOARD_PAGE_SIZE = 10;
+const pagedRows = { website:[], ai:[] };
+const currentPages = { website:0, ai:0 };
 let refreshResetTimer;
 
 function setText(selector, value) {
@@ -87,31 +90,57 @@ function locationLabel(row) {
   return [row.city, row.region, row.country].filter(Boolean).join(', ') || 'Unknown';
 }
 
+function pageSlice(type) {
+  const rows = pagedRows[type];
+  const pageCount = Math.max(1, Math.ceil(rows.length / DASHBOARD_PAGE_SIZE));
+  currentPages[type] = Math.min(currentPages[type], pageCount - 1);
+  const start = currentPages[type] * DASHBOARD_PAGE_SIZE;
+  return rows.slice(start, start + DASHBOARD_PAGE_SIZE);
+}
+
+function renderPagination(type) {
+  const prefix = type === 'website' ? 'site' : 'ai';
+  const mount = document.querySelector(`#${prefix}-session-pagination`);
+  if (!mount) return;
+  const pageCount = Math.max(1, Math.ceil(pagedRows[type].length / DASHBOARD_PAGE_SIZE));
+  const previous = mount.querySelector('[data-page-action="previous"]');
+  const next = mount.querySelector('[data-page-action="next"]');
+  if (previous) previous.disabled = currentPages[type] === 0;
+  if (next) next.disabled = currentPages[type] >= pageCount - 1;
+  const status = mount.querySelector('[data-page-status]');
+  if (status) status.textContent = `Page ${currentPages[type] + 1} of ${pageCount}`;
+}
+
 function renderWebsiteRecent(rows) {
+  if (rows) {
+    pagedRows.website = rows;
+    currentPages.website = 0;
+  }
   const mount = document.querySelector('#site-dashboard-rows');
   if (!mount) return;
   mount.replaceChildren();
-  rows.forEach(row => {
+  pageSlice('website').forEach(row => {
     const tr = document.createElement('tr');
     const values = [
       displayTime(row.created_at),
       row.session ? `#${row.session}` : '—',
-      row.page,
+      String(row.pages || '—').split(',').join(', '),
+      `${Number(row.pageviews || 0)} / ${Number(row.events || 0)}`,
       locationLabel(row),
-      row.device,
-      row.browser,
+      [row.device, row.browser].filter(Boolean).join(' / '),
       row.referrer
     ];
     values.forEach(value => tr.append(makeNode('td', value || '—')));
     mount.append(tr);
   });
-  if (!rows.length) {
+  if (!pagedRows.website.length) {
     const tr = document.createElement('tr');
     const cell = makeNode('td', 'No website visits logged yet.', 'dashboard-empty');
     cell.colSpan = 7;
     tr.append(cell);
     mount.append(tr);
   }
+  renderPagination('website');
 }
 
 function renderAiRecent(rows) {
@@ -142,10 +171,14 @@ function scoreClass(band) {
 }
 
 function renderAiSessions(rows) {
+  if (rows) {
+    pagedRows.ai = rows;
+    currentPages.ai = 0;
+  }
   const mount = document.querySelector('#ai-session-rows');
   if (!mount) return;
   mount.replaceChildren();
-  rows.forEach(row => {
+  pageSlice('ai').forEach(row => {
     const tr = document.createElement('tr');
     tr.append(makeNode('td', displayTime(row.lastActiveAt)));
     const discussion = makeNode('td', row.summary || 'General portfolio questions');
@@ -165,13 +198,14 @@ function renderAiSessions(rows) {
     tr.append(actionCell);
     mount.append(tr);
   });
-  if (!rows.length) {
+  if (!pagedRows.ai.length) {
     const tr = document.createElement('tr');
     const cell = makeNode('td', 'No conversation sessions logged yet.', 'dashboard-empty');
     cell.colSpan = 6;
     tr.append(cell);
     mount.append(tr);
   }
+  renderPagination('ai');
 }
 
 function renderSessionDetail(data) {
@@ -276,6 +310,9 @@ function renderWebsite(data) {
   setText('#site-metric-visitors', summary.visitors || 0);
   setText('#site-metric-sessions', summary.sessions || 0);
   setText('#site-metric-pages', summary.pages || 0);
+  setText('#site-metric-clicks', summary.clicks || 0);
+  setText('#site-metric-downloads', summary.downloads || 0);
+  setText('#site-metric-ai-events', summary.ai_events || 0);
   renderBars('#site-dashboard-bars', Array.isArray(data.daily) ? data.daily : [], 'pageviews', 'page views');
   renderRankedList('#site-dashboard-regions', Array.isArray(data.regions) ? data.regions : [], 'country', 'pageviews', 'No regional activity in this range.');
   renderRankedList('#site-dashboard-pages', Array.isArray(data.pages) ? data.pages : [], 'page', 'pageviews', 'No page activity in this range.');
@@ -290,6 +327,8 @@ function renderAi(data) {
   setText('#ai-metric-questions', summary.questions || 0);
   setText('#ai-metric-visitors', summary.visitors || 0);
   setText('#ai-metric-response', `${summary.average_response_ms || 0} ms`);
+  setText('#ai-metric-model', `${data.telemetry?.average_model_ms || 0} ms`);
+  setText('#ai-metric-routes', `${Number(data.telemetry?.fast_requests || 0)} / ${Number(data.telemetry?.deep_requests || 0)}`);
   setText('#ai-metric-flags', Number(summary.salary_flags || 0) + Number(summary.privacy_blocks || 0));
   renderBars('#ai-dashboard-bars', Array.isArray(data.daily) ? data.daily : [], 'questions', 'questions');
   renderRankedList('#ai-dashboard-regions', Array.isArray(data.regions) ? data.regions : [], 'country', 'questions', 'No regional activity in this range.');
@@ -334,6 +373,16 @@ async function loadDashboard() {
 }
 
 initializeTabs();
+document.querySelectorAll('.dashboard-pagination').forEach(pagination => {
+  pagination.addEventListener('click', event => {
+    const button = event.target.closest('[data-page-action]');
+    if (!button || button.disabled) return;
+    const type = pagination.id.startsWith('site-') ? 'website' : 'ai';
+    currentPages[type] += button.dataset.pageAction === 'next' ? 1 : -1;
+    if (type === 'website') renderWebsiteRecent();
+    else renderAiSessions();
+  });
+});
 document.querySelector('#ai-session-rows')?.addEventListener('click', event => {
   const button = event.target.closest('.dashboard-session-open');
   if (button) openSession(button.dataset.session);

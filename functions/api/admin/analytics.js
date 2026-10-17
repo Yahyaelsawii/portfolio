@@ -12,20 +12,47 @@ function respond(body, status = 200) {
   return new Response(JSON.stringify(body), { status, headers });
 }
 
+async function ensureAnalyticsSchema(db) {
+  const tableInfo = db.prepare("PRAGMA table_info(site_events)");
+  if (typeof tableInfo.all !== "function") return;
+  await db.prepare(`
+    CREATE TABLE IF NOT EXISTS ai_telemetry (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      session_hash TEXT,
+      route TEXT NOT NULL,
+      model TEXT NOT NULL,
+      history_ms INTEGER NOT NULL,
+      retrieval_ms INTEGER NOT NULL,
+      model_ms INTEGER NOT NULL,
+      total_ms INTEGER NOT NULL
+    )
+  `).run();
+  const columns = await tableInfo.all();
+  const names = new Set((columns?.results || []).map(column => column.name));
+  if (!names.has("event_type")) await db.prepare("ALTER TABLE site_events ADD COLUMN event_type TEXT NOT NULL DEFAULT 'page_view'").run();
+  if (!names.has("target")) await db.prepare("ALTER TABLE site_events ADD COLUMN target TEXT").run();
+  await db.prepare("CREATE INDEX IF NOT EXISTS idx_site_events_type_recent ON site_events(event_type, created_at DESC)").run();
+}
+
 export async function onRequestGet({ request, env }) {
   const access = await verifyAdminAccess(request, env);
   if (!access.ok) return respond({ error: access.code }, access.status);
   if (!env.DB) return respond({ error: "ANALYTICS_DATABASE_NOT_CONFIGURED" }, 503);
 
   try {
+    await ensureAnalyticsSchema(env.DB);
     await purgeExpiredData(env.DB);
     const results = await env.DB.batch([
       env.DB.prepare(`
         SELECT
-          COUNT(*) AS pageviews,
-          COUNT(DISTINCT visitor_hash) AS visitors,
+          SUM(CASE WHEN event_type = 'page_view' THEN 1 ELSE 0 END) AS pageviews,
+          COUNT(DISTINCT CASE WHEN event_type = 'page_view' THEN visitor_hash END) AS visitors,
           COUNT(DISTINCT session_hash) AS sessions,
-          COUNT(DISTINCT page_path) AS pages
+          COUNT(DISTINCT CASE WHEN event_type = 'page_view' THEN page_path END) AS pages,
+          SUM(CASE WHEN event_type = 'click' THEN 1 ELSE 0 END) AS clicks,
+          SUM(CASE WHEN event_type = 'download' THEN 1 ELSE 0 END) AS downloads,
+          SUM(CASE WHEN event_type IN ('ai_open', 'ai_submit') THEN 1 ELSE 0 END) AS ai_events
         FROM site_events
         WHERE created_at >= datetime('now', '-30 days')
       `),
@@ -33,6 +60,7 @@ export async function onRequestGet({ request, env }) {
         SELECT date(created_at) AS day, COUNT(*) AS pageviews, COUNT(DISTINCT session_hash) AS sessions
         FROM site_events
         WHERE created_at >= datetime('now', '-30 days')
+          AND event_type = 'page_view'
         GROUP BY date(created_at)
         ORDER BY day ASC
       `),
@@ -40,6 +68,7 @@ export async function onRequestGet({ request, env }) {
         SELECT page_path AS page, COUNT(*) AS pageviews, COUNT(DISTINCT session_hash) AS sessions
         FROM site_events
         WHERE created_at >= datetime('now', '-30 days')
+          AND event_type = 'page_view'
         GROUP BY page_path
         ORDER BY pageviews DESC, page ASC
         LIMIT 12
@@ -48,6 +77,7 @@ export async function onRequestGet({ request, env }) {
         SELECT COALESCE(country, 'Unknown') AS country, COUNT(*) AS pageviews
         FROM site_events
         WHERE created_at >= datetime('now', '-30 days')
+          AND event_type = 'page_view'
         GROUP BY country
         ORDER BY pageviews DESC
         LIMIT 10
@@ -56,6 +86,7 @@ export async function onRequestGet({ request, env }) {
         SELECT device_type AS label, COUNT(*) AS pageviews
         FROM site_events
         WHERE created_at >= datetime('now', '-30 days')
+          AND event_type = 'page_view'
         GROUP BY device_type
         ORDER BY pageviews DESC
       `),
@@ -63,6 +94,7 @@ export async function onRequestGet({ request, env }) {
         SELECT browser_family AS label, COUNT(*) AS pageviews
         FROM site_events
         WHERE created_at >= datetime('now', '-30 days')
+          AND event_type = 'page_view'
         GROUP BY browser_family
         ORDER BY pageviews DESC
       `),
@@ -70,6 +102,7 @@ export async function onRequestGet({ request, env }) {
         SELECT referrer_host AS label, COUNT(*) AS pageviews
         FROM site_events
         WHERE created_at >= datetime('now', '-30 days')
+          AND event_type = 'page_view'
           AND referrer_host != 'Internal'
         GROUP BY referrer_host
         ORDER BY pageviews DESC
@@ -77,19 +110,23 @@ export async function onRequestGet({ request, env }) {
       `),
       env.DB.prepare(`
         SELECT
-          created_at,
-          substr(session_hash, 1, 8) AS session,
-          country,
-          region,
-          city,
-          page_path AS page,
-          referrer_host AS referrer,
-          device_type AS device,
-          browser_family AS browser
+          MIN(created_at) AS started_at,
+          MAX(created_at) AS created_at,
+          substr(session_hash, 1, 16) AS session,
+          MAX(country) AS country,
+          MAX(region) AS region,
+          MAX(city) AS city,
+          GROUP_CONCAT(DISTINCT page_path) AS pages,
+          SUM(CASE WHEN event_type = 'page_view' THEN 1 ELSE 0 END) AS pageviews,
+          COUNT(*) AS events,
+          MAX(referrer_host) AS referrer,
+          MAX(device_type) AS device,
+          MAX(browser_family) AS browser
         FROM site_events
         WHERE created_at >= datetime('now', '-90 days')
-        ORDER BY id DESC
-        LIMIT 75
+        GROUP BY session_hash
+        ORDER BY MAX(id) DESC
+        LIMIT 100
       `),
       env.DB.prepare(`
         SELECT
@@ -130,6 +167,18 @@ export async function onRequestGet({ request, env }) {
           AND session_hash IS NOT NULL
         ORDER BY id DESC
         LIMIT 500
+      `),
+      env.DB.prepare(`
+        SELECT
+          ROUND(AVG(history_ms)) AS average_history_ms,
+          ROUND(AVG(retrieval_ms)) AS average_retrieval_ms,
+          ROUND(AVG(model_ms)) AS average_model_ms,
+          ROUND(AVG(total_ms)) AS average_total_ms,
+          SUM(CASE WHEN route = 'fast' THEN 1 ELSE 0 END) AS fast_requests,
+          SUM(CASE WHEN route = 'deep' THEN 1 ELSE 0 END) AS deep_requests,
+          SUM(CASE WHEN route = 'policy' THEN 1 ELSE 0 END) AS policy_requests
+        FROM ai_telemetry
+        WHERE created_at >= datetime('now', '-30 days')
       `)
     ]);
 
@@ -152,7 +201,8 @@ export async function onRequestGet({ request, env }) {
         daily: results[9]?.results || [],
         regions: results[10]?.results || [],
         recent: results[11]?.results || [],
-        sessions: groupSessionInsights(results[12]?.results || [])
+        sessions: groupSessionInsights(results[12]?.results || []),
+        telemetry: results[13]?.results?.[0] || {}
       }
     });
   } catch (error) {

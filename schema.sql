@@ -21,6 +21,20 @@ CREATE INDEX IF NOT EXISTS idx_ai_logs_session_recent ON ai_logs(session_hash, c
 CREATE INDEX IF NOT EXISTS idx_ai_logs_visitor_recent ON ai_logs(visitor_hash, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_ai_logs_flag ON ai_logs(flag, created_at DESC);
 
+CREATE TABLE IF NOT EXISTS ai_telemetry (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  session_hash TEXT,
+  route TEXT NOT NULL,
+  model TEXT NOT NULL,
+  history_ms INTEGER NOT NULL,
+  retrieval_ms INTEGER NOT NULL,
+  model_ms INTEGER NOT NULL,
+  total_ms INTEGER NOT NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_ai_telemetry_created_at ON ai_telemetry(created_at DESC);
+
 CREATE TABLE IF NOT EXISTS site_events (
   id INTEGER PRIMARY KEY AUTOINCREMENT,
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
@@ -34,12 +48,15 @@ CREATE TABLE IF NOT EXISTS site_events (
   referrer_host TEXT NOT NULL DEFAULT 'Direct',
   device_type TEXT NOT NULL,
   browser_family TEXT NOT NULL
+  ,event_type TEXT NOT NULL DEFAULT 'page_view'
+  ,target TEXT
 );
 
 CREATE INDEX IF NOT EXISTS idx_site_events_created_at ON site_events(created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_site_events_session_recent ON site_events(session_hash, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_site_events_page_recent ON site_events(page_path, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_site_events_country_recent ON site_events(country, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_site_events_type_recent ON site_events(event_type, created_at DESC);
 
 CREATE TABLE IF NOT EXISTS ai_rate_limits (
   identity_hash TEXT NOT NULL,

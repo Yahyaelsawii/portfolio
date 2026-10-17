@@ -50,6 +50,21 @@ function appendChatEvidence(message, sources = []) {
   message.append(evidence);
 }
 
+function appendChatActions(message, actions = []) {
+  const safeActions = actions.filter(action => action?.type === 'open_page' && /^\/(?:work(?:\/[a-z0-9-]+)?|resume|recruiter|contact)$/.test(action.url || ''));
+  if (!safeActions.length) return;
+  const toolbar = document.createElement('div');
+  toolbar.className = 'ai-message-actions';
+  safeActions.slice(0, 2).forEach(action => {
+    const link = document.createElement('a');
+    link.className = 'ai-message-action';
+    link.href = action.url;
+    link.textContent = action.label;
+    toolbar.append(link);
+  });
+  message.append(toolbar);
+}
+
 function createChatMessage(role, text, sources = []) {
   const message = document.createElement('div');
   message.className = `ai-message ai-message-${role}`;
@@ -92,6 +107,18 @@ function createThinkingMessage() {
   return message;
 }
 
+let analyticsPage = '';
+
+function trackSiteEvent(eventType, target = '') {
+  if (!analyticsPage) return;
+  fetch(apiEndpoint('/api/analytics/visit'), {
+    method:'POST',
+    headers:{ 'content-type':'application/json' },
+    body:JSON.stringify({ eventType, target, page:analyticsPage, referrer:document.referrer, sessionId:getAnonymousSessionId() }),
+    keepalive:true
+  }).catch(() => {});
+}
+
 function initializeSiteAnalytics() {
   if (location.pathname.startsWith('/admin/') || ['localhost', '127.0.0.1'].includes(location.hostname)) return;
   const canonical = document.querySelector('link[rel="canonical"]')?.href;
@@ -102,11 +129,19 @@ function initializeSiteAnalytics() {
   } catch {
     return;
   }
-  fetch(apiEndpoint('/api/analytics/visit'), {
-    method:'POST',
-    headers:{ 'content-type':'application/json' },
-    body:JSON.stringify({ page, referrer:document.referrer, sessionId:getAnonymousSessionId() })
-  }).catch(() => {});
+  analyticsPage = page;
+  trackSiteEvent('page_view');
+  document.addEventListener('click', event => {
+    const link = event.target.closest('a[href]');
+    if (!link) return;
+    const destination = new URL(link.href, location.href);
+    const target = destination.origin === location.origin
+      ? `${destination.pathname}${destination.hash}`
+      : destination.href;
+    const isDownload = link.hasAttribute('download') || /\.pdf(?:$|[?#])/i.test(destination.pathname);
+    const opensAssistant = /\/terminal(?:\.html)?\/?$/i.test(destination.pathname);
+    trackSiteEvent(isDownload ? 'download' : opensAssistant ? 'ai_open' : 'click', target);
+  }, { passive:true });
 }
 
 const localAssistantSources = Object.freeze({
@@ -303,7 +338,7 @@ function initializePortfolioAI() {
     messages.scrollTo({ top: messages.scrollHeight, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
   };
 
-  const appendAssistant = async (text, sources = []) => {
+  const appendAssistant = async (text, sources = [], actions = []) => {
     const message = createChatMessage('assistant', '');
     const body = message.querySelector('.ai-message-body');
     messages.append(message);
@@ -329,6 +364,7 @@ function initializePortfolioAI() {
       });
     }
     appendChatEvidence(message, sources);
+    appendChatActions(message, actions);
     messages.scrollTo({ top: messages.scrollHeight, behavior: reducedMotion ? 'auto' : 'smooth' });
   };
 
@@ -381,7 +417,7 @@ function initializePortfolioAI() {
       }
 
       thinkingMessage.remove();
-      await appendAssistant(data.answer, Array.isArray(data.sources) ? data.sources : []);
+      await appendAssistant(data.answer, Array.isArray(data.sources) ? data.sources : [], Array.isArray(data.actions) ? data.actions : []);
       setAssistantAvailability('online');
       history.push({ role: 'user', content: cleanQuestion }, { role: 'assistant', content: data.answer });
       history = history.slice(-8);
@@ -417,6 +453,7 @@ function initializePortfolioAI() {
   });
   form.addEventListener('submit', event => {
     event.preventDefault();
+    trackSiteEvent('ai_submit', 'yahya-ai');
     ask(input.value);
   });
   document.querySelectorAll('.ai-suggestions [data-question]').forEach(button => {
@@ -615,9 +652,8 @@ function initializeScrollToTop() {
 }
 
 function initializeImageLightbox() {
-  const triggers = [...document.querySelectorAll('.project-image-button')];
-  document.querySelectorAll('.detail-visual img, .gallery img, .case-figure img, .locked-cover img').forEach(image => {
-    if (image.closest('.project-image-button')) return;
+  const triggers = [];
+  document.querySelectorAll('.detail-visual img, .gallery img, .case-figure img').forEach(image => {
     image.classList.add('is-zoomable');
     image.setAttribute('role', 'button');
     image.setAttribute('tabindex', '0');

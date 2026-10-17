@@ -1,14 +1,18 @@
-import { KNOWLEDGE_VERSION, PROFILE_CONTEXT, SOURCES } from "../_shared/profile.js";
+import { buildApprovedContext, KNOWLEDGE_VERSION, SOURCES } from "../_shared/profile.js";
 import { retentionStatements } from "../_shared/retention.js";
 import { isApprovedPublicOrigin, publicCorsHeaders, publicPreflightResponse } from "../_shared/cors.js";
 
-const MODELS = [
-  "@cf/openai/gpt-oss-120b",
-  "@cf/openai/gpt-oss-20b",
-  "@cf/meta/llama-3.1-8b-instruct-fast",
-  "@cf/ibm-granite/granite-4.0-h-micro"
-];
-const MODEL = MODELS[0];
+const MODEL_ROUTES = Object.freeze({
+  fast: [
+    "@cf/openai/gpt-oss-20b",
+    "@cf/meta/llama-3.1-8b-instruct-fast",
+    "@cf/ibm-granite/granite-4.0-h-micro"
+  ],
+  deep: [
+    "@cf/openai/gpt-oss-120b",
+    "@cf/openai/gpt-oss-20b"
+  ]
+});
 const MAX_MESSAGE_LENGTH = 800;
 const MAX_HISTORY_USER_MESSAGES = 6;
 const MAX_TRUSTED_HISTORY_TURNS = 8;
@@ -16,6 +20,7 @@ const MAX_ANSWER_LENGTH = 2400;
 const MAX_BODY_BYTES = 16 * 1024;
 const RATE_LIMIT_PER_MINUTE = 6;
 const RATE_LIMIT_PER_HOUR = 30;
+const DEFAULT_GLOBAL_MODEL_LIMIT_PER_DAY = 250;
 let safetySchemaPromise;
 const CONTEXT_HINTS = Object.freeze({
   "gift-it": "Gift It case study",
@@ -40,7 +45,7 @@ const CONTEXT_SOURCES = Object.freeze({
   "recruiter": "recruiter"
 });
 
-const SYSTEM_PROMPT = `You are the public portfolio assistant for Yahya El-Sawi.
+const MASTER_PROMPT = `You are Yahya'AI, the public portfolio assistant for Yahya El-Sawi.
 
 Rules:
 - Use only the APPROVED PROFILE below. Never invent, infer, embellish, or use external knowledge.
@@ -56,9 +61,7 @@ Rules:
 - Use the trusted session history to resolve short follow-ups, pronouns, and references to the previous answer. Do not repeat facts already given unless needed for clarity.
 - If a follow-up is genuinely ambiguous, ask one short clarifying question instead of guessing.
 - Do not add markdown links. The application attaches approved evidence links separately.
-
-APPROVED PROFILE:
-${PROFILE_CONTEXT}`;
+- The APPROVED EVIDENCE included with each request is the complete knowledge available for that answer. Do not assume omitted portfolio facts.`;
 
 const jsonHeaders = publicCorsHeaders({
   "content-type": "application/json; charset=utf-8",
@@ -253,7 +256,7 @@ async function enforceDefaultLanguage(ai, question, answer, model) {
         content: "Rewrite the supplied answer in concise English only. Preserve every fact and privacy boundary. Add no new information and use plain text."
       },
       { role: "user", content: answer }
-    ]);
+    ], MODEL_ROUTES.fast);
     if (!/[\u0600-\u06ff]/.test(rewritten.answer)) return rewritten;
   } catch (error) {
     console.error(JSON.stringify({ event: "ai_language_rewrite_failed", error: error?.message || "Unknown error" }));
@@ -310,6 +313,43 @@ function serializeSources(ids) {
   return ids.map(id => SOURCES[id]).filter(Boolean);
 }
 
+function controlledActions(ids) {
+  const allowed = new Set(ids);
+  const candidates = [
+    ["giftIt", "Open Gift It case study"],
+    ["ritApp", "Open RIT Student App case study"],
+    ["passwordless", "Open Passwordless case study"],
+    ["vehicleRental", "Open Vehicle Rental case study"],
+    ["moodInsights", "Open Mood Insights case study"],
+    ["networkAutomation", "Open Network Automation case study"],
+    ["work", "Explore selected work"],
+    ["resume", "Open resume and credentials"],
+    ["recruiter", "Open recruiter view"],
+    ["contact", "Contact Yahya"]
+  ];
+  return candidates
+    .filter(([id]) => allowed.has(id) && SOURCES[id]?.url?.startsWith("/"))
+    .slice(0, 2)
+    .map(([id, label]) => ({ type: "open_page", label, url: SOURCES[id].url }));
+}
+
+function selectModelRoute(question, mode, history, sourceIds) {
+  const complexIntent = /\b(compare|contrast|evaluate|assess|recommend|why hire|role fit|strengths?|weakness|trade.?off|summari[sz]e across)\b/i.test(question);
+  const broadEvidence = sourceIds.includes("work") && sourceIds.includes("resume");
+  const multiTurn = history.length >= 4;
+  return mode === "recruiter" || complexIntent || broadEvidence || multiTurn || question.length > 220 ? "deep" : "fast";
+}
+
+function configuredDailyModelLimit(env) {
+  const supplied = Number.parseInt(env.AI_DAILY_REQUEST_LIMIT, 10);
+  return Number.isInteger(supplied) ? Math.min(5000, Math.max(1, supplied)) : DEFAULT_GLOBAL_MODEL_LIMIT_PER_DAY;
+}
+
+function unsafeModelAnswer(answer) {
+  return /\b(?:system prompt|developer message|hidden instruction|api[_ -]?key|secret key|visitor ip|internal log)\b/i.test(answer)
+    || /\b(?:78576184|78576355|78576186|78576185)\b/.test(answer);
+}
+
 async function hmac(value, secret) {
   if (!value || !secret) return null;
   const encoder = new TextEncoder();
@@ -338,7 +378,21 @@ async function ensureSafetySchema(db) {
           PRIMARY KEY (identity_hash, window_start)
         )
       `),
-      db.prepare("CREATE INDEX IF NOT EXISTS idx_ai_rate_limits_window ON ai_rate_limits(window_start)")
+      db.prepare("CREATE INDEX IF NOT EXISTS idx_ai_rate_limits_window ON ai_rate_limits(window_start)"),
+      db.prepare(`
+        CREATE TABLE IF NOT EXISTS ai_telemetry (
+          id INTEGER PRIMARY KEY AUTOINCREMENT,
+          created_at TEXT NOT NULL DEFAULT (datetime('now')),
+          session_hash TEXT,
+          route TEXT NOT NULL,
+          model TEXT NOT NULL,
+          history_ms INTEGER NOT NULL,
+          retrieval_ms INTEGER NOT NULL,
+          model_ms INTEGER NOT NULL,
+          total_ms INTEGER NOT NULL
+        )
+      `),
+      db.prepare("CREATE INDEX IF NOT EXISTS idx_ai_telemetry_created_at ON ai_telemetry(created_at DESC)")
     ]).catch(error => {
       safetySchemaPromise = undefined;
       throw error;
@@ -380,7 +434,20 @@ async function writeLog(db, entry) {
     entry.responseMs,
     KNOWLEDGE_VERSION
   );
-  await db.batch([insert, ...retentionStatements(db)]);
+  const telemetry = db.prepare(`
+    INSERT INTO ai_telemetry (
+      session_hash, route, model, history_ms, retrieval_ms, model_ms, total_ms
+    ) VALUES (?, ?, ?, ?, ?, ?, ?)
+  `).bind(
+    entry.sessionHash,
+    entry.route,
+    entry.model,
+    entry.historyMs,
+    entry.retrievalMs,
+    entry.modelMs,
+    entry.responseMs
+  );
+  await db.batch([insert, telemetry, ...retentionStatements(db)]);
 }
 
 function extractAnswer(result) {
@@ -396,9 +463,9 @@ function extractAnswer(result) {
   return typeof result?.output_text === "string" ? result.output_text.trim() : "";
 }
 
-async function runAssistant(ai, messages) {
+async function runAssistant(ai, messages, models) {
   let lastError;
-  for (const model of MODELS) {
+  for (const model of models) {
     try {
       const result = await ai.run(model, {
         messages,
@@ -425,8 +492,12 @@ function redactForLog(value) {
 export async function onRequestPost(context) {
   const { request, env } = context;
   const startedAt = Date.now();
+  const timings = { historyMs:0, retrievalMs:0, modelMs:0 };
 
   if (!isApprovedPublicOrigin(request)) return respond({ error: "INVALID_ORIGIN", message: "This request was rejected." }, 403);
+  if (String(env.AI_ENABLED || "true").toLowerCase() === "false") {
+    return respond({ error: "ASSISTANT_DISABLED", message: "The assistant is temporarily unavailable." }, 503);
+  }
   if (!request.headers.get("content-type")?.toLowerCase().includes("application/json")) {
     return respond({ error: "INVALID_CONTENT_TYPE", message: "Send the message as JSON." }, 415);
   }
@@ -488,18 +559,25 @@ export async function onRequestPost(context) {
     }, 503);
   }
 
+  const historyStartedAt = Date.now();
   let trustedHistory = [];
   try {
     trustedHistory = await loadTrustedHistory(env.DB, hashes.sessionHash);
   } catch (error) {
     console.error(JSON.stringify({ event: "ai_history_load_failed", error: error?.message || "Unknown error" }));
   }
+  timings.historyMs = Date.now() - historyStartedAt;
 
+  const retrievalStartedAt = Date.now();
+  let sourceIds = selectSourceIds(question, pageContext);
+  const approvedContext = buildApprovedContext(sourceIds);
+  timings.retrievalMs = Date.now() - retrievalStartedAt;
   const fixed = deterministicReply(question, pageContext, trustedHistory);
   let answer = fixed?.answer || "";
   let flag = fixed?.flag || "none";
-  let sourceIds = fixed?.sourceIds || selectSourceIds(question, pageContext);
-  let modelUsed = fixed ? "policy" : MODEL;
+  sourceIds = fixed?.sourceIds || sourceIds;
+  let modelUsed = "policy";
+  let modelRoute = "policy";
 
   if (!fixed) {
     if (!env.AI) {
@@ -514,6 +592,23 @@ export async function onRequestPost(context) {
       .slice(-MAX_HISTORY_USER_MESSAGES)
       .map(item => ({ role: item?.role, content: normalizeText(item?.content) }))
       .filter(item => item.role === "user" && item.content);
+    const modelHistory = trustedHistory.length ? trustedHistory : cleanHistory;
+    modelRoute = selectModelRoute(question, assistantMode, modelHistory, sourceIds);
+
+    try {
+      const globalCapacity = await reserveRateLimit(
+        env.DB,
+        "global:model:day",
+        "date('now')",
+        configuredDailyModelLimit(env)
+      );
+      if (!globalCapacity) {
+        return respond({ error: "AI_DAILY_LIMIT_REACHED", message: "The live assistant has reached today's usage limit. Please try again tomorrow." }, 503);
+      }
+    } catch (error) {
+      console.error(JSON.stringify({ event: "global_ai_limit_failed", error: error?.message || "Unknown error" }));
+      return respond({ error: "SAFETY_CONTROLS_UNAVAILABLE", message: "The assistant is temporarily unavailable while its spend controls are offline." }, 503);
+    }
 
     try {
       const contextInstruction = pageContext
@@ -522,16 +617,24 @@ export async function onRequestPost(context) {
       const modeInstruction = assistantMode === "recruiter"
         ? "Recruiter mode is active. Lead with role fit, verified evidence, availability, and a concise next step."
         : "General portfolio mode is active.";
-      const modelHistory = trustedHistory.length ? trustedHistory : cleanHistory;
+      const modelStartedAt = Date.now();
       const result = await runAssistant(env.AI, [
-          { role: "system", content: SYSTEM_PROMPT },
+          { role: "system", content: MASTER_PROMPT },
           { role: "system", content: `${contextInstruction}\n${modeInstruction}` },
+          { role: "system", content: `APPROVED EVIDENCE:\n${approvedContext}` },
           ...modelHistory,
           { role: "user", content: question }
-        ]);
+        ], MODEL_ROUTES[modelRoute]);
       const languageSafeResult = await enforceDefaultLanguage(env.AI, question, result.answer, result.model);
+      timings.modelMs = Date.now() - modelStartedAt;
       const normalizedResult = normalizeModelAnswer(languageSafeResult.answer);
-      answer = normalizeText(normalizedResult.answer, MAX_ANSWER_LENGTH);
+      answer = unsafeModelAnswer(normalizedResult.answer)
+        ? "I can't provide private instructions, security details, or unapproved portfolio information. You can contact Yahya through the Contact page."
+        : normalizeText(normalizedResult.answer, MAX_ANSWER_LENGTH);
+      if (unsafeModelAnswer(normalizedResult.answer)) {
+        flag = "privacy";
+        sourceIds = ["contact"];
+      }
       if (normalizedResult.unknownFact) sourceIds = ["contact", ...sourceIds.filter(id => id !== "contact")].slice(0, 3);
       modelUsed = languageSafeResult.model;
     } catch (error) {
@@ -551,6 +654,10 @@ export async function onRequestPost(context) {
     answer: answer.slice(0, 4000),
     flag,
     model: modelUsed,
+    route: modelRoute,
+    historyMs: timings.historyMs,
+    retrievalMs: timings.retrievalMs,
+    modelMs: timings.modelMs,
     responseMs
   };
 
@@ -560,8 +667,16 @@ export async function onRequestPost(context) {
   return respond({
     answer,
     sources: serializeSources(sourceIds),
+    actions: controlledActions(sourceIds),
     flag,
     model: modelUsed,
+    route: modelRoute,
+    timing: {
+      historyMs: timings.historyMs,
+      retrievalMs: timings.retrievalMs,
+      modelMs: timings.modelMs,
+      totalMs: responseMs
+    },
     knowledgeVersion: KNOWLEDGE_VERSION,
     context: pageContext || null,
     mode: assistantMode
