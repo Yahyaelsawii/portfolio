@@ -79,7 +79,8 @@ const address = server.address();
 const base = `http://127.0.0.1:${address.port}`;
 const browser = await chromium.launch({ headless: true });
 const failures = [];
-const routes = ["/", "/work", "/about", "/recruiter", "/resume", "/contact", "/terminal", "/privacy", "/work/gift-it", "/work/rit-app", "/work/passwordless", "/work/vehicle-rental", "/work/mood-insights", "/work/network-automation", "/work/vr-neuroanatomy", "/admin/log/"];
+const giftitRoutes = ["/work/giftit-saudi-market-entry", "/work/giftit-one-table", "/work/giftit-email-lifecycle", "/work/giftit-saudi-arabic", "/work/giftit-app-positioning"];
+const routes = ["/", "/work", "/about", "/recruiter", "/resume", "/contact", "/terminal", "/privacy", "/work/gift-it", "/work/rit-app", "/work/passwordless", "/work/vehicle-rental", "/work/mood-insights", "/work/network-automation", "/work/vr-neuroanatomy", ...giftitRoutes, "/admin/log/"];
 const viewports = [
   { name: "desktop", width: 1440, height: 900 },
   { name: "mobile", width: 390, height: 844 }
@@ -139,9 +140,9 @@ try {
   await interactionPage.getByRole("tab", { name: /Case studies/ }).click();
   await interactionPage.getByRole("button", { name: "UX", exact: true }).click();
   const visibleProjects = await interactionPage.locator("#all-projects .project-card:visible").count();
-  if (visibleProjects !== 4) failures.push(`work filter: expected 4 UX projects, found ${visibleProjects}`);
+  if (visibleProjects !== 6) failures.push(`work filter: expected 6 UX projects, found ${visibleProjects}`);
   if (await interactionPage.locator("#all-projects .project-image-button").count()) failures.push("project cards: cover images must not be lightbox buttons");
-  if (await interactionPage.locator("#all-projects a.project-art").count() !== 7) failures.push("project cards: every cover should link to its case study");
+  if (await interactionPage.locator("#all-projects a.project-art").count() !== 12) failures.push("project cards: every cover should link to its case study");
   if (await interactionPage.locator("dialog.image-lightbox").count()) failures.push("project cards: general work imagery initialized a lightbox");
 
   await interactionPage.goto(`${base}/`, { waitUntil: "networkidle" });
@@ -167,12 +168,16 @@ try {
   await noScriptPage.goto(`${base}/`, { waitUntil:"load" });
   if (await noScriptPage.locator("#featured-projects .project-card").count() !== 3) failures.push("no-JS homepage: featured projects were not pre-rendered");
   await noScriptPage.goto(`${base}/work`, { waitUntil:"load" });
-  if (await noScriptPage.locator("#all-projects .project-card").count() !== 7) failures.push("no-JS work: project index was not pre-rendered");
+  if (await noScriptPage.locator("#all-projects .project-card").count() !== 12) failures.push("no-JS work: project index was not pre-rendered");
   for (const route of ["/work/gift-it", "/work/rit-app", "/work/passwordless", "/work/vehicle-rental", "/work/mood-insights"]) {
     await noScriptPage.goto(`${base}${route}`, { waitUntil:"load" });
     if (await noScriptPage.locator("h1").count() !== 1) failures.push(`no-JS ${route}: project title was not pre-rendered`);
     if (await noScriptPage.locator(".project-proof-card").count() !== 5) failures.push(`no-JS ${route}: proof record was not pre-rendered`);
     if (!await noScriptPage.locator(".story-block").count()) failures.push(`no-JS ${route}: case-study content was not pre-rendered`);
+  }
+  for (const route of giftitRoutes) {
+    await noScriptPage.goto(`${base}${route}`, { waitUntil:"load" });
+    if (await noScriptPage.locator("h1").count() !== 1 || await noScriptPage.locator(".project-proof-card").count() !== 5 || !await noScriptPage.locator(".story-block").count()) failures.push(`no-JS ${route}: case study was not fully pre-rendered`);
   }
   await noScriptPage.close();
   await noScriptContext.close();
@@ -182,7 +187,7 @@ try {
   await detailPage.goto(`${base}/work`, { waitUntil: "networkidle" });
   await detailPage.getByRole("tab", { name: /Case studies/ }).click();
   const projectOrder = await detailPage.locator("#all-projects .project-card").evaluateAll(cards => cards.map(card => new URL(card.dataset.projectUrl, location.origin).pathname));
-  const expectedOrder = ["/work/vr-neuroanatomy", "/work/network-automation", "/work/mood-insights", "/work/rit-app", "/work/gift-it", "/work/passwordless", "/work/vehicle-rental"];
+  const expectedOrder = ["/work/vr-neuroanatomy", "/work/giftit-app-positioning", "/work/giftit-email-lifecycle", "/work/giftit-saudi-arabic", "/work/network-automation", "/work/giftit-one-table", "/work/giftit-saudi-market-entry", "/work/mood-insights", "/work/rit-app", "/work/gift-it", "/work/passwordless", "/work/vehicle-rental"];
   if (JSON.stringify(projectOrder) !== JSON.stringify(expectedOrder)) failures.push(`work sorting: ${projectOrder.join(", ")}`);
   const figmaCardLinks = detailPage.locator("#all-projects .project-figma-link");
   if (await figmaCardLinks.count() !== 3) failures.push(`work Figma actions: expected 3 direct links, found ${await figmaCardLinks.count()}`);
@@ -212,6 +217,10 @@ try {
     await detailPage.goto(`${base}${route}`, { waitUntil: "networkidle" });
     const proofCards = await detailPage.locator(".project-proof-card").count();
     if (proofCards !== 5) failures.push(`${route}: expected 5 verified project-record cards, found ${proofCards}`);
+  }
+  for (const route of giftitRoutes) {
+    await detailPage.goto(`${base}${route}`, { waitUntil:"networkidle" });
+    if (await detailPage.locator(".project-proof-card").count() !== 5 || !await detailPage.locator(".story-block").count()) failures.push(`${route}: case study content is incomplete`);
   }
 
   await detailPage.goto(`${base}/work/vr-neuroanatomy`, { waitUntil: "networkidle" });

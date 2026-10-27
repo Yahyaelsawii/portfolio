@@ -11,7 +11,7 @@ if (!["production", "staging"].includes(environment)) throw new Error("PORTFOLIO
 const personId = `${siteUrl}/#yahya-el-sawi`;
 const buildTargets = Object.freeze({
   featuredProjects: '<div class="project-grid" id="featured-projects"></div>',
-  allProjects: '<div class="project-grid" id="all-projects"></div>',
+  allProjects: "<!-- PROJECTS_BUILD_TARGET -->",
   projectDetail: '<main id="project-detail"></main>'
 });
 
@@ -26,12 +26,13 @@ function escapeHtml(value) {
 
 function renderProjectCard(project) {
   const category = `${project.category} ${project.tags.join(" ")}`.toLowerCase();
+  const date = project.displayDate ? `<span class="project-date">${escapeHtml(project.displayDate)}</span>` : "";
   const figmaLink = project.figmaUrl
     ? `<a class="text-link project-figma-link" href="${escapeHtml(project.figmaUrl)}" target="_blank" rel="noopener noreferrer">Open Figma file</a>`
     : "";
   return `<article class="project-card" data-category="${escapeHtml(category)}" data-project-url="${escapeHtml(project.url)}">
     <a class="project-art" href="${escapeHtml(project.url)}" aria-label="Open ${escapeHtml(project.title)} case study"><span class="project-number">${escapeHtml(project.number)} / ${escapeHtml(project.category)}</span>${project.locked ? '<span class="project-state project-state-locked">Locked</span>' : project.demo ? '<span class="project-state">Interactive</span>' : ""}<picture><source type="image/avif" srcset="/covers/${escapeHtml(project.cover)}-640.avif 640w, /covers/${escapeHtml(project.cover)}-960.avif 960w, /covers/${escapeHtml(project.cover)}-1440.avif 1440w" sizes="(max-width: 820px) 100vw, 50vw"><source type="image/webp" srcset="/covers/${escapeHtml(project.cover)}-640.webp 640w, /covers/${escapeHtml(project.cover)}-960.webp 960w, /covers/${escapeHtml(project.cover)}-1440.webp 1440w" sizes="(max-width: 820px) 100vw, 50vw"><img src="/covers/${escapeHtml(project.cover)}-960.webp" alt="${escapeHtml(project.title)} project cover" width="960" height="640" loading="lazy" decoding="async"></picture></a>
-    <div class="project-body"><span class="eyebrow">${escapeHtml(project.client)}</span><h3><a href="${escapeHtml(project.url)}">${escapeHtml(project.title)}</a></h3><p>${escapeHtml(project.summary)}</p><div class="actions project-actions"><a class="text-link" data-project-link href="${escapeHtml(project.url)}">Open case study</a>${figmaLink}</div></div>
+    <div class="project-body"><span class="eyebrow">${escapeHtml(project.client)}</span><h3><a href="${escapeHtml(project.url)}">${escapeHtml(project.title)}</a></h3>${date}<p>${escapeHtml(project.summary)}</p><div class="actions project-actions"><a class="text-link" data-project-link href="${escapeHtml(project.url)}">Open case study</a>${figmaLink}</div></div>
   </article>`;
 }
 
@@ -49,7 +50,19 @@ function renderProjectSection(section, index) {
   const cards = section.cards ? `<div class="insight-grid">${section.cards.map(([title, text]) => `<div class="insight"><h3>${escapeHtml(title)}</h3><p>${escapeHtml(text)}</p></div>`).join("")}</div>` : "";
   const columns = section.columns ? `<div class="metric-grid">${section.columns.map(([title, items]) => `<div class="metric"><h3>${escapeHtml(title)}</h3><ul>${items.split("|").map(item => `<li>${escapeHtml(item)}</li>`).join("")}</ul></div>`).join("")}</div>` : "";
   const images = section.images ? `<div class="gallery${section.cropDeviceFrame ? " gallery-screen-crop" : ""}">${section.images.map(([src, alt]) => renderGalleryImage(src, alt)).join("")}</div>` : "";
-  return `<article class="story-block" id="section-${index + 1}"><span class="eyebrow">${String(index + 1).padStart(2, "0")} / Case study</span><h2>${escapeHtml(section.title)}</h2>${section.text ? `<p>${escapeHtml(section.text)}</p>` : ""}${facts}${cards}${columns}${images}</article>`;
+  const visual = renderProjectVisual(section.visual);
+  return `<article class="story-block" id="section-${index + 1}"><span class="eyebrow">${String(index + 1).padStart(2, "0")} / Case study</span><h2>${escapeHtml(section.title)}</h2>${section.text ? `<p>${escapeHtml(section.text)}</p>` : ""}${visual}${facts}${cards}${columns}${images}</article>`;
+}
+
+function renderProjectVisual(type) {
+  if (type === "four-p") return `<div class="giftit-four-p" aria-label="Four-part market-entry mix"><div><b>01 · Place</b><span>Digital + potential partners</span></div><div><b>02 · Product</b><span>Localized gifting experience</span></div><div><b>03 · Price</b><span>Offers + competitive position</span></div><div><b>04 · Promotion</b><span>Social, search + seasonal ideas</span></div></div>`;
+  if (type === "funnel") return `<ol class="giftit-funnel" aria-label="Promotional funnel"><li><span>Awareness</span></li><li><span>Interest</span></li><li><span>Desire</span></li><li><span>Action</span></li></ol>`;
+  if (type === "storyboard") return `<div class="giftit-storyboard" aria-label="Conceptual storyboard, not generated footage">${[["01 · Together", "A welcoming iftar table; establish the feeling of gathering."], ["02 · Another view", "A quieter home faces a difficult evening."], ["03 · The pause", "A moment connects the two scenes with empathy."], ["04 · Shared giving", "Friends consider a gift they can contribute to together."], ["05 · One table", "The story closes on the message: Gifting for All."], ["06 · Invitation", "A gentle call to action introduces collective gifting."]].map(([title, copy]) => `<div class="giftit-story-frame"><span class="giftit-frame-art" aria-hidden="true">◌</span><b>${title}</b><span>${copy}</span></div>`).join("")}</div><p class="scope-note">Conceptual storyboard placeholders · 9:16 short-form direction</p>`;
+  if (type === "email-journey") return `<ol class="giftit-email-journey" aria-label="Customer email journey">${[["01", "Account", "Verification"], ["02", "Order", "Confirmation"], ["03", "Gift", "Delivery + e-invite"], ["04", "Resolution", "Follow-up" ]].map(([n, title, copy]) => `<li><span>${n}</span><b>${title}</b><small>${copy}</small></li>`).join("")}</ol>`;
+  if (type === "email-preview") return `<div class="giftit-email-preview"><div class="giftit-email-chrome"><i></i><i></i><i></i><span>Giftit · Order update</span></div><div class="giftit-email-content"><span class="eyebrow">A gift is on its way</span><h3>Your gift is ready.</h3><p>Hi [Recipient name], [Sender name] has sent you a Giftit gift. Your message and next steps are below.</p><a class="btn btn-primary" href="#section-3" aria-label="Illustrative email call to action">View your gift</a><small>Illustrative template preview · dynamic fields shown as placeholders</small></div></div>`;
+  if (type === "rtl-comparison") return `<div class="giftit-locale-grid"><div><span class="eyebrow">English · LTR</span><div class="giftit-locale-card" dir="ltr"><b>Send a thoughtful gift</b><p>Choose a gift and add a personal message.</p><span class="giftit-locale-cta">Explore gifts →</span></div></div><div><span class="eyebrow">Arabic · RTL concept</span><div class="giftit-locale-card" dir="rtl" lang="ar"><b>أرسل هدية مميزة</b><p>اختر هدية وأضف رسالة شخصية.</p><span class="giftit-locale-cta">اكتشف الهدايا ←</span></div></div></div><p class="scope-note">Conceptual reconstruction for layout illustration · not a production screenshot</p>`;
+  if (type === "store-listing") return `<div class="giftit-store-concept"><div class="giftit-app-icon" aria-hidden="true">G</div><div><span class="eyebrow">Store listing concept · Giftit Cards</span><h3>Digital gifts, made personal.</h3><p>Send a gift on your own or bring people together to give as a group. Recipients choose from a broad catalog of brands.</p><div class="tags"><span class="tag">Individual gifts</span><span class="tag">Group gifting</span><span class="tag">E-invites</span><span class="tag">Flexible choice</span></div></div></div>`;
+  return "";
 }
 
 function renderProjectDetail(project) {
@@ -58,7 +71,7 @@ function renderProjectDetail(project) {
   const verification = project.verification.map(([label, value]) => `<div class="project-proof-card"><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`).join("");
   const contents = project.sections.map((section, index) => `<a href="#section-${index + 1}">${String(index + 1).padStart(2, "0")} / ${escapeHtml(section.title)}</a>`).join("");
   const figmaButton = project.figmaUrl ? `<a class="btn btn-secondary" href="${escapeHtml(project.figmaUrl)}" target="_blank" rel="noopener noreferrer">Open Figma file</a>` : "";
-  return `<section class="shell detail-hero"><div><span class="eyebrow">Case study ${escapeHtml(project.number)} / ${escapeHtml(project.client)}</span><h1>${escapeHtml(project.title)}</h1><p class="lead">${escapeHtml(project.summary)}</p>${project.note ? `<p class="scope-note">${escapeHtml(project.note)}</p>` : ""}${figmaButton ? `<div class="actions detail-actions">${figmaButton}</div>` : ""}<div class="meta-grid">${metadata}</div></div><div class="detail-visual"><picture><source type="image/avif" srcset="/covers/${escapeHtml(project.cover)}-640.avif 640w, /covers/${escapeHtml(project.cover)}-960.avif 960w, /covers/${escapeHtml(project.cover)}-1440.avif 1440w" sizes="(max-width: 820px) 100vw, 45vw"><source type="image/webp" srcset="/covers/${escapeHtml(project.cover)}-640.webp 640w, /covers/${escapeHtml(project.cover)}-960.webp 960w, /covers/${escapeHtml(project.cover)}-1440.webp 1440w" sizes="(max-width: 820px) 100vw, 45vw"><img src="${escapeHtml(project.image)}" data-full-src="/covers/${escapeHtml(project.cover)}-1440.webp" alt="${escapeHtml(project.title)} cover artwork" width="960" height="640" decoding="async"></picture></div></section>
+  return `<section class="shell detail-hero"><div><span class="eyebrow">Case study ${escapeHtml(project.number)} / ${escapeHtml(project.client)}</span><h1>${escapeHtml(project.title)}</h1><p class="lead">${escapeHtml(project.summary)}</p>${project.status ? `<p class="scope-note"><strong>Scope:</strong> ${escapeHtml(project.status)}</p>` : ""}${project.note ? `<p class="scope-note">${escapeHtml(project.note)}</p>` : ""}${figmaButton ? `<div class="actions detail-actions">${figmaButton}</div>` : ""}<div class="meta-grid">${metadata}</div></div><div class="detail-visual"><picture><source type="image/avif" srcset="/covers/${escapeHtml(project.cover)}-640.avif 640w, /covers/${escapeHtml(project.cover)}-960.avif 960w, /covers/${escapeHtml(project.cover)}-1440.avif 1440w" sizes="(max-width: 820px) 100vw, 45vw"><source type="image/webp" srcset="/covers/${escapeHtml(project.cover)}-640.webp 640w, /covers/${escapeHtml(project.cover)}-960.webp 960w, /covers/${escapeHtml(project.cover)}-1440.webp 1440w" sizes="(max-width: 820px) 100vw, 45vw"><img src="${escapeHtml(project.image)}" data-full-src="/covers/${escapeHtml(project.cover)}-1440.webp" alt="${escapeHtml(project.title)} cover artwork" width="960" height="640" decoding="async"></picture></div></section>
   <section class="section project-proof"><div class="shell"><div class="section-head"><div><span class="eyebrow">Verified project record</span><h2>Evidence, scope, and outcome.</h2></div></div><dl class="project-proof-grid">${verification}</dl></div></section>
   <section class="section-soft"><div class="shell content-grid"><aside class="content-nav"><span class="eyebrow">Contents</span>${contents}<a href="/terminal?context=${encodeURIComponent(project.id)}">Ask Yahya&#39;AI about this project</a><a href="/contact">Discuss this project</a></aside><div class="story">${project.sections.map(renderProjectSection).join("")}<article class="story-block next-project"><span class="eyebrow">More work</span><h2>Explore another project.</h2><div class="actions"><a class="btn btn-primary" href="/work?view=case-studies">All projects</a><a class="btn btn-secondary" href="/terminal?context=${encodeURIComponent(project.id)}">Ask Yahya&#39;AI</a></div></article></div></div></section>`;
 }
@@ -68,6 +81,14 @@ function replaceBuildTarget(source, target, content, sourcePath) {
   const closingTag = target.startsWith("<main") ? "</main>" : "</div>";
   const openingTag = target.slice(0, -closingTag.length);
   return source.replace(target, `${openingTag}${content}${closingTag}`);
+}
+
+function replaceBuildMarker(source, marker, content, sourcePath) {
+  const start = source.indexOf(marker);
+  const endMarker = "<!-- PROJECTS_BUILD_TARGET_END -->";
+  const end = source.indexOf(endMarker, start + marker.length);
+  if (start < 0 || end < 0) throw new Error(`Missing static-render target in ${sourcePath}`);
+  return `${source.slice(0, start)}${content}${source.slice(end + endMarker.length)}`;
 }
 
 if (output !== path.resolve(root, "dist")) throw new Error("Unexpected build output path");
@@ -173,7 +194,12 @@ const projectRoutes = {
   "vehicle-rental.html": "work/vehicle-rental/index.html",
   "mood-insights.html": "work/mood-insights/index.html",
   "vr-neuroanatomy.html": "work/vr-neuroanatomy/index.html",
-  "network-automation.html": "work/network-automation/index.html"
+  "network-automation.html": "work/network-automation/index.html",
+  "giftit-saudi-market-entry.html": "work/giftit-saudi-market-entry/index.html",
+  "giftit-one-table.html": "work/giftit-one-table/index.html",
+  "giftit-email-lifecycle.html": "work/giftit-email-lifecycle/index.html",
+  "giftit-saudi-arabic.html": "work/giftit-saudi-arabic/index.html",
+  "giftit-app-positioning.html": "work/giftit-app-positioning/index.html"
 };
 
 const cleanRoutes = {
@@ -301,7 +327,7 @@ const homepageHtml = replaceBuildTarget(
 await writeFile(path.join(output, "index.html"), homepageHtml);
 
 const workSource = await readFile(path.join(root, "work.html"), "utf8");
-const workHtml = replaceBuildTarget(
+const workHtml = replaceBuildMarker(
   workSource,
   buildTargets.allProjects,
   orderedProjects.map(renderProjectCard).join(""),
@@ -322,7 +348,18 @@ for (const [sourcePath, routePath] of Object.entries(privateCleanRoutes)) {
 for (const [sourcePath, routePath] of Object.entries(projectRoutes)) {
   const project = findProject(path.basename(sourcePath, ".html"));
   if (!project) throw new Error(`Project route has no structured data: ${sourcePath}`);
-  const source = await readFile(path.join(root, sourcePath), "utf8");
+  const templatePath = project.id.startsWith("giftit-") ? "gift-it.html" : sourcePath;
+  let source = await readFile(path.join(root, templatePath), "utf8");
+  if (project.id.startsWith("giftit-")) {
+    const description = escapeHtml(project.summary);
+    source = source.replace(/<title>.*?<\/title>/, `<title>${escapeHtml(project.title)} — Yahya El-Sawi</title>`)
+      .replace(/<meta name="description" content="[^"]*">/, `<meta name="description" content="${description}">`)
+      .replace(/<link rel="canonical" href="[^"]*">/, `<link rel="canonical" href="${siteUrl}${project.url}">`)
+      .replace(/<meta property="og:title" content="[^"]*">/, `<meta property="og:title" content="${escapeHtml(project.title)}">`)
+      .replace(/<meta property="og:description" content="[^"]*">/, `<meta property="og:description" content="${description}">`)
+      .replace(/<meta property="og:url" content="[^"]*">/, `<meta property="og:url" content="${siteUrl}${project.url}">`)
+      .replace(/<body data-project-id="[^"]*">/, `<body data-project-id="${project.id}">`);
+  }
   const html = project.sections?.length
     ? replaceBuildTarget(source, buildTargets.projectDetail, renderProjectDetail(project), sourcePath)
     : source;

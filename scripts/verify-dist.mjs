@@ -15,7 +15,8 @@ const forbiddenNames = new Set([
   "wrangler.retention.jsonc"
 ]);
 const forbiddenDirectories = new Set([".git", "functions", "scripts", "test", "workers"]);
-const requiredPaths = ["index.html", "404.html", "admin/index.html", "admin/log/index.html", "_headers", "_redirects", "_routes.json", "assets/pdfs/Yahya_ElSawi_CV.pdf", "assets/pdfs/Yahya_ElSawi_Recruiter_Pack.pdf", "output/pdf/Yahya_ElSawi_Portfolio_Roadmap_and_Sitemap.pdf", "about/index.html", "contact/index.html", "resume/index.html", "terminal/index.html", "work/index.html", "work/gift-it/index.html", "work/network-automation/index.html", "work/vr-neuroanatomy/index.html"];
+const addedGiftitProjects = ["giftit-saudi-market-entry", "giftit-one-table", "giftit-email-lifecycle", "giftit-saudi-arabic", "giftit-app-positioning"];
+const requiredPaths = ["index.html", "404.html", "admin/index.html", "admin/log/index.html", "_headers", "_redirects", "_routes.json", "assets/pdfs/Yahya_ElSawi_CV.pdf", "assets/pdfs/Yahya_ElSawi_Recruiter_Pack.pdf", "output/pdf/Yahya_ElSawi_Portfolio_Roadmap_and_Sitemap.pdf", "about/index.html", "contact/index.html", "resume/index.html", "terminal/index.html", "work/index.html", "work/gift-it/index.html", "work/network-automation/index.html", "work/vr-neuroanatomy/index.html", ...addedGiftitProjects.map(id => `work/${id}/index.html`)];
 const structuredDataPaths = [
   "index.html",
   "about/index.html",
@@ -28,7 +29,8 @@ const structuredDataPaths = [
   "work/vehicle-rental/index.html",
   "work/mood-insights/index.html",
   "work/network-automation/index.html",
-  "work/vr-neuroanatomy/index.html"
+  "work/vr-neuroanatomy/index.html",
+  ...addedGiftitProjects.map(id => `work/${id}/index.html`)
 ];
 const structuredDataTypeExpectations = new Map([
   ["index.html", ["Person", "WebSite"]],
@@ -42,11 +44,12 @@ const structuredDataTypeExpectations = new Map([
   ["work/vehicle-rental/index.html", ["Person", "CreativeWork", "BreadcrumbList"]],
   ["work/mood-insights/index.html", ["Person", "CreativeWork", "BreadcrumbList"]],
   ["work/network-automation/index.html", ["Person", "CreativeWork", "BreadcrumbList"]],
-  ["work/vr-neuroanatomy/index.html", ["WebPage", "BreadcrumbList"]]
+  ["work/vr-neuroanatomy/index.html", ["WebPage", "BreadcrumbList"]],
+  ...addedGiftitProjects.map(id => [`work/${id}/index.html`, ["Person", "CreativeWork", "BreadcrumbList"]])
 ]);
-const expectedWorkProjectUrls = ["vr-neuroanatomy", "network-automation", "mood-insights", "rit-app", "gift-it", "passwordless", "vehicle-rental"]
+const expectedWorkProjectUrls = ["vr-neuroanatomy", "giftit-app-positioning", "giftit-email-lifecycle", "giftit-saudi-arabic", "network-automation", "giftit-one-table", "giftit-saudi-market-entry", "mood-insights", "rit-app", "gift-it", "passwordless", "vehicle-rental"]
   .map(slug => `https://yahyaelsawi.website/work/${slug}`);
-const prerenderedProjectPaths = ["gift-it", "rit-app", "passwordless", "vehicle-rental", "mood-insights"]
+const prerenderedProjectPaths = ["gift-it", "rit-app", "passwordless", "vehicle-rental", "mood-insights", ...addedGiftitProjects]
   .map(slug => `work/${slug}/index.html`);
 
 function countMatches(value, pattern) {
@@ -119,8 +122,8 @@ if (homeHtml.includes("project-image-button")) {
 }
 
 const workHtml = await readFile(path.join(output, "work/index.html"), "utf8");
-if (countMatches(workHtml, /<article class="project-card"/g) !== 7) {
-  throw new Error("Work must contain exactly seven pre-rendered project cards");
+if (countMatches(workHtml, /<article class="project-card"/g) !== 12) {
+  throw new Error("Work must contain exactly twelve pre-rendered project cards");
 }
 if (workHtml.includes("project-image-button")) {
   throw new Error("Work project covers must link to their case studies instead of opening a lightbox");

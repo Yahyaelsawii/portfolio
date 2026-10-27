@@ -590,3 +590,30 @@ a.contact-item:hover{background:transparent;border-color:var(--line)}
 
 /* The badge is injected into staging builds only. */
 .staging-indicator{position:fixed;z-index:99999;right:12px;bottom:12px;padding:6px 10px;border:1px solid #0f766e;border-radius:3px;background:#0f172a;color:#fff;font:700 11px/1.2 monospace;letter-spacing:.08em;box-shadow:0 2px 12px #0003}
+
+.project-date{display:block;margin:-6px 0 12px;color:var(--muted);font-size:.8rem}
+.giftit-four-p{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;margin:24px 0;background:var(--line);border:1px solid var(--line)}
+.giftit-four-p div{display:grid;gap:8px;min-height:112px;padding:20px;background:var(--surface, #fff)}
+.giftit-four-p b,.giftit-story-frame b{font-size:.9rem}
+.giftit-four-p span,.giftit-story-frame>span:last-child{color:var(--muted);font-size:.84rem;line-height:1.55}
+.giftit-funnel{display:grid;justify-items:center;gap:7px;margin:24px 0;padding:0;list-style:none}
+.giftit-funnel li{display:grid;place-items:center;width:min(100%,calc(100% - var(--step, 0%)));min-height:48px;background:var(--surface, #fff);border:1px solid var(--line);border-radius:3px;font-size:.88rem}
+.giftit-funnel li:nth-child(1){--step:0%}.giftit-funnel li:nth-child(2){--step:16%}.giftit-funnel li:nth-child(3){--step:32%}.giftit-funnel li:nth-child(4){--step:48%;background:var(--accent);color:#fff}
+.giftit-storyboard{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:24px 0}
+.giftit-story-frame{display:grid;align-content:start;gap:8px;min-height:170px;padding:16px;border:1px solid var(--line);background:var(--surface, #fff)}
+.giftit-frame-art{display:grid;place-items:center;height:66px;margin:-4px -4px 4px;background:linear-gradient(135deg,#f3e9dc,#e4d4c1);color:#855f43;font-size:2rem}
+.giftit-email-journey{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:24px 0;padding:0;list-style:none}
+.giftit-email-journey li{display:grid;gap:8px;padding:16px;border-top:2px solid var(--accent);background:var(--surface, #fff)}
+.giftit-email-journey li>span{color:var(--muted);font-size:.75rem}.giftit-email-journey small{color:var(--muted);line-height:1.45}
+.giftit-email-preview{max-width:570px;margin:24px auto;border:1px solid var(--line);background:var(--surface, #fff);box-shadow:0 16px 44px #1621170d}
+.giftit-email-chrome{display:flex;align-items:center;gap:6px;padding:13px 16px;border-bottom:1px solid var(--line);color:var(--muted);font-size:.77rem}
+.giftit-email-chrome i{width:8px;height:8px;border-radius:50%;background:#d9d5cc}.giftit-email-chrome span{margin-left:8px}
+.giftit-email-content{display:grid;justify-items:start;gap:15px;padding:32px}.giftit-email-content h3,.giftit-store-concept h3{margin:0}.giftit-email-content p{margin:0}.giftit-email-content small{color:var(--muted);font-size:.75rem}
+.giftit-locale-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:24px 0}
+.giftit-locale-grid>div{display:grid;align-content:start;gap:10px}.giftit-locale-card{min-height:170px;padding:22px;border:1px solid var(--line);background:var(--surface, #fff)}
+.giftit-locale-card p{font-size:.88rem}.giftit-locale-cta{display:inline-block;padding:9px 12px;border:1px solid var(--line);font-size:.8rem}
+.giftit-store-concept{display:grid;grid-template-columns:72px minmax(0,1fr);gap:20px;margin:24px 0;padding:24px;border:1px solid var(--line);background:var(--surface, #fff)}
+.giftit-app-icon{display:grid;place-items:center;width:72px;height:72px;border-radius:18px;background:var(--accent);color:#fff;font-size:2rem;font-weight:700}
+.giftit-store-concept p{margin:12px 0}.giftit-store-concept .tags{margin-top:14px}
+@media(max-width:760px){.giftit-storyboard{grid-template-columns:repeat(2,minmax(0,1fr))}.giftit-email-journey{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:520px){.giftit-four-p,.giftit-locale-grid{grid-template-columns:1fr}.giftit-storyboard{grid-template-columns:1fr 1fr;gap:8px}.giftit-story-frame{min-height:158px;padding:12px}.giftit-store-concept{grid-template-columns:56px minmax(0,1fr);gap:14px;padding:18px}.giftit-app-icon{width:56px;height:56px;border-radius:14px}}
