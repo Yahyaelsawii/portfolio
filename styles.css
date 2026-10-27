@@ -443,6 +443,41 @@ picture.media-buffering::after{position:absolute;inset:0;background:linear-gradi
   html{scroll-behavior:auto}*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}.reveal{opacity:1;transform:none}
 }
 
+/* Portfolio improvements: restrained hero type and a touch-first featured rail. */
+.hero-copy h1{max-width:680px;font-size:clamp(2.35rem,4.1vw,3.65rem);line-height:1.12;text-wrap:balance}
+.featured-controls{display:flex;align-items:center;gap:22px}
+.carousel-buttons{display:flex;gap:8px}
+.carousel-buttons button{width:42px;height:42px;color:var(--ink);background:var(--surface-lowest);border:1px solid var(--outline-variant);border-radius:50%;font-size:1.15rem;cursor:pointer}
+.carousel-buttons button:hover{border-color:var(--accent);color:var(--accent-dark)}
+.carousel-buttons button:focus-visible,#featured-projects:focus-visible{outline:2px solid var(--accent-dark);outline-offset:3px}
+.home-projects-section #featured-projects{display:flex;gap:18px;overflow-x:auto;padding:2px 2px 14px;scroll-snap-type:x mandatory;scroll-padding-inline:2px;overscroll-behavior-inline:contain;scrollbar-width:thin;scrollbar-color:var(--outline-variant) transparent}
+.home-projects-section #featured-projects>.project-card{flex:0 0 67%;min-width:0;scroll-snap-align:start}
+.home-projects-section #featured-projects .project-body{min-height:208px}
+.home-projects-section #featured-projects .project-body h3{max-width:32ch}
+.experience-date .company-logo{display:block}
+.credential-group .certificate-image{height:100%;min-height:0}
+.credential-group .certificate-image picture{aspect-ratio:1.3}
+.skill-group .tags{align-items:flex-start;gap:9px}
+.skill-group .tag{max-width:100%;white-space:normal;overflow-wrap:anywhere}
+.app-store-gallery{display:grid;margin-top:20px;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px}
+.app-store-gallery figure{overflow:hidden;margin:0;background:var(--surface-lowest);border:1px solid var(--line);border-radius:var(--radius)}
+.app-store-gallery img{width:100%;height:auto;aspect-ratio:222/480;object-fit:cover}
+.app-store-gallery figcaption{padding:8px;color:var(--secondary);font-size:.63rem;line-height:1.4}
+.recruiter-next{margin-top:20px}
+@media(max-width:760px){
+  .hero-copy h1{max-width:14ch;font-size:clamp(2.35rem,8vw,3.15rem)}
+  .home-projects-section .section-head{align-items:flex-start}
+  .featured-controls{width:100%;justify-content:space-between}
+  .home-projects-section #featured-projects>.project-card{flex-basis:86%}
+  .home-projects-section #featured-projects .project-body{min-height:0}
+}
+@media(max-width:520px){
+  .hero-copy h1{font-size:clamp(2.2rem,9vw,2.75rem)}
+  .home-projects-section #featured-projects{gap:12px}
+  .home-projects-section #featured-projects>.project-card{flex-basis:86%}
+}
+@media(max-width:760px){.app-store-gallery{grid-template-columns:repeat(2,minmax(0,1fr))}.app-store-gallery figure:last-child{display:none}}
+
 /* Portfolio visual system: typography and evidence carry the hierarchy. */
 h1{font-size:clamp(2.55rem,4vw,4.2rem);line-height:1.12;letter-spacing:-.035em;text-wrap:balance}
 h2{font-size:clamp(1.8rem,2.5vw,2.7rem);line-height:1.18;letter-spacing:-.025em;text-wrap:balance}

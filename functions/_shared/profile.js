@@ -1,4 +1,4 @@
-export const KNOWLEDGE_VERSION = "2026-08-24.4";
+export const KNOWLEDGE_VERSION = "2026-10-27.1";
 
 export const SOURCES = {
   about: { label: "About Yahya", url: "/about" },
@@ -14,6 +14,12 @@ export const SOURCES = {
   moodInsights: { label: "Mood Insights & Stress Alerts", url: "/work/mood-insights" },
   vrNeuroanatomy: { label: "VR Neuroanatomy — locked", url: "/work/vr-neuroanatomy" },
   networkAutomation: { label: "SmartMall AI Network Automation", url: "/work/network-automation" },
+  giftitAppPositioning: { label: "Giftit App Positioning & Product Growth", url: "/work/giftit-app-positioning" },
+  giftitEmailLifecycle: { label: "Giftit Email & Customer Lifecycle System", url: "/work/giftit-email-lifecycle" },
+  giftitSaudiArabic: { label: "Giftit Saudi Arabic Website", url: "/work/giftit-saudi-arabic" },
+  giftitOneTable: { label: "Ramadan Campaign | One Table", url: "/work/giftit-one-table" },
+  giftitMarketEntry: { label: "Giftit Saudi Arabia Market Entry Strategy", url: "/work/giftit-saudi-market-entry" },
+  credo: { label: "Professional experience at Credo", url: "/work#professional-experience-panel" },
   cv: { label: "Yahya El-Sawi CV", url: "/assets/pdfs/Yahya_ElSawi_CV.pdf" },
   recruiterPack: { label: "Yahya El-Sawi recruiter brief", url: "/assets/pdfs/Yahya_ElSawi_Recruiter_Pack.pdf" },
   linkedin: { label: "LinkedIn", url: "https://www.linkedin.com/in/yahya-elsawi/" },
@@ -57,6 +63,14 @@ export const PROFILE = {
     awarded: "May 2026"
   },
   experience: [
+    {
+      organization: "Credo Technology Services",
+      role: "Business Development Associate Intern",
+      location: "Dubai, UAE",
+      timeline: "September 2026–Present.",
+      work: "B2B account research, prospecting, stakeholder identification, lead qualification, discovery conversations, outreach, and follow-ups, focused on Microsoft licensing and Microsoft Professional Services. Identifies relevant opportunities and introduces technical specialists; this is not a technical-consulting role and no sales results are claimed.",
+      companyContext: "Credo Technology Services is a Microsoft Solutions Partner."
+    },
     {
       organization: "Gift It",
       role: "Frontend Developer & Product Associate",
@@ -167,11 +181,47 @@ export const PROFILE = {
       limitations: "Proof of concept only: small emulated topology; IPv4-only; Cisco-focused; single-site; no production RBAC; no simultaneous onboarding; validation could be slow; AI-generated ACLs could differ from policy; reported model-call cost was significant.",
       publicApproval: "Yahya approved public use of the project report visuals and fictional scenario names and confirmed teammate agreement. Always label visuals and outcomes as team artifacts or team results.",
       evidence: "networkAutomation"
+    },
+    {
+      name: "Giftit Cards App Positioning & Product Growth",
+      status: "Published product; Yahya's contribution was positioning, content, and UX, not sole product development or launch.",
+      focus: "App Store content preparation, product messages, keyword and category considerations, and workflow testing for an app with individual and group gifting, gift cards, and e-invites.",
+      outcome: "The app is live. No downloads, rankings, or conversion results are claimed.",
+      appStore: "https://apps.apple.com/ae/app/giftit-cards/id6469349957",
+      evidence: "giftitAppPositioning"
+    },
+    {
+      name: "Giftit Email & Customer Lifecycle System",
+      status: "Implemented email templates and ongoing management.",
+      focus: "SendGrid dynamic templates, responsive HTML/CSS, branded transactional copy, template organization, and template-ID verification across account verification, orders, gifting, group gifting, e-invites, and refunds.",
+      outcome: "Implemented communications; no engagement or revenue improvements are claimed.",
+      evidence: "giftitEmailLifecycle"
+    },
+    {
+      name: "Giftit Saudi Arabic Website",
+      status: "Ongoing development; no public launch confirmed.",
+      focus: "Arabic localization, responsive frontend implementation, and right-to-left layout considerations.",
+      evidence: "giftitSaudiArabic"
+    },
+    {
+      name: "Ramadan Campaign | One Table",
+      status: "Campaign concept only; not launched.",
+      focus: "A proposed Instagram Reel concept using the message Gifting for All to connect Ramadan togetherness with collective gifting. Blaze.ai and Sora were explored during concept development.",
+      outcome: "No finished video, launch, donation, or engagement result is confirmed.",
+      evidence: "giftitOneTable"
+    },
+    {
+      name: "Giftit Saudi Arabia Market Entry Strategy",
+      status: "March–April 2025 marketing strategy proposal; not commercially implemented.",
+      focus: "Market research, competitive positioning, localization, four Ps, customer funnel, and proposed channels and seasonal opportunities.",
+      evidence: "giftitMarketEntry"
     }
   ],
-  skills: {
-    productAndDesign: ["UI/UX design", "product thinking", "accessibility", "design systems", "responsive design", "wireframing", "prototyping", "Figma", "Arabic localization"],
-    frontendAndWeb: ["HTML", "CSS", "JavaScript", "Vue.js", "React Native", "Tailwind CSS", "PHP", "Flask"],
+    skills: {
+    productAndDesign: ["UI/UX design", "product thinking", "accessibility", "design systems", "responsive design", "wireframing", "prototyping", "product prototyping", "user flow testing", "Figma", "Arabic localization", "RTL design"],
+    frontendAndWeb: ["HTML", "CSS", "JavaScript", "Vue.js", "Vue 3", "Vite", "React Native", "Tailwind CSS", "PHP", "Flask", "SendGrid"],
+    marketingAndProductStrategy: ["market research", "marketing strategy (4Ps)", "competitive analysis", "product positioning", "marketing copywriting", "campaign concept development", "creative storyboarding", "App Store listing copy", "keyword research", "transactional email communications", "brand messaging", "marketing presentation development"],
+    businessDevelopment: ["B2B prospecting", "account research", "lead qualification", "stakeholder mapping", "discovery conversations", "business development"],
     programmingAndData: ["Python", "Java", "C#", "Bash", "object-oriented programming", "MySQL", "Oracle SQL", "database design", "normalization", "data integrity"],
     immersive: ["Unity", "OpenXR", "XR Interaction Toolkit", "world-space UI", "Meta Quest", "VR accessibility"],
     networking: ["Palo Alto Networks", "PAN-OS", "Windows Server 2019", "Active Directory", "LDAP", "LDAPS", "SSL/TLS", "Certificate Authority", "GlobalProtect", "Forcepoint DLP", "VMware", "Cisco IOS", "Cisco Packet Tracer", "GNS3", "VLANs", "ACLs", "OSPF", "QoS", "NAT", "DNS", "DHCP", "Netmiko", "Docker", "Wireshark", "iperf3"],

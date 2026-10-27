@@ -10,9 +10,9 @@ Working branches may change. Use `git branch --show-current`, `git status`, and 
 
 At the environment audit, remote `main` was `3bb886ce8a2d2016613496bd8cd969525cf809a2`; remote `staging` and `codex/p0-hardening` were `e8b5c61d072b522f073cd2c7281f9fb1c669e2d7`. Verify live deployments again before release.
 
-**Deployment reconciliation:** The current Cloudflare Pages production deployment (`6ee149b9-0184-486e-9efa-eaf5be96c081`, 4 October 2026) was compared with the visual cleanup commit `a667b00` and reproduced by its public build, aside from Cloudflare email protection and analytics injection. The Pages project showed no Git connection during the audit. An active, Access-protected `staging.yahyaelsawi.website` custom domain is attached as a production alias; the requested `stg.yahyaelsawi.website` is not deployed. Recheck the deployment and branch state before release.
+**Deployment reconciliation:** At the 5 October 2026 audit, the Cloudflare Pages production deployment (`6ee149b9-0184-486e-9efa-eaf5be96c081`) was compared with the visual cleanup commit `a667b00`; its Pages project showed no Git connection. An active, Access-protected `staging.yahyaelsawi.website` custom domain was attached as a production alias. On 27 October, an unauthenticated request to `stg.yahyaelsawi.website/qwerty/` redirected to Cloudflare Access, and the signed-in browser opened the Qwerty Designs app. The root portfolio deployment, Pages project attachment, served SHA, Access login provider, allowlist, and session values remain unverified.
 
-Qwerty is a separate private repository (`Yahyaelsawii/qwerty`) and Worker, planned for the `/qwerty` route under the public domain. The public repository must contain no Qwerty application code or private data. Staging is prepared in code, but `stg.yahyaelsawi.website` and Qwerty routing still require Cloudflare setup. See `ENVIRONMENTS.md` for the branch map, staging protections, route configuration, archive method, and exact remaining actions.
+Qwerty is a separate private repository (`Yahyaelsawii/qwerty`) and Worker. The public repository must contain no Qwerty application code or private data. The Qwerty app is reachable at the staging `/qwerty` path and unauthenticated requests are redirected to Access. Its live login method, allowlist, session lengths, Worker JWT validation, and intended production route still require verification. See `ENVIRONMENTS.md` for the branch map, staging protections, route configuration, archive method, and exact remaining actions.
 
 This file is the continuation guide for Yahya El-Sawi, Codex, or any other AI/developer working on the portfolio from another computer. Read it before changing public facts, project attribution, AI behavior, analytics, Cloudflare configuration, or the locked VR page.
 
@@ -217,7 +217,7 @@ Salary policy:
 - Approved high-level skills: Palo Alto/PAN-OS, Windows Server 2019, Active Directory, LDAP/LDAPS, SSL/TLS, Certificate Authority integration, firewall zones/policies, NAT, DHCP, DNS, routing, traffic/log analysis, Wireshark, VMware, Forcepoint DLP concepts, GlobalProtect exposure, and troubleshooting.
 - Approved measurable lab validations: LDAP TCP 389, LDAPS TCP 636, client-to-internet traffic through security policy/NAT, and AD-based firewall administrator authentication.
 - Do not invent business KPIs, percentages, revenue impact, ticket counts, or customer outcomes.
-- Do not use the StarLink/Infinigate logo until explicit permission is confirmed.
+- On 27 October 2026, Yahya explicitly requested authentic official employer logos for the public portfolio. Use the supplied StarLink/Infinigate mark only for employer identification, preserve its proportions, and keep the StarLink confidentiality boundary below.
 - No StarLink work sample has been approved for public release.
 - The known supervisor’s contact details and reference status are not public and must not be published.
 

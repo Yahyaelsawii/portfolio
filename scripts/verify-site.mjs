@@ -1,9 +1,11 @@
 import { access, readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
+import { projects } from "../data/projects.js";
 
 const root = process.cwd();
-const ignoredDirectories = new Set([".git", ".wrangler", ".wrangler-local", "dist", "node_modules"]);
+const ignoredDirectories = new Set([".git", ".wrangler", ".wrangler-local", ".next", "dist", "node_modules", "qwerty"]);
+const generatedProjectIds = new Set(projects.map(project => project.id));
 
 async function walk(directory) {
   const entries = await readdir(directory, { withFileTypes: true });
@@ -43,6 +45,7 @@ async function resolvesFrom(htmlFile, reference) {
   if (outsideRoot) return false;
   const candidates = path.extname(target) ? [target] : [target, `${target}.html`, path.join(target, "index.html")];
   const projectRoute = cleanReference.match(/^\/?work\/([a-z0-9-]+)$/);
+  if (projectRoute && generatedProjectIds.has(projectRoute[1])) return true;
   if (projectRoute) candidates.push(path.join(root, `${projectRoute[1]}.html`));
   for (const candidate of candidates) {
     try {

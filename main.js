@@ -123,6 +123,12 @@ const localAssistantSources = Object.freeze({
   vehicleRental: { label:'Vehicle Rental Operations Database', url:'/work/vehicle-rental' },
   moodInsights: { label:'Mood Insights & Stress Alerts', url:'/work/mood-insights' },
   networkAutomation: { label:'SmartMall AI Network Automation', url:'/work/network-automation' },
+  giftitAppPositioning: { label:'Giftit App Positioning & Product Growth', url:'/work/giftit-app-positioning' },
+  giftitEmailLifecycle: { label:'Giftit Email & Customer Lifecycle System', url:'/work/giftit-email-lifecycle' },
+  giftitSaudiArabic: { label:'Giftit Saudi Arabic Website', url:'/work/giftit-saudi-arabic' },
+  giftitOneTable: { label:'Ramadan Campaign | One Table', url:'/work/giftit-one-table' },
+  giftitMarketEntry: { label:'Giftit Saudi Arabia Market Entry Strategy', url:'/work/giftit-saudi-market-entry' },
+  credo: { label:'Professional experience at Credo', url:'/work#professional-experience-panel' },
   vrNeuroanatomy: { label:'VR Neuroanatomy — locked', url:'/work/vr-neuroanatomy' }
 });
 
@@ -136,6 +142,28 @@ function localAssistantResponse(question, context, mode, history = []) {
 
   if (/\b(recruiter pack|recruiter brief|hiring brief)\b/.test(value)) {
     return reply('The recruiter brief is a two-page hiring overview of Yahya’s role fit, availability, professional signals, and verified project evidence. It complements the full CV instead of repeating every resume entry.', 'recruiterPack', 'recruiter', 'resume');
+  }
+
+  if (/\b(credo|business development|prospecting|microsoft licensing)\b/.test(value)) {
+    return reply('Yahya is a Business Development Associate Intern at Credo Technology Services in Dubai, a Microsoft Solutions Partner. Since September 2026, his work has focused on B2B account research, prospecting, stakeholder identification, lead qualification, discovery, outreach, and Microsoft licensing and Professional Services opportunities. He introduces technical specialists where relevant; no sales results are claimed.', 'credo', 'resume');
+  }
+  if (/\b(marketing skills|marketing experience|4ps|market research|product positioning)\b/.test(value)) {
+    return reply('Yahya’s documented marketing-related work includes market research, 4P strategy, competitive analysis, product positioning, marketing copy, campaign concepts and storyboards, App Store listing copy, keyword research, transactional email communications, brand messaging, and marketing presentations. His portfolio does not claim paid-media campaign execution.', 'resume', 'giftitMarketEntry', 'giftitOneTable', 'giftitAppPositioning');
+  }
+  if (/\b(giftit app|giftit cards|app store|published app)\b/.test(value)) {
+    return reply('Giftit Cards is a published app for individual gifting, group gifting, digital gift cards, and e-invites. Yahya’s documented contribution covers product positioning, store content, and UX considerations, not sole app development or launch. The live App Store listing is linked in the case study.', 'giftitAppPositioning');
+  }
+  if (/\b(email lifecycle|sendgrid|transactional email)\b/.test(value)) {
+    return reply('Yahya developed and managed branded SendGrid transactional templates using responsive HTML/CSS, dynamic fields, customer-focused copy, template organization, and template-ID checks for verification, orders, gifting, group gifting, e-invites, and refunds. No engagement or revenue lift is claimed.', 'giftitEmailLifecycle');
+  }
+  if (/\b(saudi arabic|arabic website|rtl|right-to-left)\b/.test(value)) {
+    return reply('The Giftit Saudi Arabic website is ongoing development. Yahya’s work covers Arabic localization, responsive frontend implementation, and RTL layout considerations. No public launch is confirmed and real screenshots are not yet available.', 'giftitSaudiArabic');
+  }
+  if (/\b(one table|ramadan campaign|gifting for all)\b/.test(value)) {
+    return reply('One Table is a February 2026 Ramadan campaign concept built around “Gifting for All.” It proposes an Instagram Reel connecting togetherness with collective gifting. The video and campaign were not confirmed as produced or launched; no donations or results are claimed.', 'giftitOneTable');
+  }
+  if (/\b(saudi market entry|four ps|market entry strategy)\b/.test(value)) {
+    return reply('The Giftit Saudi Arabia Market Entry Strategy was a March–April 2025 proposal covering research, competitive positioning, localization, product, price, place, promotion, and a customer funnel. Suggested partnerships and promotions remained proposals; commercial implementation is not claimed.', 'giftitMarketEntry');
   }
 
   if (context === 'vr-neuroanatomy' || /\b(vr neuroanatomy|neuroanatomy|immersive brain|vr research)\b/.test(value)) {
@@ -550,6 +578,25 @@ function initializeResumeTabs() {
   }));
 }
 
+function initializeFeaturedCarousel() {
+  const track = document.querySelector('#featured-projects');
+  if (!track) return;
+  const move = direction => {
+    const card = track.querySelector('.project-card');
+    if (!card) return;
+    const gap = Number.parseFloat(getComputedStyle(track).columnGap) || 0;
+    track.scrollBy({ left: direction * (card.getBoundingClientRect().width + gap), behavior: 'smooth' });
+  };
+  document.querySelectorAll('[data-carousel-step]').forEach(button => {
+    button.addEventListener('click', () => move(Number(button.dataset.carouselStep)));
+  });
+  track.addEventListener('keydown', event => {
+    if (event.key !== 'ArrowLeft' && event.key !== 'ArrowRight') return;
+    event.preventDefault();
+    move(event.key === 'ArrowRight' ? 1 : -1);
+  });
+}
+
 function initializeRecruiterRoles() {
   const controls = [...document.querySelectorAll('[data-recruiter-role]')];
   if (!controls.length) return;
@@ -783,6 +830,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initializeImageLightbox();
   initializeScrollToTop();
   initializeWorkViews();
+  initializeFeaturedCarousel();
   initializeResumeTabs();
   initializeRecruiterRoles();
 

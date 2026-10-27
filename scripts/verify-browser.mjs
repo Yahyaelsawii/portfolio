@@ -83,7 +83,9 @@ const giftitRoutes = ["/work/giftit-saudi-market-entry", "/work/giftit-one-table
 const routes = ["/", "/work", "/about", "/recruiter", "/resume", "/contact", "/terminal", "/privacy", "/work/gift-it", "/work/rit-app", "/work/passwordless", "/work/vehicle-rental", "/work/mood-insights", "/work/network-automation", "/work/vr-neuroanatomy", ...giftitRoutes, "/admin/log/"];
 const viewports = [
   { name: "desktop", width: 1440, height: 900 },
-  { name: "mobile", width: 390, height: 844 }
+  { name: "tablet", width: 820, height: 1024 },
+  { name: "large mobile", width: 430, height: 932 },
+  { name: "small mobile", width: 320, height: 700 }
 ];
 
 try {
@@ -187,12 +189,14 @@ try {
   await detailPage.goto(`${base}/work`, { waitUntil: "networkidle" });
   await detailPage.getByRole("tab", { name: /Case studies/ }).click();
   const projectOrder = await detailPage.locator("#all-projects .project-card").evaluateAll(cards => cards.map(card => new URL(card.dataset.projectUrl, location.origin).pathname));
-  const expectedOrder = ["/work/vr-neuroanatomy", "/work/giftit-app-positioning", "/work/giftit-email-lifecycle", "/work/giftit-saudi-arabic", "/work/network-automation", "/work/giftit-one-table", "/work/giftit-saudi-market-entry", "/work/mood-insights", "/work/rit-app", "/work/gift-it", "/work/passwordless", "/work/vehicle-rental"];
+  const expectedOrder = ["/work/gift-it", "/work/network-automation", "/work/rit-app", "/work/giftit-app-positioning", "/work/vr-neuroanatomy", "/work/giftit-email-lifecycle", "/work/giftit-saudi-arabic", "/work/giftit-one-table", "/work/giftit-saudi-market-entry", "/work/mood-insights", "/work/passwordless", "/work/vehicle-rental"];
   if (JSON.stringify(projectOrder) !== JSON.stringify(expectedOrder)) failures.push(`work sorting: ${projectOrder.join(", ")}`);
   const figmaCardLinks = detailPage.locator("#all-projects .project-figma-link");
   if (await figmaCardLinks.count() !== 3) failures.push(`work Figma actions: expected 3 direct links, found ${await figmaCardLinks.count()}`);
   const giftItExperience = detailPage.locator(".experience-card", { hasText:"Gift It · Dubai" });
-  if (await giftItExperience.locator(".fact-list li").count() !== 3) failures.push("Gift It experience: expected three responsibility bullets");
+  if (await giftItExperience.locator(".fact-list li").count() !== 4) failures.push("Gift It experience: expected four cross-functional responsibility bullets");
+  const credoExperience = detailPage.locator(".experience-card", { hasText:"Credo Technology Services" });
+  if (!await credoExperience.count() || !await credoExperience.locator(".company-logo").count()) failures.push("Credo experience: missing role card or official logo");
 
   for (const route of ["/work/mood-insights", "/work/passwordless", "/work/rit-app"]) {
     await detailPage.goto(`${base}${route}`, { waitUntil: "networkidle" });
@@ -379,6 +383,11 @@ try {
     const projectLink = detailPage.locator(`#featured-projects a[href="${projectPath}"]`).first();
     if (!await projectLink.count()) failures.push(`home projects: missing link to ${projectPath}`);
   }
+  const featuredTrack = detailPage.locator("#featured-projects");
+  const featuredScrollWidth = await featuredTrack.evaluate(node => node.scrollWidth - node.clientWidth);
+  if (featuredScrollWidth <= 0) failures.push("home projects: featured rail does not overflow for the next-card peek");
+  await detailPage.getByRole("button", { name:"Next featured projects" }).click();
+  await detailPage.waitForFunction(() => document.querySelector("#featured-projects")?.scrollLeft > 0);
   const featuredTops = await featuredCards.evaluateAll(cards => cards.map(card => Math.round(card.getBoundingClientRect().top)));
   if (Math.max(...featuredTops) - Math.min(...featuredTops) > 2) failures.push(`home projects: cards are not on one desktop row (${featuredTops.join(", ")})`);
   const primaryButton = detailPage.locator(".btn-primary").first();
@@ -417,5 +426,5 @@ if (failures.length) {
   console.error(failures.join("\n"));
   process.exit(1);
 } else {
-  console.log(`Verified ${routes.length} routes at desktop and mobile sizes with WCAG checks and key interaction smoke tests.`);
+  console.log(`Verified ${routes.length} routes at ${viewports.map(viewport => `${viewport.name} (${viewport.width}px)`).join(", ")} with WCAG checks and key interaction smoke tests.`);
 }
