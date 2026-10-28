@@ -197,7 +197,7 @@ try {
   await detailPage.goto(`${base}/work`, { waitUntil: "networkidle" });
   await detailPage.getByRole("tab", { name: /Case studies/ }).click();
   const projectOrder = await detailPage.locator("#all-projects .project-card").evaluateAll(cards => cards.map(card => new URL(card.dataset.projectUrl, location.origin).pathname));
-  const expectedOrder = ["/work/gift-it", "/work/network-automation", "/work/rit-app", "/work/giftit-app-positioning", "/work/vr-neuroanatomy", "/work/giftit-email-lifecycle", "/work/giftit-saudi-arabic", "/work/giftit-one-table", "/work/giftit-saudi-market-entry", "/work/mood-insights", "/work/passwordless", "/work/vehicle-rental"];
+  const expectedOrder = ["/work/gift-it", "/work/network-automation", "/work/rit-app", "/work/giftit-app-positioning", "/work/vr-neuroanatomy", "/work/giftit-email-lifecycle", "/work/giftit-saudi-arabic", "/work/giftit-one-table", "/work/giftit-saudi-market-entry", "/work/passwordless", "/work/mood-insights", "/work/vehicle-rental"];
   if (JSON.stringify(projectOrder) !== JSON.stringify(expectedOrder)) failures.push(`work sorting: ${projectOrder.join(", ")}`);
   const figmaCardLinks = detailPage.locator("#all-projects .project-figma-link");
   if (await figmaCardLinks.count() !== 3) failures.push(`work Figma actions: expected 3 direct links, found ${await figmaCardLinks.count()}`);

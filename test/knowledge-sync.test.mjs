@@ -33,3 +33,12 @@ test("public AI project knowledge is generated from all twelve public project re
   assert.match(KNOWLEDGE_VERSION, /^profile-[a-f0-9]{8}$/);
   assert.notEqual(KNOWLEDGE_VERSION, buildKnowledgeVersion({ careerProfile:{ ...career, summary:`${career.summary} Updated.` }, projectRecords:projects }));
 });
+
+test("Gift It Checkout and Passwordless project dates are sourced consistently", () => {
+  for (const id of ["gift-it", "passwordless"]) {
+    const project = projects.find(item => item.id === id);
+    assert.equal(project.date, "2025-01");
+    assert.equal(project.displayDate, "January 2025");
+    assert.ok(project.meta.some(([label, value]) => label === "Date" && value === "January 2025"));
+  }
+});
