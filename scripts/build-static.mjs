@@ -308,7 +308,7 @@ async function injectStructuredData(routePath, data) {
 }
 
 async function unifyPublicFooters() {
-  const footer = '<footer class="footer"><div class="shell footer-row"><span>© 2026 Yahya El-Sawi · Dubai, UAE</span><nav class="footer-links" aria-label="Footer"><a class="text-link" href="/">Home</a><a class="text-link" href="/work">Work</a><a class="text-link" href="/about">About</a><a class="text-link" href="/contact">Contact</a><a class="text-link" href="/privacy">Privacy Policy</a><a class="text-link" href="/terms">Terms and Conditions</a><button type="button" class="text-link privacy-choice-link" data-open-personalization>Privacy choices</button></nav></div></footer>';
+  const footer = '<footer class="footer"><div class="shell footer-row"><span>© 2026 Yahya El-Sawi · Dubai, UAE</span><nav class="footer-links" aria-label="Footer"><a class="text-link" href="/">Home</a><a class="text-link" href="/work">Work</a><a class="text-link" href="/about">About</a><a class="text-link" href="/contact">Contact</a><a class="text-link" href="/privacy">Privacy Policy</a><a class="text-link" href="/terms">Terms and Conditions</a><button type="button" class="text-link privacy-choice-link" data-open-personalization>Cookie settings</button></nav></div></footer>';
   const walk = async directory => (await Promise.all((await readdir(directory, { withFileTypes:true })).map(async entry => {
     if (entry.name === "admin") return [];
     const full = path.join(directory, entry.name);

@@ -6,7 +6,8 @@ const apiEndpoint = path => `${isGitHubPages ? CLOUDFLARE_SERVICE_ORIGIN : ''}${
 function initializePersonalization() {
   const manageButton = document.querySelector('[data-open-personalization]');
   if (!manageButton) return;
-  import('./personalization.js').then(({ INTEREST_COOKIE, INTEREST_CATEGORIES, createInterestRecord, recordProjectInterest, recordCategoryInterest }) => {
+  import('./personalization.js').then(({ INTEREST_COOKIE, createInterestRecord, recordProjectInterest, recordCategoryInterest }) => {
+    const choiceKey = 'portfolio-cookie-choice-v1';
     const read = () => {
       const value = document.cookie.split('; ').find(item => item.startsWith(`${INTEREST_COOKIE}=`))?.split('=').slice(1).join('=');
       try {
@@ -20,34 +21,49 @@ function initializePersonalization() {
       if (payload.length <= 3500) document.cookie = `${INTEREST_COOKIE}=${payload}; Path=/; Max-Age=15552000; SameSite=Lax; Secure`;
     };
     const remove = () => { document.cookie = `${INTEREST_COOKIE}=; Path=/; Max-Age=0; SameSite=Lax; Secure`; };
-    const dismissed = () => { try { return sessionStorage.getItem('portfolio-personalization-choice') === 'declined'; } catch { return false; } };
+    const readChoice = () => { try { return localStorage.getItem(choiceKey); } catch { return null; } };
+    const saveChoice = choice => { try { localStorage.setItem(choiceKey, choice); } catch {} };
+    try {
+      if (!readChoice() && sessionStorage.getItem('portfolio-personalization-choice') === 'declined') {
+        saveChoice('no');
+        sessionStorage.removeItem('portfolio-personalization-choice');
+      }
+    } catch {}
     const banner = document.createElement('section');
     banner.className = 'personalization-panel';
-    banner.setAttribute('aria-label', 'Optional project personalization');
+    banner.setAttribute('aria-label', 'Cookie choices');
+    banner.setAttribute('role', 'region');
+    banner.setAttribute('popover', 'manual');
     banner.hidden = true;
-    banner.innerHTML = `<div class="personalization-copy"><strong>Optional project personalization</strong><p>With your permission, this device can remember project categories you open or filter for up to six months. This does not leave your browser or change the curated homepage order. No names, contact details, or AI conversations are collected.</p><fieldset><legend>Choose interests (optional)</legend>${INTEREST_CATEGORIES.map(category => `<label><input type="checkbox" value="${category}"> ${category.replaceAll('-', ' ')}</label>`).join('')}</fieldset></div><div class="personalization-actions"><button type="button" class="btn btn-secondary" data-personalization-accept>Allow personalization</button><button type="button" class="btn btn-secondary" data-personalization-reject>Reject optional</button><button type="button" class="text-link" data-personalization-clear>Turn off and clear data</button></div></section>`;
+    banner.innerHTML = `<div class="personalization-copy"><strong>Allow optional cookies?</strong><p>A first-party cookie can remember the project pages and categories you explore on this device. You can change your choice anytime.</p></div><div class="personalization-actions"><button type="button" class="btn btn-primary" data-personalization-accept>Yes</button><button type="button" class="btn btn-secondary" data-personalization-reject>No</button></div>`;
     document.querySelector('main')?.before(banner);
-    const show = () => { banner.hidden = false; banner.querySelector('[data-personalization-accept]')?.focus(); };
-    const hide = () => { banner.hidden = true; manageButton.focus(); };
+    const show = (moveFocus = true) => {
+      banner.hidden = false;
+      if (typeof banner.showPopover === 'function' && !banner.matches(':popover-open')) banner.showPopover();
+      if (moveFocus) banner.querySelector('[data-personalization-accept]')?.focus();
+    };
+    const hide = () => {
+      const returnFocus = banner.contains(document.activeElement);
+      if (typeof banner.hidePopover === 'function' && banner.matches(':popover-open')) banner.hidePopover();
+      banner.hidden = true;
+      if (returnFocus) manageButton.focus();
+    };
     manageButton.addEventListener('click', show);
     banner.querySelector('[data-personalization-accept]').addEventListener('click', () => {
-      const explicit = [...banner.querySelectorAll('input:checked')].map(input => input.value);
-      write({ v: 1, consented: true, updatedAt: Date.now(), explicit, visits: [], filters: [] });
-      try { sessionStorage.removeItem('portfolio-personalization-choice'); } catch {}
+      saveChoice('yes');
+      write({ v: 1, consented: true, updatedAt: Date.now(), explicit: [], visits: [], filters: [] });
       hide();
     });
     banner.querySelector('[data-personalization-reject]').addEventListener('click', () => {
       remove();
-      try { sessionStorage.setItem('portfolio-personalization-choice', 'declined'); } catch {}
-      hide();
-    });
-    banner.querySelector('[data-personalization-clear]').addEventListener('click', () => {
-      remove();
-      try { sessionStorage.setItem('portfolio-personalization-choice', 'declined'); } catch {}
+      saveChoice('no');
       hide();
     });
     const getRecord = () => read();
-    if (!getRecord() && !dismissed()) banner.hidden = false;
+    if (readChoice() === 'yes' && !getRecord()) {
+      write({ v: 1, consented: true, updatedAt: Date.now(), explicit: [], visits: [], filters: [] });
+    }
+    if (readChoice() !== 'yes' && readChoice() !== 'no' && !getRecord()) show(false);
     const activeRecord = getRecord();
     if (activeRecord) {
       const project = document.body.dataset.projectId;
