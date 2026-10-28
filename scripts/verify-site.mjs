@@ -1,9 +1,11 @@
 import { access, readFile, readdir } from "node:fs/promises";
 import path from "node:path";
 import process from "node:process";
+import { projects } from "../data/projects.js";
 
 const root = process.cwd();
-const ignoredDirectories = new Set([".git", ".wrangler", ".wrangler-local", "dist", "node_modules"]);
+const ignoredDirectories = new Set([".git", ".wrangler", ".wrangler-local", ".next", "dist", "node_modules", "qwerty"]);
+const generatedProjectIds = new Set(projects.map(project => project.id));
 
 async function walk(directory) {
   const entries = await readdir(directory, { withFileTypes: true });
@@ -43,6 +45,7 @@ async function resolvesFrom(htmlFile, reference) {
   if (outsideRoot) return false;
   const candidates = path.extname(target) ? [target] : [target, `${target}.html`, path.join(target, "index.html")];
   const projectRoute = cleanReference.match(/^\/?work\/([a-z0-9-]+)$/);
+  if (projectRoute && generatedProjectIds.has(projectRoute[1])) return true;
   if (projectRoute) candidates.push(path.join(root, `${projectRoute[1]}.html`));
   for (const candidate of candidates) {
     try {
@@ -58,6 +61,20 @@ async function resolvesFrom(htmlFile, reference) {
 const files = await walk(root);
 const htmlFiles = files.filter(file => file.endsWith(".html"));
 const failures = [];
+const career = JSON.parse(await readFile(path.join(root, "data/career.json"), "utf8"));
+const careerSource = await readFile(path.join(root, "functions/_shared/profile.js"), "utf8");
+const workSource = await readFile(path.join(root, "work.html"), "utf8");
+for (const item of career.experience) {
+  const companyText = item.company.replaceAll("&", "&amp;");
+  if (!workSource.includes(companyText) || !workSource.includes(item.date) || !careerSource.includes(item.company)) {
+    failures.push(`Career source of truth is out of sync for ${item.company}`);
+  }
+}
+for (const required of ["product and UX designer", "Primary: Product Design and UI/UX roles", "Secondary: Frontend and web development roles"]) {
+  if (!careerSource.includes(required) && !workSource.includes(required)) {
+    failures.push(`Published career positioning is missing: ${required}`);
+  }
+}
 
 for (const htmlFile of htmlFiles) {
   const html = await readFile(htmlFile, "utf8");

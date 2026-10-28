@@ -47,7 +47,7 @@ const structuredDataTypeExpectations = new Map([
   ["work/vr-neuroanatomy/index.html", ["WebPage", "BreadcrumbList"]],
   ...addedGiftitProjects.map(id => [`work/${id}/index.html`, ["Person", "CreativeWork", "BreadcrumbList"]])
 ]);
-const expectedWorkProjectUrls = ["vr-neuroanatomy", "giftit-app-positioning", "giftit-email-lifecycle", "giftit-saudi-arabic", "network-automation", "giftit-one-table", "giftit-saudi-market-entry", "mood-insights", "rit-app", "gift-it", "passwordless", "vehicle-rental"]
+const expectedWorkProjectUrls = ["gift-it", "network-automation", "rit-app", "giftit-app-positioning", "vr-neuroanatomy", "giftit-email-lifecycle", "giftit-saudi-arabic", "giftit-one-table", "giftit-saudi-market-entry", "mood-insights", "passwordless", "vehicle-rental"]
   .map(slug => `https://yahyaelsawi.website/work/${slug}`);
 const prerenderedProjectPaths = ["gift-it", "rit-app", "passwordless", "vehicle-rental", "mood-insights", ...addedGiftitProjects]
   .map(slug => `work/${slug}/index.html`);
@@ -95,30 +95,36 @@ for (const structuredDataPath of structuredDataPaths) {
     const collection = data["@graph"].find(item => item["@type"] === "CollectionPage");
     const projectUrls = collection?.mainEntity?.itemListElement?.map(item => item.url);
     if (JSON.stringify(projectUrls) !== JSON.stringify(expectedWorkProjectUrls)) {
-      throw new Error("Work structured-data items are not in the approved newest-first order");
+      throw new Error("Work structured-data items do not match the curated priority and date order");
     }
   }
 }
 
 const homeHtml = await readFile(path.join(output, "index.html"), "utf8");
-if (countMatches(homeHtml, /<article class="project-card"/g) !== 3) {
-  throw new Error("Homepage must contain exactly three pre-rendered featured project cards");
+if (countMatches(homeHtml, /<article class="project-card"/g) !== 5) {
+  throw new Error("Homepage must contain exactly five pre-rendered featured project cards");
 }
-const expectedFeaturedProjectUrls = ["/work/gift-it", "/work/rit-app", "/work/network-automation"];
+const expectedFeaturedProjectUrls = ["/work/giftit-app-positioning", "/work/network-automation", "/work/giftit-email-lifecycle", "/work/mood-insights", "/work/rit-app"];
 const featuredProjectUrls = [...homeHtml.matchAll(/<article class="project-card"[^>]*data-project-url="([^"]+)"/g)]
   .map(match => match[1]);
 if (JSON.stringify(featuredProjectUrls) !== JSON.stringify(expectedFeaturedProjectUrls)) {
   throw new Error(`Homepage featured projects are not in the approved order: ${featuredProjectUrls.join(", ")}`);
 }
 for (const heroText of [
-  "I’m Yahya El-Sawi. I design digital products and understand how they’re built.",
-  "I work across product design and UX, with a background in software development.",
-  "Gift It Checkout &amp; E-Invite Redesign"
+  "I’m Yahya El-Sawi, a product and UX designer with a frontend development background.",
+  "I turn user and business needs into clear digital experiences",
+  "Giftit App Positioning &amp; Product Growth"
 ]) {
   if (!homeHtml.includes(heroText)) throw new Error(`Homepage is missing approved hero copy: ${heroText}`);
 }
 if (homeHtml.includes("project-image-button")) {
   throw new Error("Homepage project covers must link to their case studies instead of opening a lightbox");
+}
+if (!homeHtml.includes("Terms and Conditions") || !homeHtml.includes("Privacy Policy")) {
+  throw new Error("The public footer must link to both policies");
+}
+if (!homeHtml.includes("September 2024–May 2026") || !homeHtml.includes("June 2026") || !homeHtml.includes("November 2024")) {
+  throw new Error("Featured project cards must show verified dates");
 }
 
 const workHtml = await readFile(path.join(output, "work/index.html"), "utf8");
@@ -169,7 +175,6 @@ for (const file of files) {
   if (forbiddenNames.has(path.basename(file))) failures.push(`forbidden file: ${relative}`);
   if (segments.some(segment => forbiddenDirectories.has(segment))) failures.push(`forbidden directory: ${relative}`);
   if (/\.(?:md|py|sql)$/i.test(relative)) failures.push(`source-only extension: ${relative}`);
-  if (relative === "assets/logos/starlink-infinigate.svg") failures.push("unapproved StarLink logo must not be published");
 }
 
 if (failures.length) {

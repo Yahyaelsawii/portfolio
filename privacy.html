@@ -7,8 +7,8 @@
   <meta name="description" content="How Yahya El-Sawi's portfolio handles contact information, AI conversations, privacy-safe analytics, and data retention.">
   <link rel="canonical" href="https://yahyaelsawi.website/privacy">
   <meta name="robots" content="index,follow">
-  <link rel="stylesheet" href="styles.css?v=20260824.6">
-  <script defer src="main.js?v=20260824.6"></script>
+  <link rel="stylesheet" href="styles.css?v=20261028.2">
+  <script defer src="main.js?v=20261028.2"></script>
   <link rel="icon" href="assets/favicon/logo.svg" type="image/svg+xml">
 </head>
 <body>
@@ -32,7 +32,7 @@
       <span class="eyebrow">Privacy / Data handling</span>
       <h1>Useful data, <span class="accent">kept minimal.</span></h1>
       <p class="lead">This portfolio collects only what is needed to operate the public assistant, prevent abuse, and respond when you choose to make contact.</p>
-      <p class="scope-note">Last updated: 24 August 2026</p>
+      <p class="scope-note">Updated: 28 October 2026 · The implementation is described here; this notice is informational and may need owner or legal review.</p>
     </section>
 
     <section class="section section-soft">
@@ -51,20 +51,20 @@
             <span class="eyebrow">01 / Portfolio assistant</span>
             <h2>What the assistant records</h2>
             <p>When you use Yahya'AI, the service may store your question, its answer, response time, model, review flag, and approximate country, region, and city supplied by Cloudflare. These records help monitor reliability, identify abuse, and improve approved answers.</p>
-            <p>Raw IP addresses, device hostnames, exact GPS locations, raw user-agent strings, credentials, and unhashed network identifiers are not stored. IP addresses are transformed into one-way, daily rotating hashes before storage. Email addresses and phone-like values are removed from logged questions where detected.</p>
+            <p>Raw IP addresses, device hostnames, exact GPS locations, raw user-agent strings, credentials, and unhashed network identifiers are not stored. IP addresses are transformed into one-way, daily rotating hashes before storage. These hashes and session identifiers can link records within their applicable time window; they are pseudonymous, not completely anonymous. Email addresses and phone-like values are removed from logged questions where detected.</p>
             <p>Please do not submit confidential, sensitive, or unnecessary personal information to the assistant.</p>
           </article>
 
           <article class="story-block" id="retention">
             <span class="eyebrow">02 / Retention</span>
             <h2>Conversation records expire after 90 days</h2>
-            <p>Individual AI questions, answers, and website visit events are retained for no longer than 90 days. A daily scheduled cleanup removes expired records, and assistant or dashboard activity applies the same cleanup policy. Short-lived rate-limit counters are removed after one day. Anonymous aggregate totals may be kept longer because they cannot be used to reconstruct a conversation.</p>
+            <p>Individual AI questions, answers, and website visit events are retained for no longer than 90 days. A daily scheduled cleanup removes expired records, and assistant or dashboard activity applies the same cleanup policy. Short-lived rate-limit counters are removed after one day. Aggregated totals may be kept longer; aggregation is intended to remove conversation-level detail.</p>
           </article>
 
           <article class="story-block" id="contact">
             <span class="eyebrow">03 / Contact</span>
             <h2>The site sends your message directly</h2>
-            <p>When you submit the contact form, the name, email address, subject, and message you provide are sent to Yahya through the configured delivery provider. The first-party server validates and rate-limits the request first; FormSubmit may receive a browser-side retry only when its server-to-server delivery path is unavailable. The message content is not stored in the portfolio database. Short-lived rate-limit records contain only a one-way identity hash, time window, and request count.</p>
+            <p>When you submit the contact form, your name, email address, subject, and message are sent through a first-party server route. The server validates the request, checks its origin, applies a honeypot and rate limit, and then passes a valid message to the configured delivery provider. A failed server request is not retried by the browser through another provider. Message content is not stored in the portfolio database. Short-lived rate-limit records contain a one-way identity hash, time window, and request count.</p>
             <p>FormSubmit, any configured email-delivery provider, and Yahya's email provider process the delivered message under their own privacy terms. Please do not submit confidential or unnecessary personal information.</p>
           </article>
 
@@ -77,8 +77,8 @@
 
           <article class="story-block" id="services">
             <span class="eyebrow">05 / Service providers</span>
-            <h2>Cloudflare and FormSubmit operate essential services</h2>
-            <p>Cloudflare Pages, Pages Functions, Workers AI, D1, and Web Analytics provide hosting, assistant responses, abuse protection, conversation storage, and site-performance measurement. Cloudflare may process standard network information needed to deliver and secure the site. FormSubmit, or a configured replacement delivery provider, delivers contact-form messages.</p>
+            <h2>Cloudflare and the configured mail provider operate essential services</h2>
+            <p>Cloudflare Pages, Pages Functions, Workers AI, D1, and Web Analytics provide hosting, assistant responses, abuse protection, conversation storage, and site-performance measurement. Cloudflare may process standard network information needed to deliver and secure the site. The configured contact-delivery provider processes messages after server-side validation.</p>
             <p>The site does not sell personal information and does not use third-party advertising trackers.</p>
           </article>
 
@@ -95,7 +95,7 @@
 
   <footer class="footer">
     <div class="shell footer-row">
-      <span>Privacy / 90-day AI conversation retention</span>
+      <span>Privacy / Data handling</span>
       <div class="actions"><a class="text-link" href="terminal.html">Yahya'AI</a><a class="text-link" href="contact.html">Contact →</a></div>
     </div>
   </footer>

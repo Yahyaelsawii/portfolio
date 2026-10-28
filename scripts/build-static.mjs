@@ -10,7 +10,7 @@ const environment = process.env.PORTFOLIO_ENV || (process.env.CF_PAGES_BRANCH &&
 if (!["production", "staging"].includes(environment)) throw new Error("PORTFOLIO_ENV must be production or staging");
 const personId = `${siteUrl}/#yahya-el-sawi`;
 const buildTargets = Object.freeze({
-  featuredProjects: '<div class="project-grid" id="featured-projects"></div>',
+  featuredProjects: '<section class="project-grid" id="featured-projects" aria-labelledby="featured-projects-heading" tabindex="0"></section>',
   allProjects: "<!-- PROJECTS_BUILD_TARGET -->",
   projectDetail: '<main id="project-detail"></main>'
 });
@@ -27,12 +27,19 @@ function escapeHtml(value) {
 function renderProjectCard(project) {
   const category = `${project.category} ${project.tags.join(" ")}`.toLowerCase();
   const date = project.displayDate ? `<span class="project-date">${escapeHtml(project.displayDate)}</span>` : "";
+  const contribution = project.role ? `<span class="project-contribution">${escapeHtml(project.role)}</span>` : "";
+  const status = project.featuredStatus ? `<span class="project-status">${escapeHtml(project.featuredStatus)}</span>` : "";
   const figmaLink = project.figmaUrl
     ? `<a class="text-link project-figma-link" href="${escapeHtml(project.figmaUrl)}" target="_blank" rel="noopener noreferrer">Open Figma file</a>`
     : "";
+  const art = project.artworkRepresentation
+    ? `<div class="project-art-representation" role="img" aria-label="Text representation: ${escapeHtml(project.artworkRepresentation.join(" · "))}"><span class="eyebrow">${escapeHtml(project.artworkRepresentation[0])}</span><strong>${escapeHtml(project.artworkRepresentation[1])}</strong><small>${escapeHtml(project.artworkRepresentation[2])}</small></div>`
+    : project.featureImage
+    ? `<picture>${project.featureImageAvif ? `<source type="image/avif" srcset="${escapeHtml(project.featureImageAvif)}" sizes="(max-width: 760px) 82vw, 31vw">` : ""}<source type="image/webp" srcset="${escapeHtml(project.featureImage)}" sizes="(max-width: 760px) 82vw, 31vw"><img src="${escapeHtml(project.featureImage)}" alt="${escapeHtml(project.featureAlt || project.title)}" width="${Number(project.featureImageWidth) || 960}" height="${Number(project.featureImageHeight) || 640}" loading="lazy" decoding="async"></picture>`
+    : `<picture><source type="image/avif" srcset="/covers/${escapeHtml(project.cover)}-640.avif 640w, /covers/${escapeHtml(project.cover)}-960.avif 960w, /covers/${escapeHtml(project.cover)}-1440.avif 1440w" sizes="(max-width: 820px) 80vw, 30vw"><source type="image/webp" srcset="/covers/${escapeHtml(project.cover)}-640.webp 640w, /covers/${escapeHtml(project.cover)}-960.webp 960w, /covers/${escapeHtml(project.cover)}-1440.webp 1440w" sizes="(max-width: 820px) 80vw, 30vw"><img src="/covers/${escapeHtml(project.cover)}-960.webp" alt="${escapeHtml(project.title)} project cover" width="960" height="640" loading="lazy" decoding="async"></picture>`;
   return `<article class="project-card" data-category="${escapeHtml(category)}" data-project-url="${escapeHtml(project.url)}">
-    <a class="project-art" href="${escapeHtml(project.url)}" aria-label="Open ${escapeHtml(project.title)} case study"><span class="project-number">${escapeHtml(project.number)} / ${escapeHtml(project.category)}</span>${project.locked ? '<span class="project-state project-state-locked">Locked</span>' : project.demo ? '<span class="project-state">Interactive</span>' : ""}<picture><source type="image/avif" srcset="/covers/${escapeHtml(project.cover)}-640.avif 640w, /covers/${escapeHtml(project.cover)}-960.avif 960w, /covers/${escapeHtml(project.cover)}-1440.avif 1440w" sizes="(max-width: 820px) 100vw, 50vw"><source type="image/webp" srcset="/covers/${escapeHtml(project.cover)}-640.webp 640w, /covers/${escapeHtml(project.cover)}-960.webp 960w, /covers/${escapeHtml(project.cover)}-1440.webp 1440w" sizes="(max-width: 820px) 100vw, 50vw"><img src="/covers/${escapeHtml(project.cover)}-960.webp" alt="${escapeHtml(project.title)} project cover" width="960" height="640" loading="lazy" decoding="async"></picture></a>
-    <div class="project-body"><span class="eyebrow">${escapeHtml(project.client)}</span><h3><a href="${escapeHtml(project.url)}">${escapeHtml(project.title)}</a></h3>${date}<p>${escapeHtml(project.summary)}</p><div class="actions project-actions"><a class="text-link" data-project-link href="${escapeHtml(project.url)}">Open case study</a>${figmaLink}</div></div>
+    <a class="project-art" href="${escapeHtml(project.url)}" aria-label="Open ${escapeHtml(project.title)} case study"><span class="project-number">${escapeHtml(project.number)} / ${escapeHtml(project.category)}</span>${project.locked ? '<span class="project-state project-state-locked">Locked</span>' : project.demo ? '<span class="project-state">Interactive</span>' : ""}${art}</a>
+    <div class="project-body"><span class="eyebrow">${escapeHtml(project.client)} · ${escapeHtml(project.category)}</span><h3><a href="${escapeHtml(project.url)}">${escapeHtml(project.title)}</a></h3>${date}${contribution}${status}<p>${escapeHtml(project.summary)}</p><div class="actions project-actions"><a class="text-link" data-project-link href="${escapeHtml(project.url)}">Open case study</a>${figmaLink}</div></div>
   </article>`;
 }
 
@@ -55,6 +62,7 @@ function renderProjectSection(section, index) {
 }
 
 function renderProjectVisual(type) {
+  if (type === "app-store-gallery") return `<div class="app-store-gallery" aria-label="Current Giftit Cards App Store screenshots">${[1,2,3,4,5].map((number, index) => `<figure><img src="/assets/Pictures/app-store/giftit-app-0${number}.jpg" alt="Giftit Cards App Store screenshot ${number}" width="222" height="480" loading="lazy" decoding="async"><figcaption>App Store screenshot ${String(index + 1).padStart(2, "0")} · Published product</figcaption></figure>`).join("")}</div><p class="scope-note">Screenshots shown are from the live App Store listing and document the product experience, not work attributed solely to me.</p>`;
   if (type === "four-p") return `<div class="giftit-four-p" aria-label="Four-part market-entry mix"><div><b>01 · Place</b><span>Digital + potential partners</span></div><div><b>02 · Product</b><span>Localized gifting experience</span></div><div><b>03 · Price</b><span>Offers + competitive position</span></div><div><b>04 · Promotion</b><span>Social, search + seasonal ideas</span></div></div>`;
   if (type === "funnel") return `<ol class="giftit-funnel" aria-label="Promotional funnel"><li><span>Awareness</span></li><li><span>Interest</span></li><li><span>Desire</span></li><li><span>Action</span></li></ol>`;
   if (type === "storyboard") return `<div class="giftit-storyboard" aria-label="Conceptual storyboard, not generated footage">${[["01 · Together", "A welcoming iftar table; establish the feeling of gathering."], ["02 · Another view", "A quieter home faces a difficult evening."], ["03 · The pause", "A moment connects the two scenes with empathy."], ["04 · Shared giving", "Friends consider a gift they can contribute to together."], ["05 · One table", "The story closes on the message: Gifting for All."], ["06 · Invitation", "A gentle call to action introduces collective gifting."]].map(([title, copy]) => `<div class="giftit-story-frame"><span class="giftit-frame-art" aria-hidden="true">◌</span><b>${title}</b><span>${copy}</span></div>`).join("")}</div><p class="scope-note">Conceptual storyboard placeholders · 9:16 short-form direction</p>`;
@@ -71,14 +79,32 @@ function renderProjectDetail(project) {
   const verification = project.verification.map(([label, value]) => `<div class="project-proof-card"><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`).join("");
   const contents = project.sections.map((section, index) => `<a href="#section-${index + 1}">${String(index + 1).padStart(2, "0")} / ${escapeHtml(section.title)}</a>`).join("");
   const figmaButton = project.figmaUrl ? `<a class="btn btn-secondary" href="${escapeHtml(project.figmaUrl)}" target="_blank" rel="noopener noreferrer">Open Figma file</a>` : "";
-  return `<section class="shell detail-hero"><div><span class="eyebrow">Case study ${escapeHtml(project.number)} / ${escapeHtml(project.client)}</span><h1>${escapeHtml(project.title)}</h1><p class="lead">${escapeHtml(project.summary)}</p>${project.status ? `<p class="scope-note"><strong>Scope:</strong> ${escapeHtml(project.status)}</p>` : ""}${project.note ? `<p class="scope-note">${escapeHtml(project.note)}</p>` : ""}${figmaButton ? `<div class="actions detail-actions">${figmaButton}</div>` : ""}<div class="meta-grid">${metadata}</div></div><div class="detail-visual"><picture><source type="image/avif" srcset="/covers/${escapeHtml(project.cover)}-640.avif 640w, /covers/${escapeHtml(project.cover)}-960.avif 960w, /covers/${escapeHtml(project.cover)}-1440.avif 1440w" sizes="(max-width: 820px) 100vw, 45vw"><source type="image/webp" srcset="/covers/${escapeHtml(project.cover)}-640.webp 640w, /covers/${escapeHtml(project.cover)}-960.webp 960w, /covers/${escapeHtml(project.cover)}-1440.webp 1440w" sizes="(max-width: 820px) 100vw, 45vw"><img src="${escapeHtml(project.image)}" data-full-src="/covers/${escapeHtml(project.cover)}-1440.webp" alt="${escapeHtml(project.title)} cover artwork" width="960" height="640" decoding="async"></picture></div></section>
+  const appStoreButton = project.id === "giftit-app-positioning" ? '<a class="btn btn-primary" href="https://apps.apple.com/ae/app/giftit-cards/id6469349957" target="_blank" rel="noopener noreferrer">View the live app on the App Store</a>' : "";
+  const relatedIds = {
+    "giftit-app-positioning": ["giftit-email-lifecycle", "network-automation"],
+    "giftit-email-lifecycle": ["giftit-app-positioning", "gift-it"],
+    "network-automation": ["vehicle-rental", "giftit-app-positioning"],
+    "mood-insights": ["rit-app", "giftit-app-positioning"],
+    "rit-app": ["mood-insights", "network-automation"]
+  }[project.id] || [];
+  const relatedLinks = relatedIds.map(id => {
+    const related = projects.find(item => item.id === id);
+    return related ? `<a class="text-link" href="${escapeHtml(related.url)}">${escapeHtml(related.title)} →</a>` : "";
+  }).join("");
+  const detailImage = project.artworkRepresentation
+    ? `<div class="project-art-representation project-art-representation-detail" role="img" aria-label="Text representation: ${escapeHtml(project.artworkRepresentation.join(" · "))}"><span class="eyebrow">${escapeHtml(project.artworkRepresentation[0])}</span><strong>${escapeHtml(project.artworkRepresentation[1])}</strong><small>${escapeHtml(project.artworkRepresentation[2])}</small></div>`
+    : project.detailImage
+    ? `<img src="${escapeHtml(project.detailImage)}" alt="${escapeHtml(project.detailImageAlt || project.title)}" width="${Number(project.featureImageWidth) || 960}" height="${Number(project.featureImageHeight) || 640}" decoding="async">`
+    : `<picture><source type="image/avif" srcset="/covers/${escapeHtml(project.cover)}-640.avif 640w, /covers/${escapeHtml(project.cover)}-960.avif 960w, /covers/${escapeHtml(project.cover)}-1440.avif 1440w" sizes="(max-width: 820px) 100vw, 45vw"><source type="image/webp" srcset="/covers/${escapeHtml(project.cover)}-640.webp 640w, /covers/${escapeHtml(project.cover)}-960.webp 960w, /covers/${escapeHtml(project.cover)}-1440.webp 1440w" sizes="(max-width: 820px) 100vw, 45vw"><img src="${escapeHtml(project.image)}" data-full-src="/covers/${escapeHtml(project.cover)}-1440.webp" alt="${escapeHtml(project.title)} cover artwork" width="960" height="640" decoding="async"></picture>`;
+  const detailVisualClass = project.artworkRepresentation ? "detail-visual detail-visual-representation" : project.detailImage ? "detail-visual detail-visual-evidence" : "detail-visual";
+  return `<section class="shell detail-hero"><div><span class="eyebrow">Case study ${escapeHtml(project.number)} / ${escapeHtml(project.client)}</span><h1>${escapeHtml(project.title)}</h1><p class="lead">${escapeHtml(project.summary)}</p>${project.status ? `<p class="scope-note"><strong>Scope:</strong> ${escapeHtml(project.status)}</p>` : ""}${project.note ? `<p class="scope-note">${escapeHtml(project.note)}</p>` : ""}${figmaButton || appStoreButton ? `<div class="actions detail-actions">${appStoreButton}${figmaButton}</div>` : ""}<div class="meta-grid">${metadata}</div></div><div class="${detailVisualClass}">${detailImage}</div></section>
   <section class="section project-proof"><div class="shell"><div class="section-head"><div><span class="eyebrow">Verified project record</span><h2>Evidence, scope, and outcome.</h2></div></div><dl class="project-proof-grid">${verification}</dl></div></section>
-  <section class="section-soft"><div class="shell content-grid"><aside class="content-nav"><span class="eyebrow">Contents</span>${contents}<a href="/terminal?context=${encodeURIComponent(project.id)}">Ask Yahya&#39;AI about this project</a><a href="/contact">Discuss this project</a></aside><div class="story">${project.sections.map(renderProjectSection).join("")}<article class="story-block next-project"><span class="eyebrow">More work</span><h2>Explore another project.</h2><div class="actions"><a class="btn btn-primary" href="/work?view=case-studies">All projects</a><a class="btn btn-secondary" href="/terminal?context=${encodeURIComponent(project.id)}">Ask Yahya&#39;AI</a></div></article></div></div></section>`;
+  <section class="section-soft"><div class="shell content-grid"><aside class="content-nav"><span class="eyebrow">Contents</span>${contents}<a href="/terminal?context=${encodeURIComponent(project.id)}">Ask Yahya&#39;AI about this project</a><a href="/contact">Discuss this project</a></aside><div class="story">${project.sections.map(renderProjectSection).join("")}<article class="story-block next-project"><span class="eyebrow">Related work</span><h2>Continue with connected projects.</h2><div class="related-project-links">${relatedLinks}</div><div class="actions"><a class="btn btn-primary" href="/work?view=case-studies">All projects</a><a class="btn btn-secondary" href="/terminal?context=${encodeURIComponent(project.id)}">Ask Yahya&#39;AI</a></div></article></div></div></section>`;
 }
 
 function replaceBuildTarget(source, target, content, sourcePath) {
   if (!source.includes(target)) throw new Error(`Missing static-render target in ${sourcePath}`);
-  const closingTag = target.startsWith("<main") ? "</main>" : "</div>";
+  const closingTag = target.startsWith("<main") ? "</main>" : target.startsWith("<section") ? "</section>" : "</div>";
   const openingTag = target.slice(0, -closingTag.length);
   return source.replace(target, `${openingTag}${content}${closingTag}`);
 }
@@ -112,6 +138,7 @@ const htmlFiles = [
   "index.html",
   "infrastructure.html",
   "privacy.html",
+  "terms.html",
   "project.html",
   "recruiter.html",
   "resume.html",
@@ -136,10 +163,13 @@ const publicPaths = [
   "admin",
   "assets/favicon",
   "assets/logos/gift-it-official.png",
+  "assets/logos/starlink-infinigate.svg",
+  "assets/logos/credo-official.png",
   "assets/pdfs",
   "assets/Pictures/credentials",
   "assets/Pictures/resume",
   "assets/Pictures/responsive",
+  "assets/Pictures/app-store",
   "assets/Pictures/network-automation",
   "assets/Pictures/about-portrait-640.avif",
   "assets/Pictures/about-portrait-640.webp",
@@ -187,6 +217,9 @@ for (const relativePath of publicPaths) {
   await copyWithRetry(source, destination, { recursive: true });
 }
 
+await mkdir(path.join(output, "vendor"), { recursive: true });
+await copyWithRetry(path.join(root, "node_modules/lenis/dist/lenis.mjs"), path.join(output, "vendor/lenis.js"));
+
 const projectRoutes = {
   "gift-it.html": "work/gift-it/index.html",
   "rit-app.html": "work/rit-app/index.html",
@@ -206,6 +239,7 @@ const cleanRoutes = {
   "about.html": "about/index.html",
   "contact.html": "contact/index.html",
   "privacy.html": "privacy/index.html",
+  "terms.html": "terms/index.html",
   "recruiter.html": "recruiter/index.html",
   "resume.html": "resume/index.html",
   "terminal.html": "terminal/index.html"
@@ -248,6 +282,21 @@ async function injectStructuredData(routePath, data) {
   const html = source.replace(/<\/head>/i, `${script}</head>`);
   if (html === source) throw new Error(`Structured-data target has no </head>: ${routePath}`);
   await writeFile(destination, html);
+}
+
+async function unifyPublicFooters() {
+  const footer = '<footer class="footer"><div class="shell footer-row"><span>© 2026 Yahya El-Sawi · Dubai, UAE</span><nav class="footer-links" aria-label="Footer"><a class="text-link" href="/">Home</a><a class="text-link" href="/work">Work</a><a class="text-link" href="/about">About</a><a class="text-link" href="/contact">Contact</a><a class="text-link" href="/privacy">Privacy Policy</a><a class="text-link" href="/terms">Terms and Conditions</a></nav></div></footer>';
+  const walk = async directory => (await Promise.all((await readdir(directory, { withFileTypes:true })).map(async entry => {
+    if (entry.name === "admin") return [];
+    const full = path.join(directory, entry.name);
+    return entry.isDirectory() ? walk(full) : [full];
+  }))).flat();
+  for (const file of await walk(output)) {
+    if (!file.endsWith(".html")) continue;
+    const source = await readFile(file, "utf8");
+    if (!/<footer\b[^>]*class="[^"]*\bfooter\b[^"]*"[^>]*>[\s\S]*?<\/footer>/i.test(source)) continue;
+    await writeFile(file, source.replace(/<footer\b[^>]*class="[^"]*\bfooter\b[^"]*"[^>]*>[\s\S]*?<\/footer>/i, footer));
+  }
 }
 
 const person = {
@@ -425,6 +474,8 @@ for (const project of projects) {
 }
 
 for (const [routePath, data] of structuredRoutes) await injectStructuredData(routePath, data);
+
+await unifyPublicFooters();
 
 if (environment === "staging") {
   const walk = async directory => (await Promise.all((await readdir(directory, { withFileTypes: true })).map(async entry => {

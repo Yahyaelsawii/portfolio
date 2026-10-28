@@ -80,10 +80,12 @@ const base = `http://127.0.0.1:${address.port}`;
 const browser = await chromium.launch({ headless: true });
 const failures = [];
 const giftitRoutes = ["/work/giftit-saudi-market-entry", "/work/giftit-one-table", "/work/giftit-email-lifecycle", "/work/giftit-saudi-arabic", "/work/giftit-app-positioning"];
-const routes = ["/", "/work", "/about", "/recruiter", "/resume", "/contact", "/terminal", "/privacy", "/work/gift-it", "/work/rit-app", "/work/passwordless", "/work/vehicle-rental", "/work/mood-insights", "/work/network-automation", "/work/vr-neuroanatomy", ...giftitRoutes, "/admin/log/"];
+const routes = ["/", "/work", "/about", "/recruiter", "/resume", "/contact", "/terminal", "/privacy", "/terms", "/work/gift-it", "/work/rit-app", "/work/passwordless", "/work/vehicle-rental", "/work/mood-insights", "/work/network-automation", "/work/vr-neuroanatomy", ...giftitRoutes, "/admin/log/"];
 const viewports = [
   { name: "desktop", width: 1440, height: 900 },
-  { name: "mobile", width: 390, height: 844 }
+  { name: "tablet", width: 820, height: 1024 },
+  { name: "large mobile", width: 430, height: 932 },
+  { name: "small mobile", width: 320, height: 700 }
 ];
 
 try {
@@ -166,7 +168,7 @@ try {
   });
   const noScriptPage = await noScriptContext.newPage();
   await noScriptPage.goto(`${base}/`, { waitUntil:"load" });
-  if (await noScriptPage.locator("#featured-projects .project-card").count() !== 3) failures.push("no-JS homepage: featured projects were not pre-rendered");
+  if (await noScriptPage.locator("#featured-projects .project-card").count() !== 5) failures.push("no-JS homepage: five featured projects were not pre-rendered");
   await noScriptPage.goto(`${base}/work`, { waitUntil:"load" });
   if (await noScriptPage.locator("#all-projects .project-card").count() !== 12) failures.push("no-JS work: project index was not pre-rendered");
   for (const route of ["/work/gift-it", "/work/rit-app", "/work/passwordless", "/work/vehicle-rental", "/work/mood-insights"]) {
@@ -187,12 +189,14 @@ try {
   await detailPage.goto(`${base}/work`, { waitUntil: "networkidle" });
   await detailPage.getByRole("tab", { name: /Case studies/ }).click();
   const projectOrder = await detailPage.locator("#all-projects .project-card").evaluateAll(cards => cards.map(card => new URL(card.dataset.projectUrl, location.origin).pathname));
-  const expectedOrder = ["/work/vr-neuroanatomy", "/work/giftit-app-positioning", "/work/giftit-email-lifecycle", "/work/giftit-saudi-arabic", "/work/network-automation", "/work/giftit-one-table", "/work/giftit-saudi-market-entry", "/work/mood-insights", "/work/rit-app", "/work/gift-it", "/work/passwordless", "/work/vehicle-rental"];
+  const expectedOrder = ["/work/gift-it", "/work/network-automation", "/work/rit-app", "/work/giftit-app-positioning", "/work/vr-neuroanatomy", "/work/giftit-email-lifecycle", "/work/giftit-saudi-arabic", "/work/giftit-one-table", "/work/giftit-saudi-market-entry", "/work/mood-insights", "/work/passwordless", "/work/vehicle-rental"];
   if (JSON.stringify(projectOrder) !== JSON.stringify(expectedOrder)) failures.push(`work sorting: ${projectOrder.join(", ")}`);
   const figmaCardLinks = detailPage.locator("#all-projects .project-figma-link");
   if (await figmaCardLinks.count() !== 3) failures.push(`work Figma actions: expected 3 direct links, found ${await figmaCardLinks.count()}`);
   const giftItExperience = detailPage.locator(".experience-card", { hasText:"Gift It · Dubai" });
-  if (await giftItExperience.locator(".fact-list li").count() !== 3) failures.push("Gift It experience: expected three responsibility bullets");
+  if (await giftItExperience.locator(".fact-list li").count() !== 4) failures.push("Gift It experience: expected four cross-functional responsibility bullets");
+  const credoExperience = detailPage.locator(".experience-card", { hasText:"Credo Technology Services" });
+  if (!await credoExperience.count() || !await credoExperience.locator(".company-logo").count()) failures.push("Credo experience: missing role card or official logo");
 
   for (const route of ["/work/mood-insights", "/work/passwordless", "/work/rit-app"]) {
     await detailPage.goto(`${base}${route}`, { waitUntil: "networkidle" });
@@ -205,7 +209,10 @@ try {
     if (await croppedGallery.count() !== 1 || await croppedGallery.locator("img").count() !== 3) failures.push(`${route}: Final UI device-frame crop is missing`);
     await croppedGallery.locator("img").first().click();
     if (!await detailPage.locator("dialog.image-lightbox[open] .image-lightbox-stage.is-device-crop").isVisible()) failures.push(`${route}: cropped image did not open in the lightbox`);
+    await detailPage.keyboard.press("Tab");
+    if (!await detailPage.locator("dialog.image-lightbox[open] .image-lightbox-close").evaluate(node => node === document.activeElement)) failures.push(`${route}: modal focus escaped the dialog`);
     await detailPage.keyboard.press("Escape");
+    if (!await croppedGallery.locator("img").first().evaluate(node => node === document.activeElement)) failures.push(`${route}: modal did not return focus to its trigger`);
   }
 
   await detailPage.goto(`${base}/work/network-automation`, { waitUntil: "networkidle" });
@@ -229,10 +236,10 @@ try {
 
   await detailPage.goto(`${base}/recruiter`, { waitUntil: "networkidle" });
   if (!await detailPage.locator("#product-role-panel").isVisible()) failures.push("recruiter roles: Product & UX should be open by default");
-  if (await detailPage.locator("#frontend-role-panel").isVisible() || await detailPage.locator("#cybersecurity-role-panel").isVisible()) failures.push("recruiter roles: inactive panels should be hidden");
-  await detailPage.getByRole("tab", { name:"Cybersecurity & Networks" }).click();
-  if (!await detailPage.locator("#cybersecurity-role-panel").isVisible()) failures.push("recruiter roles: Cybersecurity & Networks panel did not open");
-  if (new URL(detailPage.url()).searchParams.get("role") !== "cybersecurity") failures.push("recruiter roles: role selection was not reflected in the URL");
+  if (await detailPage.locator("#frontend-role-panel").isVisible()) failures.push("recruiter roles: inactive panel should be hidden");
+  await detailPage.getByRole("tab", { name:"Frontend" }).click();
+  if (!await detailPage.locator("#frontend-role-panel").isVisible()) failures.push("recruiter roles: Frontend panel did not open");
+  if (new URL(detailPage.url()).searchParams.get("role") !== "frontend") failures.push("recruiter roles: role selection was not reflected in the URL");
   await detailPage.goto(`${base}/recruiter?role=frontend`, { waitUntil: "networkidle" });
   if (!await detailPage.locator("#frontend-role-panel").isVisible()) failures.push("recruiter roles: URL-selected Frontend panel did not open");
   const recruiterPackLink = detailPage.getByRole("link", { name:"Open recruiter pack" });
@@ -358,27 +365,39 @@ try {
   if (!contactStatus.includes("Message sent")) failures.push(`contact form: ${contactStatus}`);
   await detailPage.unroute("**/api/contact");
 
-  await detailPage.route("**/api/contact", route => route.fulfill({ status:502, contentType:"application/json", body:JSON.stringify({ error:"DELIVERY_FAILED" }) }));
-  await detailPage.route("https://formsubmit.co/ajax/**", route => route.fulfill({ status:200, contentType:"application/json", body:JSON.stringify({ success:"true" }) }));
+  let directProviderRequests = 0;
+  await detailPage.route("**/api/contact", route => route.fulfill({ status:502, contentType:"application/json", body:JSON.stringify({ error:"DELIVERY_FAILED", message:"Secure delivery failed. Email me directly." }) }));
+  await detailPage.route("https://formsubmit.co/**", route => { directProviderRequests += 1; return route.fulfill({ status:200 }); });
   await detailPage.getByLabel("Your name").fill("Fallback Test");
   await detailPage.getByLabel("Email address").fill("fallback@example.com");
-  await detailPage.getByLabel("Message", { exact:true }).fill("This verifies the provider fallback path.");
+  await detailPage.getByLabel("Message", { exact:true }).fill("This verifies the protected failure path.");
   await detailPage.getByRole("button", { name:"Send message" }).click();
-  await detailPage.waitForFunction(() => document.querySelector("#form-success")?.textContent.includes("Message sent"));
-  if (!await detailPage.locator("#form-success").innerText().then(text => text.includes("Message sent"))) failures.push("contact form: provider fallback did not succeed");
+  await detailPage.waitForFunction(() => document.querySelector("#form-success a[href^='mailto:']"));
+  if (directProviderRequests !== 0) failures.push("contact form: browser bypassed the protected backend route");
+  if (!await detailPage.locator("#form-success a[href^='mailto:']").isVisible()) failures.push("contact form: direct email was not offered after failure");
   await detailPage.unroute("**/api/contact");
-  await detailPage.unroute("https://formsubmit.co/ajax/**");
+  await detailPage.unroute("https://formsubmit.co/**");
 
   await detailPage.goto(`${base}/`, { waitUntil: "networkidle" });
   const featuredCards = detailPage.locator("#featured-projects .project-card");
-  if (await featuredCards.count() !== 3) failures.push(`home projects: expected 3 featured cards, found ${await featuredCards.count()}`);
+  if (await featuredCards.count() !== 5) failures.push(`home projects: expected 5 featured cards, found ${await featuredCards.count()}`);
   const featuredProjectOrder = await featuredCards.evaluateAll(cards => cards.map(card => new URL(card.dataset.projectUrl, location.origin).pathname));
-  const expectedFeaturedOrder = ["/work/gift-it", "/work/rit-app", "/work/network-automation"];
+  const expectedFeaturedOrder = ["/work/giftit-app-positioning", "/work/network-automation", "/work/giftit-email-lifecycle", "/work/mood-insights", "/work/rit-app"];
   if (JSON.stringify(featuredProjectOrder) !== JSON.stringify(expectedFeaturedOrder)) failures.push(`home projects: unexpected featured order ${featuredProjectOrder.join(", ")}`);
+  const featuredDetails = await featuredCards.evaluateAll(cards => cards.map(card => ({ date:Boolean(card.querySelector(".project-date")?.textContent.trim()), role:Boolean(card.querySelector(".project-contribution")?.textContent.trim()), status:Boolean(card.querySelector(".project-status")?.textContent.trim()), image:card.querySelector(".project-art img")?.getAttribute("src") })));
+  if (featuredDetails.some(item => !item.date || !item.role || !item.status || !item.image)) failures.push("home projects: every featured card needs a verified date, contribution, status, and distinct visual");
+  if (new Set(featuredDetails.map(item => item.image)).size !== 5) failures.push("home projects: featured visuals are repeated");
   for (const projectPath of expectedFeaturedOrder) {
     const projectLink = detailPage.locator(`#featured-projects a[href="${projectPath}"]`).first();
     if (!await projectLink.count()) failures.push(`home projects: missing link to ${projectPath}`);
   }
+  const featuredTrack = detailPage.locator("#featured-projects");
+  const featuredScrollWidth = await featuredTrack.evaluate(node => node.scrollWidth - node.clientWidth);
+  if (featuredScrollWidth <= 0) failures.push("home projects: featured rail does not overflow for the next-card peek");
+  const peek = await featuredCards.nth(3).evaluate(card => ({ left:card.getBoundingClientRect().left, right:card.getBoundingClientRect().right, width:card.getBoundingClientRect().width, viewport:innerWidth }));
+  if (!(peek.left < peek.viewport && peek.right > peek.viewport && peek.width > 0)) failures.push("home projects: next card is not partially visible on desktop");
+  await detailPage.getByRole("button", { name:"Next featured projects" }).click();
+  await detailPage.waitForFunction(() => document.querySelector("#featured-projects")?.scrollLeft > 0);
   const featuredTops = await featuredCards.evaluateAll(cards => cards.map(card => Math.round(card.getBoundingClientRect().top)));
   if (Math.max(...featuredTops) - Math.min(...featuredTops) > 2) failures.push(`home projects: cards are not on one desktop row (${featuredTops.join(", ")})`);
   const primaryButton = detailPage.locator(".btn-primary").first();
@@ -408,6 +427,17 @@ try {
   await detailPage.waitForFunction(() => scrollY <= 1);
   await detailPage.close();
   await detailContext.close();
+
+  const reducedContext = await browser.newContext({ viewport:{ width:430, height:932 }, reducedMotion:"reduce" });
+  const reducedPage = await reducedContext.newPage();
+  await reducedPage.goto(`${base}/`, { waitUntil:"networkidle" });
+  const reducedMotionState = await reducedPage.evaluate(() => ({
+    preference:matchMedia("(prefers-reduced-motion: reduce)").matches,
+    lenis:document.documentElement.classList.contains("lenis") || document.documentElement.classList.contains("lenis-smooth"),
+    hidden:document.querySelector(".project-card")?.classList.contains("reveal") && !document.querySelector(".project-card")?.classList.contains("visible")
+  }));
+  if (!reducedMotionState.preference || reducedMotionState.lenis || reducedMotionState.hidden) failures.push("reduced motion: page animations or Lenis should stay disabled and content visible");
+  await reducedContext.close();
 } finally {
   await browser.close();
   await new Promise(resolve => server.close(resolve));
@@ -417,5 +447,5 @@ if (failures.length) {
   console.error(failures.join("\n"));
   process.exit(1);
 } else {
-  console.log(`Verified ${routes.length} routes at desktop and mobile sizes with WCAG checks and key interaction smoke tests.`);
+  console.log(`Verified ${routes.length} routes at ${viewports.map(viewport => `${viewport.name} (${viewport.width}px)`).join(", ")} with WCAG checks and key interaction smoke tests.`);
 }

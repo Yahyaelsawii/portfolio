@@ -25,6 +25,11 @@ const CONTEXT_HINTS = Object.freeze({
   "mood-insights": "Mood Insights case study",
   "vr-neuroanatomy": "VR Neuroanatomy locked page",
   "network-automation": "SmartMall AI Network Automation case study",
+  "giftit-app-positioning": "Giftit Cards App positioning and published product case study",
+  "giftit-email-lifecycle": "Giftit customer email lifecycle case study",
+  "giftit-saudi-arabic": "Giftit Saudi Arabic website development case study",
+  "giftit-one-table": "One Table Ramadan campaign concept case study",
+  "giftit-saudi-market-entry": "Giftit Saudi Arabia market-entry proposal case study",
   "experience": "Professional experience",
   "recruiter": "Recruiter quick view"
 });
@@ -36,6 +41,11 @@ const CONTEXT_SOURCES = Object.freeze({
   "mood-insights": "moodInsights",
   "vr-neuroanatomy": "vrNeuroanatomy",
   "network-automation": "networkAutomation",
+  "giftit-app-positioning": "giftitAppPositioning",
+  "giftit-email-lifecycle": "giftitEmailLifecycle",
+  "giftit-saudi-arabic": "giftitSaudiArabic",
+  "giftit-one-table": "giftitOneTable",
+  "giftit-saudi-market-entry": "giftitMarketEntry",
   "experience": "experience",
   "recruiter": "recruiter"
 });
