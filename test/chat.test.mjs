@@ -100,6 +100,15 @@ test("answers high-value availability questions without a model call", async () 
   assert.match(result.body.answer, /Golden Visa/);
 });
 
+test("does not invent relocation destinations or foreign work authorization", async () => {
+  const ai = { async run() { throw new Error("The model should not run for an unknown destination"); } };
+  const result = await invoke("Where outside Dubai?", { ai });
+  assert.equal(result.body.model, "policy");
+  assert.match(result.body.answer, /has not publicly confirmed specific countries/);
+  assert.match(result.body.answer, /does not establish work authorization elsewhere/);
+  assert.doesNotMatch(result.body.answer, /United States|Canada|United Kingdom/);
+});
+
 test("understands a short contact follow-up from trusted session history", async () => {
   const database = new FakeDatabase([{
     question: "Do you know Yahya's Twitter?",

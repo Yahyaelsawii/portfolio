@@ -1,6 +1,22 @@
 import { projects as portfolioProjects } from "../../data/projects.js";
+import career from "../../data/career.json" with { type: "json" };
 
-export const KNOWLEDGE_VERSION = "2026-10-28.1";
+const experienceByCompany = new Map(career.experience.map(role => [role.company, role]));
+const linkedinUrl = career.linkedin.startsWith("http")
+  ? career.linkedin
+  : `https://www.${career.linkedin.replace(/^www\./, "")}`;
+
+export function buildKnowledgeVersion({ careerProfile = career, projectRecords = portfolioProjects } = {}) {
+  const source = JSON.stringify({ career:careerProfile, projects:projectRecords });
+  let hash = 0x811c9dc5;
+  for (let index = 0; index < source.length; index += 1) {
+    hash ^= source.charCodeAt(index);
+    hash = Math.imul(hash, 0x01000193);
+  }
+  return `profile-${(hash >>> 0).toString(16).padStart(8, "0")}`;
+}
+
+export const KNOWLEDGE_VERSION = buildKnowledgeVersion();
 
 export const SOURCES = {
   about: { label: "About Yahya", url: "/about" },
@@ -24,7 +40,7 @@ export const SOURCES = {
   credo: { label: "Professional experience at Credo", url: "/work#professional-experience-panel" },
   cv: { label: "Yahya El-Sawi CV", url: "/assets/pdfs/Yahya_ElSawi_CV.pdf" },
   recruiterPack: { label: "Yahya El-Sawi recruiter brief", url: "/assets/pdfs/Yahya_ElSawi_Recruiter_Pack.pdf" },
-  linkedin: { label: "LinkedIn", url: "https://www.linkedin.com/in/yahya-elsawi/" },
+  linkedin: { label: "LinkedIn", url: linkedinUrl },
   github: { label: "GitHub", url: "https://github.com/Yahyaelsawii" }
 };
 
@@ -38,52 +54,53 @@ export const SUGGESTED_QUESTIONS = [
 export const PROFILE = {
   identity: {
     publicName: "Yahya El-Sawi",
-    location: "Dubai, United Arab Emirates",
+    location: career.location === "Dubai, UAE" ? "Dubai, United Arab Emirates" : career.location,
     nationality: "Egyptian",
     languages: ["Arabic — native", "English — native"],
-    summary: "A product and UX designer with a computing background who pairs interaction design with frontend implementation. For frontend-focused roles, his production web work provides direct evidence of that technical range."
+    summary: career.summary
   },
   availability: {
-    status: "Available to start as soon as needed.",
-    remote: true,
-    relocation: true,
-    outsideDubai: true,
-    workAuthorization: "Self-sponsored UAE Golden Visa.",
+    status: `${career.availability.replace(/[.!?]+$/, "")}.`,
+    remote: career.remoteWorkOpen === true,
+    relocation: career.relocationOpen === true,
+    outsideDubai: career.relocationOpen === true,
+    specificDestinationsConfirmed: career.specificRelocationDestinationsConfirmed === true,
+    workAuthorization: career.workAuthorization.replace(/[.!?]+$/, ""),
     targetRoles: [
-      "Primary: Product Design and UI/UX roles",
-      "Secondary: Frontend and web development roles",
+      `Primary: ${career.targetRoles.primary}`,
+      `Secondary: ${career.targetRoles.secondary}`,
     ],
     salaryPolicy: "Do not quote a salary or range. Redirect compensation questions to Yahya and mark the conversation for his private review."
   },
   education: {
-    institution: "Rochester Institute of Technology Dubai",
+    institution: career.education.institution,
     degree: "Bachelor of Science in Computing and Information Technologies",
-    minor: "Business Administration",
-    awarded: "May 2026"
+    minor: career.education.minor,
+    awarded: career.education.awarded
   },
   experience: [
     {
-      organization: "Credo Technology Services",
-      role: "Business Development Associate Intern",
+      organization: experienceByCompany.get("Credo Technology Services").company,
+      role: experienceByCompany.get("Credo Technology Services").role,
       location: "Dubai, UAE",
-      timeline: "September 2026–Present.",
-      work: "B2B account research, prospecting, stakeholder identification, lead qualification, discovery conversations, outreach, and follow-ups, focused on Microsoft licensing and Microsoft Professional Services. Identifies relevant opportunities and introduces technical specialists; this is not a technical-consulting role and no sales results are claimed.",
+      timeline: `${experienceByCompany.get("Credo Technology Services").date}.`,
+      work: experienceByCompany.get("Credo Technology Services").description,
       companyContext: "Credo Technology Services is a Microsoft Solutions Partner."
     },
     {
-      organization: "StarLink, an Infinigate Group Company",
-      role: "Cybersecurity Intern",
+      organization: experienceByCompany.get("StarLink, an Infinigate Group Company").company,
+      role: experienceByCompany.get("StarLink, an Infinigate Group Company").role,
       location: "Dubai, UAE — on-site",
-      timeline: "Completed the StarLink Internship Program in Dubai from July to August 2026.",
+      timeline: `${experienceByCompany.get("StarLink, an Infinigate Group Company").date}.`,
       work: "Isolated-lab training with Palo Alto Networks firewalls, PAN-OS, Windows Server 2019, Active Directory, LDAP and LDAPS, SSL/TLS certificates, Certificate Authority integration, NAT, DNS, DHCP, routing, security policy matching, network troubleshooting, Forcepoint DLP concepts, GlobalProtect, VMware, and Wireshark.",
       confidentialityBoundary: "Do not share internal or customer configurations, customer names or environments, real IP addresses, credentials, internal documents or diagrams, internal procedures, customer cases, proprietary training material, internal communications, or screenshots containing company or customer information."
     },
     {
-      organization: "Gift It",
-      role: "Frontend Developer & Product Associate",
+      organization: experienceByCompany.get("Gift It").company,
+      role: experienceByCompany.get("Gift It").role,
       location: "Dubai, UAE",
-      timeline: "Joined as an intern in May 2024 for three months, then transitioned into a full-time role.",
-      work: "Production features across web, UX, and databases; testing; performance optimization; database schemas; transactional emails; and product collaboration with the founder."
+      timeline: `${experienceByCompany.get("Gift It").date}.`,
+      work: experienceByCompany.get("Gift It").description
     },
     {
       organization: "RIT Dubai",
@@ -173,9 +190,9 @@ export const PROFILE = {
     "Research Security Training (Combined) — CITI Program / RIT, completed July 28, 2026; expires July 28, 2027; record 78576185"
   ],
   contact: {
-    email: "yahyaelsawi1@gmail.com",
-    phone: "+971 50 168 1229",
-    linkedin: "https://www.linkedin.com/in/yahya-elsawi/",
+    email: career.email,
+    phone: career.phone,
+    linkedin: linkedinUrl,
     github: "https://github.com/Yahyaelsawii",
     instagram: "@ya7ya_sawii",
     threads: "@ya7ya_sawii",

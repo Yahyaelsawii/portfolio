@@ -1,7 +1,8 @@
 import assert from "node:assert/strict";
 import test from "node:test";
+import career from "../data/career.json" with { type:"json" };
 import { projects } from "../data/projects.js";
-import { KNOWLEDGE_VERSION, PROFILE, SOURCES } from "../functions/_shared/profile.js";
+import { buildKnowledgeVersion, KNOWLEDGE_VERSION, PROFILE, SOURCES } from "../functions/_shared/profile.js";
 
 test("public AI project knowledge is generated from all twelve public project records", () => {
   assert.equal(PROFILE.projects.length, projects.length);
@@ -17,5 +18,18 @@ test("public AI project knowledge is generated from all twelve public project re
       assert.equal(generated.focus, project.summary);
     }
   }
-  assert.match(KNOWLEDGE_VERSION, /^2026-10-28\.1$/);
+  assert.equal(PROFILE.identity.summary, career.summary);
+  assert.equal(PROFILE.education.awarded, career.education.awarded);
+  assert.equal(PROFILE.availability.remote, career.remoteWorkOpen);
+  assert.equal(PROFILE.availability.relocation, career.relocationOpen);
+  for (const role of career.experience) {
+    const generated = PROFILE.experience.find(item => item.organization === role.company);
+    assert.ok(generated, `Missing AI career knowledge: ${role.company}`);
+    assert.equal(generated.role, role.role);
+    assert.equal(generated.timeline.replace(/\.$/, ""), role.date);
+    assert.equal(generated.work, role.description);
+  }
+  assert.equal(KNOWLEDGE_VERSION, buildKnowledgeVersion({ careerProfile:career, projectRecords:projects }));
+  assert.match(KNOWLEDGE_VERSION, /^profile-[a-f0-9]{8}$/);
+  assert.notEqual(KNOWLEDGE_VERSION, buildKnowledgeVersion({ careerProfile:{ ...career, summary:`${career.summary} Updated.` }, projectRecords:projects }));
 });
