@@ -47,7 +47,7 @@ const structuredDataTypeExpectations = new Map([
   ["work/vr-neuroanatomy/index.html", ["WebPage", "BreadcrumbList"]],
   ...addedGiftitProjects.map(id => [`work/${id}/index.html`, ["Person", "CreativeWork", "BreadcrumbList"]])
 ]);
-const expectedWorkProjectUrls = ["gift-it", "network-automation", "rit-app", "giftit-app-positioning", "vr-neuroanatomy", "giftit-email-lifecycle", "giftit-saudi-arabic", "giftit-one-table", "giftit-saudi-market-entry", "mood-insights", "passwordless", "vehicle-rental"]
+const expectedWorkProjectUrls = ["gift-it", "network-automation", "rit-app", "giftit-app-positioning", "vr-neuroanatomy", "giftit-email-lifecycle", "giftit-saudi-arabic", "giftit-one-table", "giftit-saudi-market-entry", "passwordless", "mood-insights", "vehicle-rental"]
   .map(slug => `https://yahyaelsawi.website/work/${slug}`);
 const prerenderedProjectPaths = ["gift-it", "rit-app", "passwordless", "vehicle-rental", "mood-insights", ...addedGiftitProjects]
   .map(slug => `work/${slug}/index.html`);
