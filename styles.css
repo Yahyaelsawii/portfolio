@@ -190,7 +190,7 @@ p{color:var(--on-surface-variant)}
 .resume-pdf-panel{overflow:hidden;background:var(--surface-lowest);border:1px solid var(--outline-variant);border-radius:var(--radius-lg)}
 .resume-pdf-head{display:flex;padding:22px;align-items:center;justify-content:space-between;gap:24px;border-bottom:1px solid var(--line)}
 .resume-pdf-head h1{margin-top:5px;font-size:1.8rem}.resume-pdf-head .actions{flex:0 0 auto}
-.resume-document{display:block;background:var(--surface-low);transition:background .16s ease}.resume-document:hover{background:var(--accent-soft)}.resume-document picture{display:block}.resume-document img{width:100%;height:auto}
+.resume-document{display:block;width:100%;height:min(78vh,1040px);min-height:620px;border:0;background:var(--surface-low);transition:background .16s ease}.resume-document:hover{background:var(--accent-soft)}.resume-document picture{display:block}.resume-document img{width:100%;height:auto}.resume-document-fallback{display:grid;min-height:620px;place-content:center;gap:12px;padding:24px;text-align:center}
 .resume-tabs{position:sticky;top:92px;display:grid;gap:10px}
 .resume-tabs>.eyebrow{margin-bottom:4px}
 .resume-tabs button{display:grid;min-height:104px;padding:18px;grid-template-columns:34px minmax(0,1fr);align-items:start;gap:8px;text-align:left;color:var(--on-surface-variant);background:var(--surface-lowest);border:1px solid var(--outline-variant);border-radius:var(--radius-lg);cursor:pointer;transition:border-color .16s ease,background .16s ease,color .16s ease}
@@ -426,7 +426,7 @@ picture.media-buffering::after{position:absolute;inset:0;background:linear-gradi
   .work-paths,.about-work-split,.recruiter-evidence{grid-template-columns:1fr}.experience-card,.log-layout{grid-template-columns:1fr}
   .recruiter-role-tabs{grid-template-columns:1fr}.recruiter-role-tab,.recruiter-role-tab:last-child{border-right:0;border-bottom:1px solid var(--line)}.recruiter-role-tab:last-child{border-bottom:0}.recruiter-role-tab.active{box-shadow:inset 3px 0 var(--accent)}
   .case-gallery{grid-template-columns:1fr}.case-gallery .case-figure img{height:auto;min-height:0;max-height:none}
-  .resume-pdf-head{align-items:flex-start;flex-direction:column}.resume-pdf-head .actions{width:100%}.resume-tabs{grid-template-columns:1fr}.resume-tabs>.eyebrow{grid-column:auto}
+  .resume-pdf-head{align-items:flex-start;flex-direction:column}.resume-pdf-head .actions{width:100%}.resume-document{height:72vh;min-height:500px}.resume-document-fallback{min-height:500px}.resume-tabs{grid-template-columns:1fr}.resume-tabs>.eyebrow{grid-column:auto}
   .recruiter-next,.dashboard-head{align-items:flex-start;flex-direction:column}.recruiter-next .actions{width:100%}.log-aside{position:static}.log-entry{grid-template-columns:1fr;gap:10px}.dashboard-tab-row{align-items:flex-start;flex-direction:column}.dashboard-tabs{width:100%}
   .dashboard-shell{padding-top:48px}.dashboard-viewer{width:100%}.dashboard-gate{padding:24px}.dashboard-session-summary{align-items:flex-start}.network-canvas{min-height:420px}
 }
