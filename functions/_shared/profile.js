@@ -1,4 +1,22 @@
-export const KNOWLEDGE_VERSION = "2026-10-27.1";
+import { projects as portfolioProjects } from "../../data/projects.js";
+import career from "../../data/career.json" with { type: "json" };
+
+const experienceByCompany = new Map(career.experience.map(role => [role.company, role]));
+const linkedinUrl = career.linkedin.startsWith("http")
+  ? career.linkedin
+  : `https://www.${career.linkedin.replace(/^www\./, "")}`;
+
+export function buildKnowledgeVersion({ careerProfile = career, projectRecords = portfolioProjects } = {}) {
+  const source = JSON.stringify({ career:careerProfile, projects:projectRecords });
+  let hash = 0x811c9dc5;
+  for (let index = 0; index < source.length; index += 1) {
+    hash ^= source.charCodeAt(index);
+    hash = Math.imul(hash, 0x01000193);
+  }
+  return `profile-${(hash >>> 0).toString(16).padStart(8, "0")}`;
+}
+
+export const KNOWLEDGE_VERSION = buildKnowledgeVersion();
 
 export const SOURCES = {
   about: { label: "About Yahya", url: "/about" },
@@ -22,7 +40,7 @@ export const SOURCES = {
   credo: { label: "Professional experience at Credo", url: "/work#professional-experience-panel" },
   cv: { label: "Yahya El-Sawi CV", url: "/assets/pdfs/Yahya_ElSawi_CV.pdf" },
   recruiterPack: { label: "Yahya El-Sawi recruiter brief", url: "/assets/pdfs/Yahya_ElSawi_Recruiter_Pack.pdf" },
-  linkedin: { label: "LinkedIn", url: "https://www.linkedin.com/in/yahya-elsawi/" },
+  linkedin: { label: "LinkedIn", url: linkedinUrl },
   github: { label: "GitHub", url: "https://github.com/Yahyaelsawii" }
 };
 
@@ -36,52 +54,53 @@ export const SUGGESTED_QUESTIONS = [
 export const PROFILE = {
   identity: {
     publicName: "Yahya El-Sawi",
-    location: "Dubai, United Arab Emirates",
+    location: career.location === "Dubai, UAE" ? "Dubai, United Arab Emirates" : career.location,
     nationality: "Egyptian",
     languages: ["Arabic — native", "English — native"],
-    summary: "A product and UX designer with a computing background who pairs interaction design with frontend implementation. For frontend-focused roles, his production web work provides direct evidence of that technical range."
+    summary: career.summary
   },
   availability: {
-    status: "Available to start as soon as needed.",
-    remote: true,
-    relocation: true,
-    outsideDubai: true,
-    workAuthorization: "Self-sponsored UAE Golden Visa.",
+    status: `${career.availability.replace(/[.!?]+$/, "")}.`,
+    remote: career.remoteWorkOpen === true,
+    relocation: career.relocationOpen === true,
+    outsideDubai: career.relocationOpen === true,
+    specificDestinationsConfirmed: career.specificRelocationDestinationsConfirmed === true,
+    workAuthorization: career.workAuthorization.replace(/[.!?]+$/, ""),
     targetRoles: [
-      "Primary: Product Design and UI/UX roles",
-      "Secondary: Frontend and web development roles",
+      `Primary: ${career.targetRoles.primary}`,
+      `Secondary: ${career.targetRoles.secondary}`,
     ],
     salaryPolicy: "Do not quote a salary or range. Redirect compensation questions to Yahya and mark the conversation for his private review."
   },
   education: {
-    institution: "Rochester Institute of Technology Dubai",
+    institution: career.education.institution,
     degree: "Bachelor of Science in Computing and Information Technologies",
-    minor: "Business Administration",
-    awarded: "May 2026"
+    minor: career.education.minor,
+    awarded: career.education.awarded
   },
   experience: [
     {
-      organization: "Credo Technology Services",
-      role: "Business Development Associate Intern",
+      organization: experienceByCompany.get("Credo Technology Services").company,
+      role: experienceByCompany.get("Credo Technology Services").role,
       location: "Dubai, UAE",
-      timeline: "September 2026–Present.",
-      work: "B2B account research, prospecting, stakeholder identification, lead qualification, discovery conversations, outreach, and follow-ups, focused on Microsoft licensing and Microsoft Professional Services. Identifies relevant opportunities and introduces technical specialists; this is not a technical-consulting role and no sales results are claimed.",
+      timeline: `${experienceByCompany.get("Credo Technology Services").date}.`,
+      work: experienceByCompany.get("Credo Technology Services").description,
       companyContext: "Credo Technology Services is a Microsoft Solutions Partner."
     },
     {
-      organization: "StarLink, an Infinigate Group Company",
-      role: "Cybersecurity Intern",
+      organization: experienceByCompany.get("StarLink, an Infinigate Group Company").company,
+      role: experienceByCompany.get("StarLink, an Infinigate Group Company").role,
       location: "Dubai, UAE — on-site",
-      timeline: "Completed the StarLink Internship Program in Dubai from July to August 2026.",
+      timeline: `${experienceByCompany.get("StarLink, an Infinigate Group Company").date}.`,
       work: "Isolated-lab training with Palo Alto Networks firewalls, PAN-OS, Windows Server 2019, Active Directory, LDAP and LDAPS, SSL/TLS certificates, Certificate Authority integration, NAT, DNS, DHCP, routing, security policy matching, network troubleshooting, Forcepoint DLP concepts, GlobalProtect, VMware, and Wireshark.",
       confidentialityBoundary: "Do not share internal or customer configurations, customer names or environments, real IP addresses, credentials, internal documents or diagrams, internal procedures, customer cases, proprietary training material, internal communications, or screenshots containing company or customer information."
     },
     {
-      organization: "Gift It",
-      role: "Frontend Developer & Product Associate",
+      organization: experienceByCompany.get("Gift It").company,
+      role: experienceByCompany.get("Gift It").role,
       location: "Dubai, UAE",
-      timeline: "Joined as an intern in May 2024 for three months, then transitioned into a full-time role.",
-      work: "Production features across web, UX, and databases; testing; performance optimization; database schemas; transactional emails; and product collaboration with the founder."
+      timeline: `${experienceByCompany.get("Gift It").date}.`,
+      work: experienceByCompany.get("Gift It").description
     },
     {
       organization: "RIT Dubai",
@@ -114,105 +133,38 @@ export const PROFILE = {
       work: "Produced graduation videos and tutorials and built a Python virtual assistant with voice recognition and a GUI."
     }
   ],
-  projects: [
-    {
-      name: "Gift It Checkout & E-Invite Redesign",
-      role: "UX / Product (Web)",
-      focus: "Reduced checkout friction, improved trust, clarified e-invite setup, and treated confirmation pages and transactional emails as part of the product experience.",
-      problem: "The largest funnel drop-offs appeared around shipping and contact details, payment selection, and e-invite setup. Users also needed clearer reassurance about code delivery, legitimacy, refunds, and what happens after purchase.",
-      solution: "A clearer stepper, timely trust and support information, smart e-invite defaults, optional messaging and scheduling, preview states, and clearer order and delivery status communication.",
-      measurementPlan: ["checkout completion", "payment-step completion", "e-invite completion", "time to purchase", "support-ticket volume", "email open and click rate", "refund or dispute rate"],
-      evidence: "giftIt"
-    },
-    {
-      name: "RIT Student App 2.0",
-      role: "Product / UX",
-      timeline: "September–December 2023",
-      focus: "Reimagined the student experience around reliable sign-in, timely notifications, accessibility, and unified myCourses and SIS access.",
-      problem: "Recurring sign-in errors, delayed notifications, and missing features made the existing Pulse experience unreliable for daily academic use.",
-      solution: "A task-led information architecture with Home as the daily hub, Academics for myCourses and course work, and Admin for SIS, enrollment, payments, and official information.",
-      intendedOutcomes: ["improve sign-in reliability", "unify myCourses and SIS access", "make notifications faster and more useful"],
-      evidence: "ritApp"
-    },
-    {
-      name: "Passwordless Login & Signup Redesign",
-      role: "Lead Designer — design and handoff, not production implementation",
-      focus: "A mobile-first passwordless email-OTP experience targeting a registration-time reduction from roughly 3–4 minutes to 1–2 minutes and consistent web/mobile behavior through one API.",
-      solution: "One clear decision per screen, shorter registration, email-to-code verification, consistent API behavior, and designed error states for invalid email, incorrect or expired OTP, resend throttling, captcha failure, and existing-account routing.",
-      scopeBoundary: "Yahya owned the complete UX/UI design and handoff specifications but did not implement the production version.",
-      evidence: "passwordless"
-    },
-    {
-      name: "Vehicle Rental Operations Database",
-      role: "Database Developer",
-      focus: "An Oracle relational database with normalized operations data, roles and privileges, operational queries and views, transaction logic, and a cold-backup-to-S3 strategy. The dashboard UI is a concept based on the implemented backend.",
-      dataModel: "Core Customer, Vehicle, Rental, and Maintenance entities, with Employee and AvgDailyCost supporting ownership, operations, and pricing analysis.",
-      operationalTasks: ["find availability and create rentals", "calculate cost from date ranges", "track full maintenance history", "report revenue and rental activity", "enforce least-privilege roles"],
-      scopeBoundary: "The database and backend operations were implemented; the dashboard visual is a product concept showing how those queries could support a real interface.",
-      evidence: "vehicleRental"
-    },
-    {
-      name: "Mood Insights & Stress Alerts",
-      role: "UX Designer",
-      timeline: "November 2024",
-      focus: "A wellbeing concept that makes mood trends visible through clear time filters and gentle, supportive stress-pattern nudges.",
-      problem: "Inconsistent mood tracking makes changes and stress triggers difficult to understand, while many insight screens feel too complex.",
-      solution: "Readable mood graphs, one-tap day/week/month filters, and supportive prompts when recurring stress patterns appear.",
-      evidence: "moodInsights"
-    },
-    {
-      name: "VR Neuroanatomy",
-      disclosureStatus: "Embargoed. Only the project title and locked status are approved for public use.",
-      publicBoundary: "Do not share, summarize, infer, confirm, or deny its methods, technology, architecture, collaborators, research design, testing, participants, screenshots, results, findings, paper, publication plans, or timeline.",
-      caseStudyStatus: "The public case study will remain locked until written disclosure approval is received.",
+  projects: portfolioProjects.map(project => {
+    const sourceId = project.id === "gift-it" ? "giftIt"
+      : project.id === "giftit-saudi-market-entry" ? "giftitMarketEntry"
+      : project.id.replace(/-([a-z])/g, (_, character) => character.toUpperCase());
+    if (project.locked) return {
+      name: project.title,
+      status: "Ongoing research; public details remain under embargo.",
+      locked: true,
       evidence: "vrNeuroanatomy"
-    },
-    {
-      name: "SmartMall AI Network Automation",
-      type: "Five-person collaborative academic project for RIT Dubai's Network Design & Performance course, Spring 2026.",
-      collaboration: "All group members contributed equally across the project.",
-      focus: "A GNS3 proof of concept combining a browser dashboard, an AI-assisted Network Brain, Python and Netmiko automation, Cisco routing and switching, tenant orchestration, validation, logs, and closed-loop correction.",
-      features: ["plain-English network setup", "dynamic fictional-tenant onboarding and offboarding", "advisory, dry-run, override, fix, and deploy modes", "OSPF, RIPv2, and static-routing planning", "multi-tier tenant onboarding", "host IP heartbeat and persistence", "timed tenant offboarding", "validation and correction reports"],
-      teamResults: "In the demonstrated fault-recovery scenario, 7 of 10 pings passed before correction and 9 of 10 passed afterward. The report states that the demonstrated correction sequence took about seven minutes.",
-      limitations: "Proof of concept only: small emulated topology; IPv4-only; Cisco-focused; single-site; no production RBAC; no simultaneous onboarding; validation could be slow; AI-generated ACLs could differ from policy; reported model-call cost was significant.",
-      publicApproval: "Yahya approved public use of the project report visuals and fictional scenario names and confirmed teammate agreement. Always label visuals and outcomes as team artifacts or team results.",
-      evidence: "networkAutomation"
-    },
-    {
-      name: "Giftit Cards App Positioning & Product Growth",
-      status: "Published product; Yahya's contribution was positioning, content, and UX, not sole product development or launch.",
-      focus: "App Store content preparation, product messages, keyword and category considerations, and workflow testing for an app with individual and group gifting, gift cards, and e-invites.",
-      outcome: "The app is live. No downloads, rankings, or conversion results are claimed.",
-      appStore: "https://apps.apple.com/ae/app/giftit-cards/id6469349957",
-      evidence: "giftitAppPositioning"
-    },
-    {
-      name: "Giftit Email & Customer Lifecycle System",
-      status: "Implemented email templates and ongoing management.",
-      focus: "SendGrid dynamic templates, responsive HTML/CSS, branded transactional copy, template organization, and template-ID verification across account verification, orders, gifting, group gifting, e-invites, and refunds.",
-      outcome: "Implemented communications; no engagement or revenue improvements are claimed.",
-      evidence: "giftitEmailLifecycle"
-    },
-    {
-      name: "Giftit Saudi Arabic Website",
-      status: "Ongoing development; no public launch confirmed.",
-      focus: "Arabic localization, responsive frontend implementation, and right-to-left layout considerations.",
-      evidence: "giftitSaudiArabic"
-    },
-    {
-      name: "Ramadan Campaign | One Table",
-      status: "Campaign concept only; not launched.",
-      focus: "A proposed Instagram Reel concept using the message Gifting for All to connect Ramadan togetherness with collective gifting. Blaze.ai and Sora were explored during concept development.",
-      outcome: "No finished video, launch, donation, or engagement result is confirmed.",
-      evidence: "giftitOneTable"
-    },
-    {
-      name: "Giftit Saudi Arabia Market Entry Strategy",
-      status: "March–April 2025 marketing strategy proposal; not commercially implemented.",
-      focus: "Market research, competitive positioning, localization, four Ps, customer funnel, and proposed channels and seasonal opportunities.",
-      evidence: "giftitMarketEntry"
-    }
-  ],
+    };
+    const verification = Object.fromEntries((project.verification || []).map(([label, value]) => [label.toLowerCase(), value]));
+    return {
+      name: project.title,
+      role: project.role,
+      timeline: project.displayDate || undefined,
+      category: project.category,
+      status: project.status || project.featuredStatus,
+      appStore: project.appStoreUrl,
+      focus: project.summary,
+      problem: verification.problem || verification.need || verification.opportunity || verification.context,
+      contribution: verification.contribution,
+      delivery: verification.delivery || verification.deliverable,
+      outcome: verification.outcome,
+      process: verification.process,
+      publicSections: (project.sections || []).slice(0, 3).map(section => ({
+        title: section.title,
+        summary: section.text?.slice(0, 280),
+        evidence: section.facts?.slice(0, 2).map(fact => fact.slice(0, 180))
+      })),
+      evidence: sourceId
+    };
+  }),
     skills: {
     productAndDesign: ["UI/UX design", "product thinking", "accessibility", "design systems", "responsive design", "wireframing", "prototyping", "product prototyping", "user flow testing", "Figma", "Arabic localization", "RTL design"],
     frontendAndWeb: ["HTML", "CSS", "JavaScript", "Vue.js", "Vue 3", "Vite", "React Native", "Tailwind CSS", "PHP", "Flask", "SendGrid"],
@@ -238,9 +190,9 @@ export const PROFILE = {
     "Research Security Training (Combined) — CITI Program / RIT, completed July 28, 2026; expires July 28, 2027; record 78576185"
   ],
   contact: {
-    email: "yahyaelsawi1@gmail.com",
-    phone: "+971 50 168 1229",
-    linkedin: "https://www.linkedin.com/in/yahya-elsawi/",
+    email: career.email,
+    phone: career.phone,
+    linkedin: linkedinUrl,
     github: "https://github.com/Yahyaelsawii",
     instagram: "@ya7ya_sawii",
     threads: "@ya7ya_sawii",

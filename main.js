@@ -3,6 +3,69 @@ const PUBLIC_SITE_ORIGIN = 'https://yahyaelsawi.website';
 const isGitHubPages = location.hostname === 'yahyaelsawii.github.io';
 const apiEndpoint = path => `${isGitHubPages ? CLOUDFLARE_SERVICE_ORIGIN : ''}${path}`;
 
+function initializePersonalization() {
+  const manageButton = document.querySelector('[data-open-personalization]');
+  if (!manageButton) return;
+  import('./personalization.js').then(({ INTEREST_COOKIE, INTEREST_CATEGORIES, createInterestRecord, recordProjectInterest, recordCategoryInterest }) => {
+    const read = () => {
+      const value = document.cookie.split('; ').find(item => item.startsWith(`${INTEREST_COOKIE}=`))?.split('=').slice(1).join('=');
+      try {
+        const parsed = value ? JSON.parse(decodeURIComponent(value)) : null;
+        return parsed?.v === 1 && parsed.consented === true ? createInterestRecord(parsed) : null;
+      } catch { return null; }
+    };
+    const write = record => {
+      if (location.protocol !== 'https:' || !record?.consented) return;
+      const payload = encodeURIComponent(JSON.stringify(createInterestRecord(record)));
+      if (payload.length <= 3500) document.cookie = `${INTEREST_COOKIE}=${payload}; Path=/; Max-Age=15552000; SameSite=Lax; Secure`;
+    };
+    const remove = () => { document.cookie = `${INTEREST_COOKIE}=; Path=/; Max-Age=0; SameSite=Lax; Secure`; };
+    const dismissed = () => { try { return sessionStorage.getItem('portfolio-personalization-choice') === 'declined'; } catch { return false; } };
+    const banner = document.createElement('section');
+    banner.className = 'personalization-panel';
+    banner.setAttribute('aria-label', 'Optional project personalization');
+    banner.hidden = true;
+    banner.innerHTML = `<div class="personalization-copy"><strong>Optional project personalization</strong><p>With your permission, this device can remember project categories you open or filter for up to six months. This does not leave your browser or change the curated homepage order. No names, contact details, or AI conversations are collected.</p><fieldset><legend>Choose interests (optional)</legend>${INTEREST_CATEGORIES.map(category => `<label><input type="checkbox" value="${category}"> ${category.replaceAll('-', ' ')}</label>`).join('')}</fieldset></div><div class="personalization-actions"><button type="button" class="btn btn-secondary" data-personalization-accept>Allow personalization</button><button type="button" class="btn btn-secondary" data-personalization-reject>Reject optional</button><button type="button" class="text-link" data-personalization-clear>Turn off and clear data</button></div></section>`;
+    document.querySelector('main')?.before(banner);
+    const show = () => { banner.hidden = false; banner.querySelector('[data-personalization-accept]')?.focus(); };
+    const hide = () => { banner.hidden = true; manageButton.focus(); };
+    manageButton.addEventListener('click', show);
+    banner.querySelector('[data-personalization-accept]').addEventListener('click', () => {
+      const explicit = [...banner.querySelectorAll('input:checked')].map(input => input.value);
+      write({ v: 1, consented: true, updatedAt: Date.now(), explicit, visits: [], filters: [] });
+      try { sessionStorage.removeItem('portfolio-personalization-choice'); } catch {}
+      hide();
+    });
+    banner.querySelector('[data-personalization-reject]').addEventListener('click', () => {
+      remove();
+      try { sessionStorage.setItem('portfolio-personalization-choice', 'declined'); } catch {}
+      hide();
+    });
+    banner.querySelector('[data-personalization-clear]').addEventListener('click', () => {
+      remove();
+      try { sessionStorage.setItem('portfolio-personalization-choice', 'declined'); } catch {}
+      hide();
+    });
+    const getRecord = () => read();
+    if (!getRecord() && !dismissed()) banner.hidden = false;
+    const activeRecord = getRecord();
+    if (activeRecord) {
+      const project = document.body.dataset.projectId;
+      if (project) write(recordProjectInterest(activeRecord, project));
+    }
+    document.querySelectorAll('#all-projects .filter').forEach(button => button.addEventListener('click', () => {
+      const record = getRecord();
+      const category = ({ ux:'product-ux', email:'frontend', data:'databases', network:'networking-ai' })[button.dataset.filter] || button.dataset.filter;
+      if (record && category !== 'all' && category !== 'locked') write(recordCategoryInterest(record, category));
+    }));
+    document.querySelectorAll('.project-card a.project-art, .project-card [data-project-link]').forEach(link => link.addEventListener('click', () => {
+      const record = getRecord();
+      const project = link.closest('.project-card')?.dataset.projectUrl?.split('/').filter(Boolean).at(-1);
+      if (record && project) write(recordProjectInterest(record, project));
+    }));
+  }).catch(() => { /* Personalization is optional; the portfolio remains fully usable. */ });
+}
+
 if (isGitHubPages) {
   const legacyPath = location.pathname.replace(/^\/portfolio\/?/, '/');
   const legacyRoutes = {
@@ -782,15 +845,7 @@ function initializeContactForm() {
 
 document.addEventListener('DOMContentLoaded', () => {
   if (document.readyState !== 'complete') showSiteLoader();
-  const main = document.querySelector('main');
-  if (main) {
-    main.id ||= 'main-content';
-    const skipLink = document.createElement('a');
-    skipLink.className = 'skip-link';
-    skipLink.href = `#${main.id}`;
-    skipLink.textContent = 'Skip to main content';
-    document.body.prepend(skipLink);
-  }
+  // The static build emits a native skip link so it is available without JavaScript.
 
   const menu = document.querySelector('.menu-btn');
   const links = document.querySelector('.nav-links');
@@ -839,6 +894,7 @@ document.addEventListener('DOMContentLoaded', () => {
   initializePortfolioAI();
   initializeNetworkDemo();
   initializeContactForm();
+  initializePersonalization();
 
   const revealTargets = document.querySelectorAll('.section, .page-hero, .project-card, .story-block, .cap-card, .timeline-item, .skill-group, .certificate, .contact-item, .log-entry, .experience-card');
   if ('IntersectionObserver' in window && !matchMedia('(prefers-reduced-motion: reduce)').matches) {

@@ -64,16 +64,17 @@ const failures = [];
 const career = JSON.parse(await readFile(path.join(root, "data/career.json"), "utf8"));
 const careerSource = await readFile(path.join(root, "functions/_shared/profile.js"), "utf8");
 const workSource = await readFile(path.join(root, "work.html"), "utf8");
+if (!careerSource.includes('from "../../data/career.json" with { type: "json" }')) {
+  failures.push("Yahya'AI career facts must be generated from data/career.json");
+}
 for (const item of career.experience) {
   const companyText = item.company.replaceAll("&", "&amp;");
   if (!workSource.includes(companyText) || !workSource.includes(item.date) || !careerSource.includes(item.company)) {
     failures.push(`Career source of truth is out of sync for ${item.company}`);
   }
 }
-for (const required of ["product and UX designer", "Primary: Product Design and UI/UX roles", "Secondary: Frontend and web development roles"]) {
-  if (!careerSource.includes(required) && !workSource.includes(required)) {
-    failures.push(`Published career positioning is missing: ${required}`);
-  }
+if (!careerSource.includes("career.summary") || !careerSource.includes("career.targetRoles.primary") || !careerSource.includes("career.targetRoles.secondary")) {
+  failures.push("Yahya'AI career positioning must be generated from approved career data");
 }
 
 for (const htmlFile of htmlFiles) {

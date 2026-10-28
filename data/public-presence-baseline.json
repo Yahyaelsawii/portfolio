@@ -1,0 +1,43 @@
+{
+  "source": "GitHub public REST API; captured 2026-10-28; read-only public profile snapshot",
+  "profile": {
+    "login": "Yahyaelsawii",
+    "name": "Yahya El-Sawi",
+    "bio": null,
+    "location": "UAE, Dubai",
+    "company": null,
+    "blog": "",
+    "public_repos": 4,
+    "updated_at": "2026-10-18T12:57:42Z"
+  },
+  "repositories": [
+    {
+      "name": "pixart",
+      "html_url": "https://github.com/Yahyaelsawii/pixart",
+      "description": null,
+      "homepage": null,
+      "pushed_at": "2021-09-21T11:07:11Z"
+    },
+    {
+      "name": "portfolio",
+      "html_url": "https://github.com/Yahyaelsawii/portfolio",
+      "description": "Yahya Elsawi's official portfolio",
+      "homepage": null,
+      "pushed_at": "2026-10-28T11:29:42Z"
+    },
+    {
+      "name": "Senior_project",
+      "html_url": "https://github.com/Yahyaelsawii/Senior_project",
+      "description": null,
+      "homepage": null,
+      "pushed_at": "2026-02-16T09:55:25Z"
+    },
+    {
+      "name": "web1",
+      "html_url": "https://github.com/Yahyaelsawii/web1",
+      "description": null,
+      "homepage": null,
+      "pushed_at": "2022-09-19T13:56:55Z"
+    }
+  ]
+}

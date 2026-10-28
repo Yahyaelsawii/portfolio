@@ -1,4 +1,4 @@
-import { KNOWLEDGE_VERSION, PROFILE_CONTEXT, SOURCES } from "../_shared/profile.js";
+import { KNOWLEDGE_VERSION, PROFILE, PROFILE_CONTEXT, SOURCES } from "../_shared/profile.js";
 import { retentionStatements } from "../_shared/retention.js";
 import { isApprovedPublicOrigin, publicCorsHeaders, publicPreflightResponse } from "../_shared/cors.js";
 
@@ -161,6 +161,15 @@ function deterministicReply(question, context, history = []) {
     };
   }
 
+  if (/\b(?:email lifecycle|customer email|transactional email|sendgrid templates?)\b/i.test(question)
+      || context === "giftit-email-lifecycle") {
+    return {
+      answer: "Yahya developed and managed branded SendGrid transactional templates using responsive HTML/CSS, dynamic fields, customer-focused copy, template organization, and template-ID checks for verification, orders, gifting, group gifting, e-invites, and refunds. No engagement or revenue lift is claimed.",
+      flag: "none",
+      sourceIds: ["giftitEmailLifecycle"]
+    };
+  }
+
   const previousAnswer = lastAssistantAnswer(history);
   const shortContactFollowUp = /^(?:how|how\?|how can i|how do i|where|where\?|what link|which link)[\s?.!]*$/i.test(question)
     && /\b(?:contact|reach|email|contact page)\b/i.test(previousAnswer);
@@ -198,10 +207,31 @@ function deterministicReply(question, context, history = []) {
     };
   }
 
-  const contact = /\b(contact|email|phone|whatsapp|linkedin|github|reach yahya|get in touch)\b|تواصل|البريد|الهاتف|واتساب/i;
+  if (/\b(?:linkedin|linked in)\b/i.test(question)) {
+    return { answer: `Yahya's LinkedIn profile is ${SOURCES.linkedin.url}.`, flag: "none", sourceIds: ["linkedin"] };
+  }
+  if (/\bgithub\b/i.test(question)) {
+    return { answer: "Yahya's GitHub profile is https://github.com/Yahyaelsawii.", flag: "none", sourceIds: ["github"] };
+  }
+  if (/\b(?:phone number|phone|mobile number|telephone)\b/i.test(question)) {
+    return { answer: `Yahya's public phone number is ${PROFILE.contact.phone}.`, flag: "none", sourceIds: ["contact"] };
+  }
+  if (/\b(?:email address|your email|his email|email me)\b/i.test(question)) {
+    return { answer: `Yahya's public email address is ${PROFILE.contact.email}.`, flag: "none", sourceIds: ["contact"] };
+  }
+
+  if (/\b(?:where|which|what)\b.{0,50}\b(?:outside|country|countries|relocat)\b|\b(?:outside|country|countries)\b.{0,50}\b(?:dubai|relocat)\b/i.test(question)) {
+    return {
+      answer: "Yahya is open to relocation, but he has not publicly confirmed specific countries. He is based in Dubai; his UAE Golden Visa does not establish work authorization elsewhere.",
+      flag: "none",
+      sourceIds: ["about", "recruiter"]
+    };
+  }
+
+  const contact = /\b(contact|email me|your email|his email|email address|phone|whatsapp|linkedin|github|reach yahya|get in touch)\b|تواصل|البريد|الهاتف|واتساب/i;
   if (contact.test(question) || shortContactFollowUp) {
     return {
-      answer: "You can reach Yahya at yahyaelsawi1@gmail.com or +971 50 168 1229. You can also use the LinkedIn and GitHub links on his Contact page.",
+      answer: `You can reach Yahya at ${PROFILE.contact.email} or ${PROFILE.contact.phone}. His LinkedIn and GitHub profiles are also linked on the Contact page.`,
       flag: "none",
       sourceIds: ["contact", "linkedin", "github"]
     };
@@ -210,7 +240,7 @@ function deterministicReply(question, context, history = []) {
   const availability = /\b(available|availability|start date|start work|relocat|remote work|work authorization|golden visa|based|location|language|arabic|english)\b|متاح|الانتقال|عن بعد|التأشيرة|اللغة|دبي/i;
   if (availability.test(question)) {
     return {
-      answer: "Yahya is based in Dubai, can start as soon as needed, and is open to remote work and relocation. He has a self-sponsored UAE Golden Visa and speaks Arabic and English natively.",
+      answer: `Yahya is based in ${PROFILE.identity.location}, can start as soon as needed, and is ${PROFILE.availability.remote ? "open" : "not currently open"} to remote work and ${PROFILE.availability.relocation ? "open" : "not currently open"} to relocation. He has ${PROFILE.availability.workAuthorization} and speaks Arabic and English natively.`,
       flag: "none",
       sourceIds: ["about", "resume", "contact"]
     };
@@ -219,7 +249,7 @@ function deterministicReply(question, context, history = []) {
   const targetRoles = /\b(roles?|job|position|looking for|role fit|hire|hiring|opportunit)\b|وظائف|منصب|توظيف|فرص/i;
   if (targetRoles.test(question)) {
     return {
-      answer: "Yahya is targeting UI/UX and product design, frontend/web development, software and product roles, plus selected technical systems and network opportunities. His strongest fit combines product thinking, clear interfaces, and hands-on implementation.",
+      answer: `Yahya is primarily targeting ${PROFILE.availability.targetRoles[0].replace(/^Primary:\s*/, "")}, with ${PROFILE.availability.targetRoles[1].replace(/^Secondary:\s*/, "")} as his secondary direction. His strongest fit combines product thinking, clear interfaces, and hands-on implementation.`,
       flag: "none",
       sourceIds: ["recruiter", "resume", "work"]
     };
@@ -301,7 +331,8 @@ function selectSourceIds(question, context) {
 
   if (context && CONTEXT_SOURCES[context]) add(CONTEXT_SOURCES[context]);
 
-  if (/gift|checkout|invite|otp|login|signup|passwordless/.test(value)) add("giftIt", "passwordless");
+  if (/email lifecycle|customer email|transactional email|sendgrid/.test(value)) add("giftitEmailLifecycle");
+  else if (/gift|checkout|invite|otp|login|signup|passwordless/.test(value)) add("giftIt", "passwordless");
   if (/rit app|student app|mycourses|sis|pulse/.test(value)) add("ritApp");
   if (/vehicle|rental|oracle|database|sql|backup/.test(value)) add("vehicleRental");
   if (/mood|stress|wellbeing|mental health/.test(value)) add("moodInsights");

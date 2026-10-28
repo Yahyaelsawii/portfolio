@@ -32,6 +32,9 @@ jobs:
           mkdir .staging-pages
           cp wrangler.staging.jsonc .staging-pages/wrangler.jsonc
           cp -R dist functions .staging-pages/
+          mkdir .staging-pages/data
+          cp data/projects.js .staging-pages/data/projects.js
+          cp data/career.json .staging-pages/data/career.json
       - name: Deploy isolated staging build
         uses: cloudflare/wrangler-action@v3
         with:

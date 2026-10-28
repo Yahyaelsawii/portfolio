@@ -112,11 +112,13 @@ try {
       const state = await page.evaluate(() => ({
         h1: [...document.querySelectorAll("h1")].filter(node => node.getClientRects().length).length,
         main: Boolean(document.querySelector("main")),
+        skipLinks: document.querySelectorAll('.skip-link[href="#main-content"]').length,
         overflow: document.documentElement.scrollWidth - document.documentElement.clientWidth,
         title: document.title
       }));
       if (state.h1 !== 1) failures.push(`${viewport.name} ${route}: expected one visible h1, found ${state.h1}`);
       if (!state.main) failures.push(`${viewport.name} ${route}: missing main landmark`);
+      if (!route.startsWith("/admin/") && state.skipLinks !== 1) failures.push(`${viewport.name} ${route}: expected one native skip link, found ${state.skipLinks}`);
       if (state.overflow > 1) failures.push(`${viewport.name} ${route}: horizontal overflow ${state.overflow}px`);
       if (!state.title.trim()) failures.push(`${viewport.name} ${route}: empty title`);
       if (runtimeErrors.length) failures.push(`${viewport.name} ${route}: ${runtimeErrors.join(" | ")}`);
@@ -168,9 +170,15 @@ try {
   });
   const noScriptPage = await noScriptContext.newPage();
   await noScriptPage.goto(`${base}/`, { waitUntil:"load" });
+  await noScriptPage.keyboard.press("Tab");
+  if (!await noScriptPage.evaluate(() => document.activeElement?.classList.contains("skip-link"))) failures.push("no-JS skip link: first keyboard stop is not the skip link");
+  await noScriptPage.keyboard.press("Enter");
+  if (!await noScriptPage.evaluate(() => location.hash === "#main-content" && document.activeElement?.id === "main-content")) failures.push("no-JS skip link: activation did not move focus to main content");
   if (await noScriptPage.locator("#featured-projects .project-card").count() !== 5) failures.push("no-JS homepage: five featured projects were not pre-rendered");
   await noScriptPage.goto(`${base}/work`, { waitUntil:"load" });
   if (await noScriptPage.locator("#all-projects .project-card").count() !== 12) failures.push("no-JS work: project index was not pre-rendered");
+  await noScriptPage.goto(`${base}/work/network-automation/#main-content`, { waitUntil:"load" });
+  if (!await noScriptPage.evaluate(() => location.hash === "#main-content" && document.querySelector("main#main-content")?.tabIndex === -1)) failures.push("direct main-content hash: target is missing or not focusable");
   for (const route of ["/work/gift-it", "/work/rit-app", "/work/passwordless", "/work/vehicle-rental", "/work/mood-insights"]) {
     await noScriptPage.goto(`${base}${route}`, { waitUntil:"load" });
     if (await noScriptPage.locator("h1").count() !== 1) failures.push(`no-JS ${route}: project title was not pre-rendered`);
@@ -394,8 +402,8 @@ try {
   const featuredTrack = detailPage.locator("#featured-projects");
   const featuredScrollWidth = await featuredTrack.evaluate(node => node.scrollWidth - node.clientWidth);
   if (featuredScrollWidth <= 0) failures.push("home projects: featured rail does not overflow for the next-card peek");
-  const peek = await featuredCards.nth(3).evaluate(card => ({ left:card.getBoundingClientRect().left, right:card.getBoundingClientRect().right, width:card.getBoundingClientRect().width, viewport:innerWidth }));
-  if (!(peek.left < peek.viewport && peek.right > peek.viewport && peek.width > 0)) failures.push("home projects: next card is not partially visible on desktop");
+  const peek = await featuredCards.nth(4).evaluate(card => ({ left:card.getBoundingClientRect().left, right:card.getBoundingClientRect().right, width:card.getBoundingClientRect().width, viewport:innerWidth }));
+  if (!(peek.left < peek.viewport && peek.right > peek.viewport && peek.width > 0)) failures.push("home projects: fifth featured card is not partially visible on desktop");
   await detailPage.getByRole("button", { name:"Next featured projects" }).click();
   await detailPage.waitForFunction(() => document.querySelector("#featured-projects")?.scrollLeft > 0);
   const featuredTops = await featuredCards.evaluateAll(cards => cards.map(card => Math.round(card.getBoundingClientRect().top)));

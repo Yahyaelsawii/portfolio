@@ -16,7 +16,7 @@ const forbiddenNames = new Set([
 ]);
 const forbiddenDirectories = new Set([".git", "functions", "scripts", "test", "workers"]);
 const addedGiftitProjects = ["giftit-saudi-market-entry", "giftit-one-table", "giftit-email-lifecycle", "giftit-saudi-arabic", "giftit-app-positioning"];
-const requiredPaths = ["index.html", "404.html", "admin/index.html", "admin/log/index.html", "_headers", "_redirects", "_routes.json", "assets/pdfs/Yahya_ElSawi_CV.pdf", "assets/pdfs/Yahya_ElSawi_Recruiter_Pack.pdf", "output/pdf/Yahya_ElSawi_Portfolio_Roadmap_and_Sitemap.pdf", "about/index.html", "contact/index.html", "resume/index.html", "terminal/index.html", "work/index.html", "work/gift-it/index.html", "work/network-automation/index.html", "work/vr-neuroanatomy/index.html", ...addedGiftitProjects.map(id => `work/${id}/index.html`)];
+const requiredPaths = ["index.html", "404.html", "admin/index.html", "admin/log/index.html", "_headers", "_redirects", "_routes.json", "personalization.js", "assets/pdfs/Yahya_ElSawi_CV.pdf", "assets/pdfs/Yahya_ElSawi_CV_Previous_2026-08-17.pdf", "assets/pdfs/Yahya_ElSawi_Recruiter_Pack.pdf", "output/pdf/Yahya_ElSawi_Portfolio_Roadmap_and_Sitemap.pdf", "about/index.html", "contact/index.html", "resume/index.html", "terminal/index.html", "work/index.html", "work/gift-it/index.html", "work/network-automation/index.html", "work/vr-neuroanatomy/index.html", ...addedGiftitProjects.map(id => `work/${id}/index.html`)];
 const structuredDataPaths = [
   "index.html",
   "about/index.html",
@@ -123,6 +123,12 @@ if (homeHtml.includes("project-image-button")) {
 if (!homeHtml.includes("Terms and Conditions") || !homeHtml.includes("Privacy Policy")) {
   throw new Error("The public footer must link to both policies");
 }
+if (!homeHtml.includes('class="skip-link" href="#main-content"') || !homeHtml.includes('<main id="main-content" tabindex="-1">')) {
+  throw new Error("A native skip link and keyboard focus target must be available before JavaScript");
+}
+if (!homeHtml.includes("data-open-personalization")) {
+  throw new Error("Privacy choices and the optional first-party personalization module must be available");
+}
 if (!homeHtml.includes("September 2024–May 2026") || !homeHtml.includes("June 2026") || !homeHtml.includes("November 2024")) {
   throw new Error("Featured project cards must show verified dates");
 }
@@ -130,6 +136,22 @@ if (!homeHtml.includes("September 2024–May 2026") || !homeHtml.includes("June 
 const workHtml = await readFile(path.join(output, "work/index.html"), "utf8");
 if (countMatches(workHtml, /<article class="project-card"/g) !== 12) {
   throw new Error("Work must contain exactly twelve pre-rendered project cards");
+}
+const sitemapText = await readFile(path.join(output, "sitemap.xml"), "utf8");
+for (const projectUrl of expectedWorkProjectUrls.filter(url => !url.endsWith("/vr-neuroanatomy"))) {
+  if (!sitemapText.includes(`<loc>${projectUrl}</loc>`)) throw new Error(`Public project is missing from the sitemap: ${projectUrl}`);
+}
+const headersText = await readFile(path.join(output, "_headers"), "utf8");
+if (!headersText.includes("/assets/pdfs/Yahya_ElSawi_CV_Previous_2026-08-17.pdf") || !headersText.includes("X-Robots-Tag: noindex, nofollow, noarchive")) {
+  throw new Error("The archived CV must remain excluded from search indexing");
+}
+const resumeHtml = await readFile(path.join(output, "resume/index.html"), "utf8");
+if (!resumeHtml.includes("Previous CV (17 August 2026)") || !resumeHtml.includes("may be outdated")) {
+  throw new Error("The Resume page must identify the archived CV and its historical status");
+}
+const networkHtml = await readFile(path.join(output, "work/network-automation/index.html"), "utf8");
+if (!networkHtml.includes('class="content-nav" aria-label="Case study contents"') || !networkHtml.includes('href="#network-limitations"')) {
+  throw new Error("Network Automation must provide its shared case-study contents navigation");
 }
 if (workHtml.includes("project-image-button")) {
   throw new Error("Work project covers must link to their case studies instead of opening a lightbox");

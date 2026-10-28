@@ -1,0 +1,33 @@
+name: Monthly public presence review
+
+on:
+  schedule:
+    - cron: "17 3 1 * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: monthly-presence-review
+  cancel-in-progress: false
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Compare approved public project records with GitHub's public profile
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node scripts/monthly-presence-review.mjs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-public-presence-review-${{ github.run_number }}
+          path: ${{ runner.temp }}/portfolio-presence-review.*
+          if-no-files-found: error
+          retention-days: 90

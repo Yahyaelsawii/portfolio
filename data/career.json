@@ -4,6 +4,13 @@
   "summary": "Product and UX designer with a BSc in Computing and Information Technologies and production experience in frontend development. Connects user needs and business goals to clear flows and practical interfaces, with technical grounding to collaborate closely with engineering.",
   "location": "Dubai, UAE",
   "availability": "Available to start as soon as needed",
+  "targetRoles": {
+    "primary": "Product Design and UI/UX roles",
+    "secondary": "Frontend and web development roles"
+  },
+  "remoteWorkOpen": true,
+  "relocationOpen": true,
+  "specificRelocationDestinationsConfirmed": false,
   "workAuthorization": "Self-sponsored UAE Golden Visa",
   "email": "yahyaelsawi1@gmail.com",
   "phone": "+971 50 168 1229",
@@ -19,19 +26,19 @@
       "company": "Credo Technology Services",
       "role": "Business Development Associate Intern",
       "date": "September 2026–Present",
-      "description": "Research accounts, identify stakeholders, qualify needs, and support outreach and discovery for Microsoft licensing and Professional Services opportunities. Connect relevant prospects with technical specialists; no sales totals or consulting delivery are claimed."
+      "description": "Research accounts, identify stakeholders, qualify potential business needs, and support discovery conversations, outreach, and follow-ups for Microsoft licensing and Microsoft Professional Services. Identify relevant opportunities and introduce prospects to technical specialists; no sales results are claimed, and no technical-consulting work is claimed."
     },
     {
       "company": "StarLink, an Infinigate Group Company",
       "role": "Cybersecurity Intern",
       "date": "July–August 2026",
-      "description": "Completed isolated virtual lab training in firewall policy, NAT, identity, LDAP/LDAPS, remote access, network traffic analysis, and troubleshooting. No production deployments or confidential work samples are claimed."
+      "description": "Isolated-lab training with Palo Alto Networks firewalls, PAN-OS, Windows Server 2019, Active Directory, LDAP and LDAPS, SSL/TLS certificates, Certificate Authority integration, NAT, DNS, DHCP, routing, security policy matching, network troubleshooting, Forcepoint DLP concepts, GlobalProtect, VMware, and Wireshark."
     },
     {
       "company": "Gift It",
       "role": "Frontend Developer & Product Associate",
       "date": "May 2024–Present",
-      "description": "Build and maintain responsive web experiences; prototype UX improvements and test user journeys; develop transactional email templates; and contribute to product, localization, and positioning work."
+      "description": "Production features across web, UX, and databases; testing; performance optimization; database schemas; transactional emails; and product collaboration with the founder."
     }
   ],
   "projects": [
