@@ -127,7 +127,7 @@ if (!homeHtml.includes('class="skip-link" href="#main-content"') || !homeHtml.in
   throw new Error("A native skip link and keyboard focus target must be available before JavaScript");
 }
 if (!homeHtml.includes("data-open-personalization")) {
-  throw new Error("Privacy choices and the optional first-party personalization module must be available");
+  throw new Error("Cookie settings and the optional first-party personalization module must be available");
 }
 if (!homeHtml.includes("September 2024–May 2026") || !homeHtml.includes("June 2026") || !homeHtml.includes("November 2024")) {
   throw new Error("Featured project cards must show verified dates");
@@ -146,8 +146,8 @@ if (!headersText.includes("/assets/pdfs/Yahya_ElSawi_CV.pdf") || !headersText.in
   throw new Error("The owner-supplied August CV must remain excluded from search indexing");
 }
 const resumeHtml = await readFile(path.join(output, "resume/index.html"), "utf8");
-if (!resumeHtml.includes("Current CV / August 2026") || !resumeHtml.includes('href="assets/pdfs/Yahya_ElSawi_CV.pdf"') || !resumeHtml.includes('data="assets/pdfs/Yahya_ElSawi_CV.pdf#view=FitH"')) {
-  throw new Error("The Resume page must identify and link the owner-supplied August CV");
+if (!resumeHtml.includes("Current CV / August 2026") || !resumeHtml.includes('href="assets/pdfs/Yahya_ElSawi_CV.pdf"') || !resumeHtml.includes('src="assets/Pictures/resume/yahya-elsawi-cv-august-2026.png"')) {
+  throw new Error("The Resume page must link the owner-supplied August CV and its exact-page preview");
 }
 try {
   await access(path.join(output, "assets/pdfs/Yahya_ElSawi_CV_Previous_2026-08-17.pdf"));
