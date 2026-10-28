@@ -24,6 +24,22 @@ function escapeHtml(value) {
     .replaceAll("'", "&#39;");
 }
 
+function makeProjectRouteAssetsRootRelative(html) {
+  return html.replace(/\b(href|src|srcset)=(['"])(.*?)\2/gi, (match, attribute, quote, value) => {
+    const toRoot = candidate => {
+      const trimmed = candidate.trimStart();
+      return /^[/#?]|^[a-z][a-z\d+.-]*:/i.test(trimmed) ? candidate : `/${candidate}`;
+    };
+    const rootedValue = attribute.toLowerCase() === "srcset"
+      ? value.split(",").map(candidate => {
+          const [url, ...descriptor] = candidate.trim().split(/\s+/);
+          return [toRoot(url), ...descriptor].join(" ");
+        }).join(", ")
+      : toRoot(value);
+    return `${attribute}=${quote}${rootedValue}${quote}`;
+  });
+}
+
 function renderProjectCard(project) {
   const category = `${project.category} ${project.tags.join(" ")}`.toLowerCase();
   const date = project.displayDate ? `<span class="project-date">${escapeHtml(project.displayDate)}</span>` : "";
@@ -413,9 +429,10 @@ for (const [sourcePath, routePath] of Object.entries(projectRoutes)) {
     ? replaceBuildTarget(source, buildTargets.projectDetail, renderProjectDetail(project), sourcePath)
     : source;
   for (const destinationPath of [sourcePath, routePath]) {
+    const routeHtml = destinationPath === routePath ? makeProjectRouteAssetsRootRelative(html) : html;
     const destination = path.join(output, destinationPath);
     await mkdir(path.dirname(destination), { recursive:true });
-    await writeFile(destination, html);
+    await writeFile(destination, routeHtml);
   }
 }
 
