@@ -38,7 +38,7 @@ export const SOURCES = {
   giftitOneTable: { label: "Ramadan Campaign | One Table", url: "/work/giftit-one-table" },
   giftitMarketEntry: { label: "Giftit Saudi Arabia Market Entry Strategy", url: "/work/giftit-saudi-market-entry" },
   credo: { label: "Professional experience at Credo", url: "/work#professional-experience-panel" },
-  cv: { label: "Yahya El-Sawi CV", url: "/assets/pdfs/Yahya_ElSawi_CV.pdf" },
+  cv: { label: "Yahya El-Sawi CV (August 2026)", url: "/assets/pdfs/Yahya_ElSawi_CV.pdf" },
   recruiterPack: { label: "Yahya El-Sawi recruiter brief", url: "/assets/pdfs/Yahya_ElSawi_Recruiter_Pack.pdf" },
   linkedin: { label: "LinkedIn", url: linkedinUrl },
   github: { label: "GitHub", url: "https://github.com/Yahyaelsawii" }

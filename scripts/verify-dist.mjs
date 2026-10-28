@@ -16,7 +16,7 @@ const forbiddenNames = new Set([
 ]);
 const forbiddenDirectories = new Set([".git", "functions", "scripts", "test", "workers"]);
 const addedGiftitProjects = ["giftit-saudi-market-entry", "giftit-one-table", "giftit-email-lifecycle", "giftit-saudi-arabic", "giftit-app-positioning"];
-const requiredPaths = ["index.html", "404.html", "admin/index.html", "admin/log/index.html", "_headers", "_redirects", "_routes.json", "personalization.js", "assets/pdfs/Yahya_ElSawi_CV.pdf", "assets/pdfs/Yahya_ElSawi_CV_Previous_2026-08-17.pdf", "assets/pdfs/Yahya_ElSawi_Recruiter_Pack.pdf", "output/pdf/Yahya_ElSawi_Portfolio_Roadmap_and_Sitemap.pdf", "about/index.html", "contact/index.html", "resume/index.html", "terminal/index.html", "work/index.html", "work/gift-it/index.html", "work/network-automation/index.html", "work/vr-neuroanatomy/index.html", ...addedGiftitProjects.map(id => `work/${id}/index.html`)];
+const requiredPaths = ["index.html", "404.html", "admin/index.html", "admin/log/index.html", "_headers", "_redirects", "_routes.json", "personalization.js", "assets/pdfs/Yahya_ElSawi_CV.pdf", "assets/pdfs/Yahya_ElSawi_Recruiter_Pack.pdf", "output/pdf/Yahya_ElSawi_Portfolio_Roadmap_and_Sitemap.pdf", "about/index.html", "contact/index.html", "resume/index.html", "terminal/index.html", "work/index.html", "work/gift-it/index.html", "work/network-automation/index.html", "work/vr-neuroanatomy/index.html", ...addedGiftitProjects.map(id => `work/${id}/index.html`)];
 const structuredDataPaths = [
   "index.html",
   "about/index.html",
@@ -142,12 +142,18 @@ for (const projectUrl of expectedWorkProjectUrls.filter(url => !url.endsWith("/v
   if (!sitemapText.includes(`<loc>${projectUrl}</loc>`)) throw new Error(`Public project is missing from the sitemap: ${projectUrl}`);
 }
 const headersText = await readFile(path.join(output, "_headers"), "utf8");
-if (!headersText.includes("/assets/pdfs/Yahya_ElSawi_CV_Previous_2026-08-17.pdf") || !headersText.includes("X-Robots-Tag: noindex, nofollow, noarchive")) {
-  throw new Error("The archived CV must remain excluded from search indexing");
+if (!headersText.includes("/assets/pdfs/Yahya_ElSawi_CV.pdf") || !headersText.includes("X-Robots-Tag: noindex, nofollow, noarchive")) {
+  throw new Error("The owner-supplied August CV must remain excluded from search indexing");
 }
 const resumeHtml = await readFile(path.join(output, "resume/index.html"), "utf8");
-if (!resumeHtml.includes("Previous CV (17 August 2026)") || !resumeHtml.includes("may be outdated")) {
-  throw new Error("The Resume page must identify the archived CV and its historical status");
+if (!resumeHtml.includes("Current CV / August 2026") || !resumeHtml.includes('href="assets/pdfs/Yahya_ElSawi_CV.pdf"') || !resumeHtml.includes('data="assets/pdfs/Yahya_ElSawi_CV.pdf#view=FitH"')) {
+  throw new Error("The Resume page must identify and link the owner-supplied August CV");
+}
+try {
+  await access(path.join(output, "assets/pdfs/Yahya_ElSawi_CV_Previous_2026-08-17.pdf"));
+  throw new Error("The August CV must not ship under its old previous-version filename");
+} catch (error) {
+  if (error.code !== "ENOENT") throw error;
 }
 const networkHtml = await readFile(path.join(output, "work/network-automation/index.html"), "utf8");
 if (!networkHtml.includes('class="content-nav" aria-label="Case study contents"') || !networkHtml.includes('href="#network-limitations"')) {
