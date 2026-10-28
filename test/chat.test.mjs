@@ -150,6 +150,18 @@ test("returns model answers as clean plain text", async () => {
   assert.doesNotMatch(result.body.answer, /\*\*|^##|\[[^\]]+\]\(/);
 });
 
+test("grounds the assistant in the current Credo, marketing, and published-app records", async () => {
+  const result = await invoke("What are Yahya's current business development and marketing skills?");
+  const trustedContext = result.modelMessages.filter(message => message.role === "system").map(message => message.content).join("\n");
+  assert.match(trustedContext, /Credo Technology Services/);
+  assert.match(trustedContext, /Microsoft licensing and Microsoft Professional Services/);
+  assert.match(trustedContext, /B2B prospecting/);
+  assert.match(trustedContext, /marketing strategy \(4Ps\)/i);
+  assert.match(trustedContext, /Giftit Cards App Positioning & Product Growth/);
+  assert.match(trustedContext, /https:\/\/apps\.apple\.com\/ae\/app\/giftit-cards\/id6469349957/);
+  assert.match(trustedContext, /no sales results are claimed/i);
+});
+
 test("turns unknown-fact prompt echoes into a natural contact suggestion", async () => {
   const ai = {
     async run() {

@@ -1,0 +1,59 @@
+{
+  "updated": "28 October 2026",
+  "headline": "Product & UX Designer | Frontend Developer",
+  "summary": "Product and UX designer with a BSc in Computing and Information Technologies and production experience in frontend development. Connects user needs and business goals to clear flows and practical interfaces, with technical grounding to collaborate closely with engineering.",
+  "location": "Dubai, UAE",
+  "availability": "Available to start as soon as needed",
+  "workAuthorization": "Self-sponsored UAE Golden Visa",
+  "email": "yahyaelsawi1@gmail.com",
+  "phone": "+971 50 168 1229",
+  "linkedin": "linkedin.com/in/yahya-elsawi",
+  "education": {
+    "institution": "Rochester Institute of Technology, Dubai",
+    "degree": "BSc in Computing and Information Technologies",
+    "minor": "Business Administration",
+    "awarded": "May 2026"
+  },
+  "experience": [
+    {
+      "company": "Credo Technology Services",
+      "role": "Business Development Associate Intern",
+      "date": "September 2026–Present",
+      "description": "Research accounts, identify stakeholders, qualify needs, and support outreach and discovery for Microsoft licensing and Professional Services opportunities. Connect relevant prospects with technical specialists; no sales totals or consulting delivery are claimed."
+    },
+    {
+      "company": "StarLink, an Infinigate Group Company",
+      "role": "Cybersecurity Intern",
+      "date": "July–August 2026",
+      "description": "Completed isolated virtual lab training in firewall policy, NAT, identity, LDAP/LDAPS, remote access, network traffic analysis, and troubleshooting. No production deployments or confidential work samples are claimed."
+    },
+    {
+      "company": "Gift It",
+      "role": "Frontend Developer & Product Associate",
+      "date": "May 2024–Present",
+      "description": "Build and maintain responsive web experiences; prototype UX improvements and test user journeys; develop transactional email templates; and contribute to product, localization, and positioning work."
+    }
+  ],
+  "projects": [
+    {
+      "name": "Giftit App Positioning & Product Growth",
+      "date": "June 2026",
+      "description": "Product positioning, store content, and UX contribution for a published gifting app."
+    },
+    {
+      "name": "SmartMall AI Network Automation",
+      "date": "May 2026",
+      "description": "Equal contribution to a five-person academic proof of concept for network operations, validation, and recovery."
+    },
+    {
+      "name": "RIT Student App 2.0",
+      "date": "September–December 2023",
+      "description": "Student interviews, information architecture, flows, and interface design for an academic product concept."
+    }
+  ],
+  "skills": {
+    "productDesign": "User flows, interaction design, wireframing, prototyping, Figma, usability testing, responsive UX",
+    "frontend": "HTML, CSS, JavaScript, Vue.js, React Native, accessibility, testing, performance",
+    "technicalSystems": "Python, Oracle, SQL, GNS3, Netmiko, Cisco IOS, Palo Alto Networks, Active Directory, LDAP/LDAPS"
+  }
+}

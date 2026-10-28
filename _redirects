@@ -19,6 +19,7 @@
 /log /admin/log/ 302
 /log.html /admin/log/ 301
 /privacy.html /privacy 301
+/terms.html /terms 301
 /recruiter.html /recruiter 301
 /resume.html /resume 301
 /terminal.html /terminal 301

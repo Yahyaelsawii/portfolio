@@ -78,12 +78,12 @@ def footer(c, page):
     c.line(MARGIN, 28, PAGE_W - MARGIN, 28)
     c.setFillColor(MUTED)
     c.setFont("Helvetica", 7.5)
-    c.drawString(MARGIN, 16, "Yahya El-Sawi / Recruiter brief / August 2026")
+    c.drawString(MARGIN, 16, "Yahya El-Sawi / Recruiter brief / October 2026")
     c.drawRightString(PAGE_W - MARGIN, 16, f"{page} / 2")
 
 
 def role_card(c, x, y, width, number, title, skills, body):
-    height = 154
+    height = 132
     c.setFillColor(SURFACE)
     c.setStrokeColor(BORDER)
     c.roundRect(x, y - height, width, height, 4, fill=1, stroke=1)
@@ -92,7 +92,7 @@ def role_card(c, x, y, width, number, title, skills, body):
     c.setFont("Helvetica-Bold", 12)
     c.drawString(x + 14, y - 43, title)
     wrapped(c, skills, x + 14, y - 65, width - 28, "Helvetica-Bold", 7.8, RED, 10.5, 3)
-    wrapped(c, body, x + 14, y - 101, width - 28, "Helvetica", 8.2, MUTED, 11.2, 4)
+    wrapped(c, body, x + 14, y - 96, width - 28, "Helvetica", 8.2, MUTED, 10.5, 3)
 
 
 def evidence_card(c, y, number, title, category, body, proof, url):
@@ -138,12 +138,12 @@ def build():
     c.setFillColor(white)
     c.setFont("Helvetica-Bold", 11)
     c.drawCentredString(MARGIN + 12, PAGE_H - 57, "Y")
-    label(c, "Recruiter brief / August 2026", MARGIN + 34, PAGE_H - 52, white)
+    label(c, "Recruiter brief / October 2026", MARGIN + 34, PAGE_H - 52, white)
     c.setFillColor(white)
     c.setFont("Helvetica-Bold", 28)
     c.drawString(MARGIN, PAGE_H - 101, "Yahya El-Sawi")
     c.setFont("Helvetica", 11)
-    c.drawString(MARGIN, PAGE_H - 124, "Product & UX / Frontend / Cybersecurity & Networks")
+    c.drawString(MARGIN, PAGE_H - 124, "Primary: Product & UX / Secondary: Frontend Development")
     wrapped(c, "A Dubai-based computing graduate who connects product judgment, responsive implementation, and disciplined technical evidence.", MARGIN, PAGE_H - 146, PAGE_W - (MARGIN * 2), "Helvetica", 8.8, HexColor("#D9E1EC"), 11, 2)
 
     y = PAGE_H - 198
@@ -162,23 +162,23 @@ def build():
         label(c, name, x, y)
         wrapped(c, value, x, y - 18, fact_w - 18, "Helvetica-Bold", 8.8, INK, 11, 3)
 
-    y = section_title(c, "01 / Target roles", "Three credible entry points.", PAGE_H - 284)
+    y = section_title(c, "01 / Target roles", "A clear primary and secondary fit.", PAGE_H - 284)
     gap = 10
-    card_w = (PAGE_W - MARGIN * 2 - gap * 2) / 3
+    card_w = (PAGE_W - MARGIN * 2 - gap) / 2
     role_card(c, MARGIN, y, card_w, "01", "Product & UX", "Figma / flows / responsive UX / accessibility", "Research-led product thinking with implementation-aware decisions and clear scope boundaries.")
-    role_card(c, MARGIN + card_w + gap, y, card_w, "02", "Frontend", "HTML / CSS / JavaScript / Vue / testing", "Responsive production experience spanning UX, performance, databases, testing, and transactional communication.")
-    role_card(c, MARGIN + (card_w + gap) * 2, y, card_w, "03", "Cybersecurity", "Palo Alto / AD / LDAP / Cisco / Python", "Hands-on isolated labs and academic automation work grounded in validation and systematic troubleshooting.")
+    role_card(c, MARGIN + card_w + gap, y, card_w, "02", "Frontend development", "HTML / CSS / JavaScript / Vue / testing", "Production web experience spanning responsive interfaces, UX, performance, and testing.")
 
-    y = y - 187
+    y = y - 166
     y = section_title(c, "02 / Professional signals", "Experience with accountable boundaries.", y)
     signals = [
-        ("May 2024–Present", "Gift It", "Frontend Developer & Product Associate", "Production web features, UX, testing, performance, databases, and product collaboration."),
+        ("Sep 2026–Present", "Credo Technology Services", "Business Development Associate Intern", "B2B account research and opportunity development for Microsoft licensing and Professional Services; no sales results claimed."),
         ("Jul–Aug 2026", "StarLink, an Infinigate Group Company", "Cybersecurity Intern", "Enterprise firewall, identity, authentication, networking, traffic-analysis, and troubleshooting labs."),
+        ("May 2024–Present", "Gift It", "Frontend Developer & Product Associate", "Production web features, UX, testing, performance, databases, and product collaboration."),
     ]
     for index, (date, company, role, body) in enumerate(signals):
-        row_y = y - index * 67
+        row_y = y - index * 57
         c.setStrokeColor(BORDER)
-        c.line(MARGIN, row_y - 50, PAGE_W - MARGIN, row_y - 50)
+        c.line(MARGIN, row_y - 43, PAGE_W - MARGIN, row_y - 43)
         label(c, date, MARGIN, row_y)
         c.setFillColor(INK)
         c.setFont("Helvetica-Bold", 9.3)

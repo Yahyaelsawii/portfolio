@@ -76,12 +76,12 @@ The public assistant fails closed when D1, the hashing secret, or the atomic rat
 
 ## Configure direct contact delivery
 
-The contact form posts to the first-party `/api/contact` Pages Function. It validates same-origin requests and field lengths, uses a honeypot, rate limits by a one-way IP hash, and does not store message contents. When FormSubmit rejects Cloudflare's server-to-server delivery path, the validated browser retries the same approved FormSubmit endpoint directly and reports its result.
+The contact form posts only to the first-party `/api/contact` Pages Function. The server validates the request origin and field lengths, uses a honeypot, applies a D1 rate limit keyed by a one-way IP hash, and does not store message contents. Delivery provider requests are made by the server after those checks. The browser never retries a provider directly; if the protected route fails, it offers a direct email link.
 
 1. Verify a sending domain in Resend.
 2. For Resend delivery, add an encrypted secret named `RESEND_API_KEY`.
 3. For Resend delivery, set `CONTACT_FROM_EMAIL` to a sender on that verified domain, such as `Portfolio <portfolio@example.com>`.
-4. Without Resend, keep `CONTACT_FORM_ENDPOINT` set to the approved V1 FormSubmit AJAX endpoint and activate that form from the owner email. The Cloudflare Function attempts delivery first; the browser fallback handles provider incompatibility only after a server-side failure.
+4. Without Resend, keep `CONTACT_FORM_ENDPOINT` set to the approved V1 FormSubmit AJAX endpoint and activate that form from the owner email. The Cloudflare Function attempts delivery after validation. A provider failure is shown to the visitor with a direct email option; do not add a browser-side provider fallback.
 5. Keep `ADMIN_EMAIL` set to the inbox that should receive portfolio messages.
 6. Apply the current `schema.sql` so the `contact_rate_limits` table exists, then redeploy.
 
