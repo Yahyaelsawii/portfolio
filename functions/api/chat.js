@@ -161,6 +161,15 @@ function deterministicReply(question, context, history = []) {
     };
   }
 
+  if (/\b(?:email lifecycle|customer email|transactional email|sendgrid templates?)\b/i.test(question)
+      || context === "giftit-email-lifecycle") {
+    return {
+      answer: "Yahya developed and managed branded SendGrid transactional templates using responsive HTML/CSS, dynamic fields, customer-focused copy, template organization, and template-ID checks for verification, orders, gifting, group gifting, e-invites, and refunds. No engagement or revenue lift is claimed.",
+      flag: "none",
+      sourceIds: ["giftitEmailLifecycle"]
+    };
+  }
+
   const previousAnswer = lastAssistantAnswer(history);
   const shortContactFollowUp = /^(?:how|how\?|how can i|how do i|where|where\?|what link|which link)[\s?.!]*$/i.test(question)
     && /\b(?:contact|reach|email|contact page)\b/i.test(previousAnswer);
@@ -198,7 +207,20 @@ function deterministicReply(question, context, history = []) {
     };
   }
 
-  const contact = /\b(contact|email|phone|whatsapp|linkedin|github|reach yahya|get in touch)\b|تواصل|البريد|الهاتف|واتساب/i;
+  if (/\b(?:linkedin|linked in)\b/i.test(question)) {
+    return { answer: "Yahya's LinkedIn profile is https://www.linkedin.com/in/yahya-elsawi/.", flag: "none", sourceIds: ["linkedin"] };
+  }
+  if (/\bgithub\b/i.test(question)) {
+    return { answer: "Yahya's GitHub profile is https://github.com/Yahyaelsawii.", flag: "none", sourceIds: ["github"] };
+  }
+  if (/\b(?:phone number|phone|mobile number|telephone)\b/i.test(question)) {
+    return { answer: "Yahya's public phone number is +971 50 168 1229.", flag: "none", sourceIds: ["contact"] };
+  }
+  if (/\b(?:email address|your email|his email|email me)\b/i.test(question)) {
+    return { answer: "Yahya's public email address is yahyaelsawi1@gmail.com.", flag: "none", sourceIds: ["contact"] };
+  }
+
+  const contact = /\b(contact|email me|your email|his email|email address|phone|whatsapp|linkedin|github|reach yahya|get in touch)\b|تواصل|البريد|الهاتف|واتساب/i;
   if (contact.test(question) || shortContactFollowUp) {
     return {
       answer: "You can reach Yahya at yahyaelsawi1@gmail.com or +971 50 168 1229. You can also use the LinkedIn and GitHub links on his Contact page.",
@@ -301,7 +323,8 @@ function selectSourceIds(question, context) {
 
   if (context && CONTEXT_SOURCES[context]) add(CONTEXT_SOURCES[context]);
 
-  if (/gift|checkout|invite|otp|login|signup|passwordless/.test(value)) add("giftIt", "passwordless");
+  if (/email lifecycle|customer email|transactional email|sendgrid/.test(value)) add("giftitEmailLifecycle");
+  else if (/gift|checkout|invite|otp|login|signup|passwordless/.test(value)) add("giftIt", "passwordless");
   if (/rit app|student app|mycourses|sis|pulse/.test(value)) add("ritApp");
   if (/vehicle|rental|oracle|database|sql|backup/.test(value)) add("vehicleRental");
   if (/mood|stress|wellbeing|mental health/.test(value)) add("moodInsights");

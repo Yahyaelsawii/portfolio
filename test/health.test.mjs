@@ -12,7 +12,8 @@ test("reports privacy, rate limiting, and retention readiness", async () => {
   assert.equal(body.ok, true);
   assert.equal(body.ready, true);
   assert.equal(body.ai, true);
-  assert.equal(body.contactDelivery, true);
+  assert.equal(body.contactConfigured, true);
+  assert.equal(body.contactDeliveryState, "configured_unverified");
   assert.equal(body.logging, true);
   assert.equal(body.privacyHashing, true);
   assert.equal(body.atomicRateLimiting, true);
@@ -41,7 +42,7 @@ test("reports safety controls unavailable for a weak secret", async () => {
   assert.equal(body.atomicRateLimiting, false);
 });
 
-test("reports contact delivery ready with the approved V1 fallback", async () => {
+test("reports contact configuration without claiming delivery is verified", async () => {
   const response = onRequestGet({
     env: {
       AI:{},
@@ -52,5 +53,6 @@ test("reports contact delivery ready with the approved V1 fallback", async () =>
   });
   const body = await response.json();
   assert.equal(body.ready, true);
-  assert.equal(body.contactDelivery, true);
+  assert.equal(body.contactConfigured, true);
+  assert.equal(body.contactDeliveryState, "configured_unverified");
 });

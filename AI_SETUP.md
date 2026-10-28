@@ -102,7 +102,7 @@ The policy deletes detailed website visits and individual conversation records o
 
 Run `npm ci` and `npm run check:release` before deployment. This validates HTML, JavaScript, local references, unit tests, the public-only artifact, responsive layouts, accessibility, and key interactions. Deploy `dist/`, never the repository root.
 
-1. Visit `/api/health` on the canonical domain or `pages.dev` fallback. It should report `"ready": true`, `"ai": true`, `"contactDelivery": true`, `"logging": true`, `"privacyHashing": true`, `"atomicRateLimiting": true`, `"conversationRetentionDays": 90`, and `"scheduledRetention": true`.
+1. Visit `/api/health` on the canonical domain or `pages.dev` fallback. It reports API readiness and whether contact delivery is configured; `contactDeliveryState: "configured_unverified"` is not proof that the provider accepted or delivered mail. Verify delivery separately with a labeled, owner-authorized message and confirm receipt.
 2. Open `/terminal.html` and ask: `What kind of roles is Yahya looking for?`
 3. Ask a salary question and confirm it is redirected with a flag.
 4. Inspect D1 and confirm no raw IP or hostname column exists.

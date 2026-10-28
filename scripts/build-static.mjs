@@ -48,13 +48,12 @@ function renderProjectCard(project) {
   const figmaLink = project.figmaUrl
     ? `<a class="text-link project-figma-link" href="${escapeHtml(project.figmaUrl)}" target="_blank" rel="noopener noreferrer">Open Figma file</a>`
     : "";
-  const art = project.artworkRepresentation
-    ? `<div class="project-art-representation" role="img" aria-label="Text representation: ${escapeHtml(project.artworkRepresentation.join(" · "))}"><span class="eyebrow">${escapeHtml(project.artworkRepresentation[0])}</span><strong>${escapeHtml(project.artworkRepresentation[1])}</strong><small>${escapeHtml(project.artworkRepresentation[2])}</small></div>`
-    : project.featureImage
-    ? `<picture>${project.featureImageAvif ? `<source type="image/avif" srcset="${escapeHtml(project.featureImageAvif)}" sizes="(max-width: 760px) 82vw, 31vw">` : ""}<source type="image/webp" srcset="${escapeHtml(project.featureImage)}" sizes="(max-width: 760px) 82vw, 31vw"><img src="${escapeHtml(project.featureImage)}" alt="${escapeHtml(project.featureAlt || project.title)}" width="${Number(project.featureImageWidth) || 960}" height="${Number(project.featureImageHeight) || 640}" loading="lazy" decoding="async"></picture>`
-    : `<picture><source type="image/avif" srcset="/covers/${escapeHtml(project.cover)}-640.avif 640w, /covers/${escapeHtml(project.cover)}-960.avif 960w, /covers/${escapeHtml(project.cover)}-1440.avif 1440w" sizes="(max-width: 820px) 80vw, 30vw"><source type="image/webp" srcset="/covers/${escapeHtml(project.cover)}-640.webp 640w, /covers/${escapeHtml(project.cover)}-960.webp 960w, /covers/${escapeHtml(project.cover)}-1440.webp 1440w" sizes="(max-width: 820px) 80vw, 30vw"><img src="/covers/${escapeHtml(project.cover)}-960.webp" alt="${escapeHtml(project.title)} project cover" width="960" height="640" loading="lazy" decoding="async"></picture>`;
+  const coverAlt = project.locked
+    ? "Abstract cover artwork for the locked project; no project details are shown"
+    : `Illustrative cover artwork for ${project.title}; not a project screenshot`;
+  const art = `<picture><source type="image/avif" srcset="/covers/${escapeHtml(project.cover)}-640.avif 640w, /covers/${escapeHtml(project.cover)}-960.avif 960w, /covers/${escapeHtml(project.cover)}-1440.avif 1440w" sizes="(max-width: 760px) 84vw, (max-width: 980px) 42vw, 28vw"><source type="image/webp" srcset="/covers/${escapeHtml(project.cover)}-640.webp 640w, /covers/${escapeHtml(project.cover)}-960.webp 960w, /covers/${escapeHtml(project.cover)}-1440.webp 1440w" sizes="(max-width: 760px) 84vw, (max-width: 980px) 42vw, 28vw"><img src="/covers/${escapeHtml(project.cover)}-960.webp" alt="${escapeHtml(coverAlt)}" width="960" height="640" loading="lazy" decoding="async"></picture>`;
   return `<article class="project-card" data-category="${escapeHtml(category)}" data-project-url="${escapeHtml(project.url)}">
-    <a class="project-art" href="${escapeHtml(project.url)}" aria-label="Open ${escapeHtml(project.title)} case study"><span class="project-number">${escapeHtml(project.number)} / ${escapeHtml(project.category)}</span>${project.locked ? '<span class="project-state project-state-locked">Locked</span>' : project.demo ? '<span class="project-state">Interactive</span>' : ""}${art}</a>
+    <a class="project-art" href="${escapeHtml(project.url)}" aria-label="Open ${escapeHtml(project.title)} case study"><span class="project-number">${escapeHtml(project.number)} / ${escapeHtml(project.category)}</span>${project.locked ? '<span class="project-state project-state-locked">Locked</span>' : project.demo ? '<span class="project-state">Interactive</span>' : ""}${art}<span class="project-art-note" aria-hidden="true">Illustrative cover</span></a>
     <div class="project-body"><span class="eyebrow">${escapeHtml(project.client)} · ${escapeHtml(project.category)}</span><h3><a href="${escapeHtml(project.url)}">${escapeHtml(project.title)}</a></h3>${date}${contribution}${status}<p>${escapeHtml(project.summary)}</p><div class="actions project-actions"><a class="text-link" data-project-link href="${escapeHtml(project.url)}">Open case study</a>${figmaLink}</div></div>
   </article>`;
 }
@@ -95,7 +94,7 @@ function renderProjectDetail(project) {
   const verification = project.verification.map(([label, value]) => `<div class="project-proof-card"><dt>${escapeHtml(label)}</dt><dd>${escapeHtml(value)}</dd></div>`).join("");
   const contents = project.sections.map((section, index) => `<a href="#section-${index + 1}">${String(index + 1).padStart(2, "0")} / ${escapeHtml(section.title)}</a>`).join("");
   const figmaButton = project.figmaUrl ? `<a class="btn btn-secondary" href="${escapeHtml(project.figmaUrl)}" target="_blank" rel="noopener noreferrer">Open Figma file</a>` : "";
-  const appStoreButton = project.id === "giftit-app-positioning" ? '<a class="btn btn-primary" href="https://apps.apple.com/ae/app/giftit-cards/id6469349957" target="_blank" rel="noopener noreferrer">View the live app on the App Store</a>' : "";
+  const appStoreButton = project.appStoreUrl ? `<a class="btn btn-primary" href="${escapeHtml(project.appStoreUrl)}" target="_blank" rel="noopener noreferrer">View the live app on the App Store</a>` : "";
   const relatedIds = {
     "giftit-app-positioning": ["giftit-email-lifecycle", "network-automation"],
     "giftit-email-lifecycle": ["giftit-app-positioning", "gift-it"],
@@ -107,12 +106,11 @@ function renderProjectDetail(project) {
     const related = projects.find(item => item.id === id);
     return related ? `<a class="text-link" href="${escapeHtml(related.url)}">${escapeHtml(related.title)} →</a>` : "";
   }).join("");
-  const detailImage = project.artworkRepresentation
-    ? `<div class="project-art-representation project-art-representation-detail" role="img" aria-label="Text representation: ${escapeHtml(project.artworkRepresentation.join(" · "))}"><span class="eyebrow">${escapeHtml(project.artworkRepresentation[0])}</span><strong>${escapeHtml(project.artworkRepresentation[1])}</strong><small>${escapeHtml(project.artworkRepresentation[2])}</small></div>`
-    : project.detailImage
-    ? `<img src="${escapeHtml(project.detailImage)}" alt="${escapeHtml(project.detailImageAlt || project.title)}" width="${Number(project.featureImageWidth) || 960}" height="${Number(project.featureImageHeight) || 640}" decoding="async">`
-    : `<picture><source type="image/avif" srcset="/covers/${escapeHtml(project.cover)}-640.avif 640w, /covers/${escapeHtml(project.cover)}-960.avif 960w, /covers/${escapeHtml(project.cover)}-1440.avif 1440w" sizes="(max-width: 820px) 100vw, 45vw"><source type="image/webp" srcset="/covers/${escapeHtml(project.cover)}-640.webp 640w, /covers/${escapeHtml(project.cover)}-960.webp 960w, /covers/${escapeHtml(project.cover)}-1440.webp 1440w" sizes="(max-width: 820px) 100vw, 45vw"><img src="${escapeHtml(project.image)}" data-full-src="/covers/${escapeHtml(project.cover)}-1440.webp" alt="${escapeHtml(project.title)} cover artwork" width="960" height="640" decoding="async"></picture>`;
-  const detailVisualClass = project.artworkRepresentation ? "detail-visual detail-visual-representation" : project.detailImage ? "detail-visual detail-visual-evidence" : "detail-visual";
+  const coverAlt = project.locked
+    ? "Abstract cover artwork for the locked project; no project details are shown"
+    : `Illustrative cover artwork for ${project.title}; case-study evidence appears below`;
+  const detailImage = `<picture><source type="image/avif" srcset="/covers/${escapeHtml(project.cover)}-640.avif 640w, /covers/${escapeHtml(project.cover)}-960.avif 960w, /covers/${escapeHtml(project.cover)}-1440.avif 1440w" sizes="(max-width: 820px) 100vw, 45vw"><source type="image/webp" srcset="/covers/${escapeHtml(project.cover)}-640.webp 640w, /covers/${escapeHtml(project.cover)}-960.webp 960w, /covers/${escapeHtml(project.cover)}-1440.webp 1440w" sizes="(max-width: 820px) 100vw, 45vw"><img src="/covers/${escapeHtml(project.cover)}-960.webp" data-full-src="/covers/${escapeHtml(project.cover)}-1440.webp" alt="${escapeHtml(coverAlt)}" width="960" height="640" decoding="async"></picture><p class="cover-caption">Illustrative cover artwork · Project evidence appears below</p>`;
+  const detailVisualClass = "detail-visual";
   return `<section class="shell detail-hero"><div><span class="eyebrow">Case study ${escapeHtml(project.number)} / ${escapeHtml(project.client)}</span><h1>${escapeHtml(project.title)}</h1><p class="lead">${escapeHtml(project.summary)}</p>${project.status ? `<p class="scope-note"><strong>Scope:</strong> ${escapeHtml(project.status)}</p>` : ""}${project.note ? `<p class="scope-note">${escapeHtml(project.note)}</p>` : ""}${figmaButton || appStoreButton ? `<div class="actions detail-actions">${appStoreButton}${figmaButton}</div>` : ""}<div class="meta-grid">${metadata}</div></div><div class="${detailVisualClass}">${detailImage}</div></section>
   <section class="section project-proof"><div class="shell"><div class="section-head"><div><span class="eyebrow">Verified project record</span><h2>Evidence, scope, and outcome.</h2></div></div><dl class="project-proof-grid">${verification}</dl></div></section>
   <section class="section-soft"><div class="shell content-grid"><aside class="content-nav"><span class="eyebrow">Contents</span>${contents}<a href="/terminal?context=${encodeURIComponent(project.id)}">Ask Yahya&#39;AI about this project</a><a href="/contact">Discuss this project</a></aside><div class="story">${project.sections.map(renderProjectSection).join("")}<article class="story-block next-project"><span class="eyebrow">Related work</span><h2>Continue with connected projects.</h2><div class="related-project-links">${relatedLinks}</div><div class="actions"><a class="btn btn-primary" href="/work?view=case-studies">All projects</a><a class="btn btn-secondary" href="/terminal?context=${encodeURIComponent(project.id)}">Ask Yahya&#39;AI</a></div></article></div></div></section>`;
@@ -169,6 +167,7 @@ const publicFiles = [
   "admin-router.js",
   "dashboard.js",
   "main.js",
+  "personalization.js",
   "redirect.js",
   "robots.txt",
   "sitemap.xml",
@@ -231,6 +230,14 @@ for (const relativePath of publicPaths) {
   await assertNoSymlinks(source);
   await mkdir(path.dirname(destination), { recursive: true });
   await copyWithRetry(source, destination, { recursive: true });
+}
+
+// Finder-created numbered copies are local workspace artifacts, not site assets.
+const appStoreAssets = path.join(output, "assets/Pictures/app-store");
+for (const filename of await readdir(appStoreAssets)) {
+  if (/ \d+\.(?:avif|jpe?g|png|webp)$/i.test(filename)) {
+    await rm(path.join(appStoreAssets, filename));
+  }
 }
 
 await mkdir(path.join(output, "vendor"), { recursive: true });
@@ -301,7 +308,7 @@ async function injectStructuredData(routePath, data) {
 }
 
 async function unifyPublicFooters() {
-  const footer = '<footer class="footer"><div class="shell footer-row"><span>© 2026 Yahya El-Sawi · Dubai, UAE</span><nav class="footer-links" aria-label="Footer"><a class="text-link" href="/">Home</a><a class="text-link" href="/work">Work</a><a class="text-link" href="/about">About</a><a class="text-link" href="/contact">Contact</a><a class="text-link" href="/privacy">Privacy Policy</a><a class="text-link" href="/terms">Terms and Conditions</a></nav></div></footer>';
+  const footer = '<footer class="footer"><div class="shell footer-row"><span>© 2026 Yahya El-Sawi · Dubai, UAE</span><nav class="footer-links" aria-label="Footer"><a class="text-link" href="/">Home</a><a class="text-link" href="/work">Work</a><a class="text-link" href="/about">About</a><a class="text-link" href="/contact">Contact</a><a class="text-link" href="/privacy">Privacy Policy</a><a class="text-link" href="/terms">Terms and Conditions</a><button type="button" class="text-link privacy-choice-link" data-open-personalization>Privacy choices</button></nav></div></footer>';
   const walk = async directory => (await Promise.all((await readdir(directory, { withFileTypes:true })).map(async entry => {
     if (entry.name === "admin") return [];
     const full = path.join(directory, entry.name);
@@ -312,6 +319,27 @@ async function unifyPublicFooters() {
     const source = await readFile(file, "utf8");
     if (!/<footer\b[^>]*class="[^"]*\bfooter\b[^"]*"[^>]*>[\s\S]*?<\/footer>/i.test(source)) continue;
     await writeFile(file, source.replace(/<footer\b[^>]*class="[^"]*\bfooter\b[^"]*"[^>]*>[\s\S]*?<\/footer>/i, footer));
+  }
+}
+
+async function addNativeSkipLinks() {
+  const walk = async directory => (await Promise.all((await readdir(directory, { withFileTypes:true })).map(async entry => {
+    if (entry.name === "admin") return [];
+    const full = path.join(directory, entry.name);
+    return entry.isDirectory() ? walk(full) : [full];
+  }))).flat();
+  for (const file of await walk(output)) {
+    if (!file.endsWith(".html")) continue;
+    let html = await readFile(file, "utf8");
+    const mainMatch = html.match(/<main\b([^>]*)>/i);
+    if (!mainMatch) continue;
+    const mainAttrs = mainMatch[1]
+      .replace(/\s+id=(['"])[^'"]*\1/i, "")
+      .replace(/\s+tabindex=(['"])[^'"]*\1/i, "");
+    html = html.replace(mainMatch[0], `<main${mainAttrs} id="main-content" tabindex="-1">`);
+    html = html.replace(/<body\b([^>]*)>/i, '<body$1><a class="skip-link" href="#main-content">Skip to main content</a>');
+    if (!html.includes('class="skip-link"')) throw new Error(`Could not add a native skip link to ${path.relative(output, file)}`);
+    await writeFile(file, html);
   }
 }
 
@@ -423,6 +451,7 @@ for (const [sourcePath, routePath] of Object.entries(projectRoutes)) {
       .replace(/<meta property="og:title" content="[^"]*">/, `<meta property="og:title" content="${escapeHtml(project.title)}">`)
       .replace(/<meta property="og:description" content="[^"]*">/, `<meta property="og:description" content="${description}">`)
       .replace(/<meta property="og:url" content="[^"]*">/, `<meta property="og:url" content="${siteUrl}${project.url}">`)
+      .replace(/<meta property="og:image" content="[^"]*">/, `<meta property="og:image" content="${siteUrl}/covers/${escapeHtml(project.cover)}-social.jpg">`)
       .replace(/<body data-project-id="[^"]*">/, `<body data-project-id="${project.id}">`);
   }
   const html = project.sections?.length
@@ -493,6 +522,7 @@ for (const project of projects) {
 for (const [routePath, data] of structuredRoutes) await injectStructuredData(routePath, data);
 
 await unifyPublicFooters();
+await addNativeSkipLinks();
 
 if (environment === "staging") {
   const walk = async directory => (await Promise.all((await readdir(directory, { withFileTypes: true })).map(async entry => {

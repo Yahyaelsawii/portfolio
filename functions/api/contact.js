@@ -164,10 +164,12 @@ export async function onRequestPost({ request, env }) {
           })
         });
   } catch {
+    console.error(JSON.stringify({ event:"contact_delivery_failed", provider:resendReady ? "resend" : "formsubmit", reason:"network_error" }));
     return respond({ error:"DELIVERY_FAILED", message:"Your message could not be delivered. Please try again shortly." }, 502);
   }
 
   if (!delivery.ok) {
+    console.error(JSON.stringify({ event:"contact_delivery_failed", provider:resendReady ? "resend" : "formsubmit", reason:"provider_http_error", status:delivery.status, contentType:delivery.headers.get("content-type") || "unknown" }));
     return respond({ error:"DELIVERY_FAILED", message:"Your message could not be delivered. Please try again shortly." }, 502);
   }
   if (!resendReady) {
@@ -180,6 +182,7 @@ export async function onRequestPost({ request, env }) {
     }
     if (String(providerResult.success).toLowerCase() !== "true") {
       const activationPending = /activation|activate form/i.test(providerResult.message || "");
+      console.error(JSON.stringify({ event:"contact_delivery_failed", provider:"formsubmit", reason:activationPending ? "activation_required" : "provider_rejected", responseFormat:providerText.trimStart().startsWith("{") ? "json" : "non_json" }));
       return respond({
         error:activationPending ? "CONTACT_ACTIVATION_REQUIRED" : "DELIVERY_FAILED",
         message:activationPending

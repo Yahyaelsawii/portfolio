@@ -394,8 +394,8 @@ try {
   const featuredTrack = detailPage.locator("#featured-projects");
   const featuredScrollWidth = await featuredTrack.evaluate(node => node.scrollWidth - node.clientWidth);
   if (featuredScrollWidth <= 0) failures.push("home projects: featured rail does not overflow for the next-card peek");
-  const peek = await featuredCards.nth(3).evaluate(card => ({ left:card.getBoundingClientRect().left, right:card.getBoundingClientRect().right, width:card.getBoundingClientRect().width, viewport:innerWidth }));
-  if (!(peek.left < peek.viewport && peek.right > peek.viewport && peek.width > 0)) failures.push("home projects: next card is not partially visible on desktop");
+  const peek = await featuredCards.nth(4).evaluate(card => ({ left:card.getBoundingClientRect().left, right:card.getBoundingClientRect().right, width:card.getBoundingClientRect().width, viewport:innerWidth }));
+  if (!(peek.left < peek.viewport && peek.right > peek.viewport && peek.width > 0)) failures.push("home projects: fifth featured card is not partially visible on desktop");
   await detailPage.getByRole("button", { name:"Next featured projects" }).click();
   await detailPage.waitForFunction(() => document.querySelector("#featured-projects")?.scrollLeft > 0);
   const featuredTops = await featuredCards.evaluateAll(cards => cards.map(card => Math.round(card.getBoundingClientRect().top)));

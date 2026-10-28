@@ -112,6 +112,23 @@ test("understands a short contact follow-up from trusted session history", async
   assert.match(result.body.answer, /yahyaelsawi1@gmail\.com/);
 });
 
+test("answers email-lifecycle questions from the matching project instead of contact intent", async () => {
+  const ai = { async run() { throw new Error("The model should not run for approved project facts"); } };
+  const result = await invoke("What did Yahya build for the Giftit email lifecycle?", { ai });
+  assert.equal(result.body.model, "policy");
+  assert.match(result.body.answer, /SendGrid transactional templates/);
+  assert.doesNotMatch(result.body.answer, /yahyaelsawi1@gmail\.com|\+971/);
+  assert.deepEqual(result.body.sources.map(source => source.url), ["/work/giftit-email-lifecycle"]);
+});
+
+test("answers email-address questions directly without adding unrelated contact details", async () => {
+  const ai = { async run() { throw new Error("The model should not run for approved public contact facts"); } };
+  const result = await invoke("What is Yahya's email address?", { ai });
+  assert.equal(result.body.model, "policy");
+  assert.match(result.body.answer, /yahyaelsawi1@gmail\.com/);
+  assert.doesNotMatch(result.body.answer, /\+971/);
+});
+
 test("answers typo-tolerant Twitter questions deterministically", async () => {
   const ai = { async run() { throw new Error("The model should not run"); } };
   const result = await invoke("twiitwe?", { ai });
@@ -157,7 +174,7 @@ test("grounds the assistant in the current Credo, marketing, and published-app r
   assert.match(trustedContext, /Microsoft licensing and Microsoft Professional Services/);
   assert.match(trustedContext, /B2B prospecting/);
   assert.match(trustedContext, /marketing strategy \(4Ps\)/i);
-  assert.match(trustedContext, /Giftit Cards App Positioning & Product Growth/);
+  assert.match(trustedContext, /Giftit App Positioning & Product Growth/);
   assert.match(trustedContext, /https:\/\/apps\.apple\.com\/ae\/app\/giftit-cards\/id6469349957/);
   assert.match(trustedContext, /no sales results are claimed/i);
 });

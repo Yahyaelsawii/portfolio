@@ -1,4 +1,6 @@
-export const KNOWLEDGE_VERSION = "2026-10-27.1";
+import { projects as portfolioProjects } from "../../data/projects.js";
+
+export const KNOWLEDGE_VERSION = "2026-10-28.1";
 
 export const SOURCES = {
   about: { label: "About Yahya", url: "/about" },
@@ -114,105 +116,38 @@ export const PROFILE = {
       work: "Produced graduation videos and tutorials and built a Python virtual assistant with voice recognition and a GUI."
     }
   ],
-  projects: [
-    {
-      name: "Gift It Checkout & E-Invite Redesign",
-      role: "UX / Product (Web)",
-      focus: "Reduced checkout friction, improved trust, clarified e-invite setup, and treated confirmation pages and transactional emails as part of the product experience.",
-      problem: "The largest funnel drop-offs appeared around shipping and contact details, payment selection, and e-invite setup. Users also needed clearer reassurance about code delivery, legitimacy, refunds, and what happens after purchase.",
-      solution: "A clearer stepper, timely trust and support information, smart e-invite defaults, optional messaging and scheduling, preview states, and clearer order and delivery status communication.",
-      measurementPlan: ["checkout completion", "payment-step completion", "e-invite completion", "time to purchase", "support-ticket volume", "email open and click rate", "refund or dispute rate"],
-      evidence: "giftIt"
-    },
-    {
-      name: "RIT Student App 2.0",
-      role: "Product / UX",
-      timeline: "September–December 2023",
-      focus: "Reimagined the student experience around reliable sign-in, timely notifications, accessibility, and unified myCourses and SIS access.",
-      problem: "Recurring sign-in errors, delayed notifications, and missing features made the existing Pulse experience unreliable for daily academic use.",
-      solution: "A task-led information architecture with Home as the daily hub, Academics for myCourses and course work, and Admin for SIS, enrollment, payments, and official information.",
-      intendedOutcomes: ["improve sign-in reliability", "unify myCourses and SIS access", "make notifications faster and more useful"],
-      evidence: "ritApp"
-    },
-    {
-      name: "Passwordless Login & Signup Redesign",
-      role: "Lead Designer — design and handoff, not production implementation",
-      focus: "A mobile-first passwordless email-OTP experience targeting a registration-time reduction from roughly 3–4 minutes to 1–2 minutes and consistent web/mobile behavior through one API.",
-      solution: "One clear decision per screen, shorter registration, email-to-code verification, consistent API behavior, and designed error states for invalid email, incorrect or expired OTP, resend throttling, captcha failure, and existing-account routing.",
-      scopeBoundary: "Yahya owned the complete UX/UI design and handoff specifications but did not implement the production version.",
-      evidence: "passwordless"
-    },
-    {
-      name: "Vehicle Rental Operations Database",
-      role: "Database Developer",
-      focus: "An Oracle relational database with normalized operations data, roles and privileges, operational queries and views, transaction logic, and a cold-backup-to-S3 strategy. The dashboard UI is a concept based on the implemented backend.",
-      dataModel: "Core Customer, Vehicle, Rental, and Maintenance entities, with Employee and AvgDailyCost supporting ownership, operations, and pricing analysis.",
-      operationalTasks: ["find availability and create rentals", "calculate cost from date ranges", "track full maintenance history", "report revenue and rental activity", "enforce least-privilege roles"],
-      scopeBoundary: "The database and backend operations were implemented; the dashboard visual is a product concept showing how those queries could support a real interface.",
-      evidence: "vehicleRental"
-    },
-    {
-      name: "Mood Insights & Stress Alerts",
-      role: "UX Designer",
-      timeline: "November 2024",
-      focus: "A wellbeing concept that makes mood trends visible through clear time filters and gentle, supportive stress-pattern nudges.",
-      problem: "Inconsistent mood tracking makes changes and stress triggers difficult to understand, while many insight screens feel too complex.",
-      solution: "Readable mood graphs, one-tap day/week/month filters, and supportive prompts when recurring stress patterns appear.",
-      evidence: "moodInsights"
-    },
-    {
-      name: "VR Neuroanatomy",
-      disclosureStatus: "Embargoed. Only the project title and locked status are approved for public use.",
-      publicBoundary: "Do not share, summarize, infer, confirm, or deny its methods, technology, architecture, collaborators, research design, testing, participants, screenshots, results, findings, paper, publication plans, or timeline.",
-      caseStudyStatus: "The public case study will remain locked until written disclosure approval is received.",
+  projects: portfolioProjects.map(project => {
+    const sourceId = project.id === "gift-it" ? "giftIt"
+      : project.id === "giftit-saudi-market-entry" ? "giftitMarketEntry"
+      : project.id.replace(/-([a-z])/g, (_, character) => character.toUpperCase());
+    if (project.locked) return {
+      name: project.title,
+      status: "Ongoing research; public details remain under embargo.",
+      locked: true,
       evidence: "vrNeuroanatomy"
-    },
-    {
-      name: "SmartMall AI Network Automation",
-      type: "Five-person collaborative academic project for RIT Dubai's Network Design & Performance course, Spring 2026.",
-      collaboration: "All group members contributed equally across the project.",
-      focus: "A GNS3 proof of concept combining a browser dashboard, an AI-assisted Network Brain, Python and Netmiko automation, Cisco routing and switching, tenant orchestration, validation, logs, and closed-loop correction.",
-      features: ["plain-English network setup", "dynamic fictional-tenant onboarding and offboarding", "advisory, dry-run, override, fix, and deploy modes", "OSPF, RIPv2, and static-routing planning", "multi-tier tenant onboarding", "host IP heartbeat and persistence", "timed tenant offboarding", "validation and correction reports"],
-      teamResults: "In the demonstrated fault-recovery scenario, 7 of 10 pings passed before correction and 9 of 10 passed afterward. The report states that the demonstrated correction sequence took about seven minutes.",
-      limitations: "Proof of concept only: small emulated topology; IPv4-only; Cisco-focused; single-site; no production RBAC; no simultaneous onboarding; validation could be slow; AI-generated ACLs could differ from policy; reported model-call cost was significant.",
-      publicApproval: "Yahya approved public use of the project report visuals and fictional scenario names and confirmed teammate agreement. Always label visuals and outcomes as team artifacts or team results.",
-      evidence: "networkAutomation"
-    },
-    {
-      name: "Giftit Cards App Positioning & Product Growth",
-      status: "Published product; Yahya's contribution was positioning, content, and UX, not sole product development or launch.",
-      focus: "App Store content preparation, product messages, keyword and category considerations, and workflow testing for an app with individual and group gifting, gift cards, and e-invites.",
-      outcome: "The app is live. No downloads, rankings, or conversion results are claimed.",
-      appStore: "https://apps.apple.com/ae/app/giftit-cards/id6469349957",
-      evidence: "giftitAppPositioning"
-    },
-    {
-      name: "Giftit Email & Customer Lifecycle System",
-      status: "Implemented email templates and ongoing management.",
-      focus: "SendGrid dynamic templates, responsive HTML/CSS, branded transactional copy, template organization, and template-ID verification across account verification, orders, gifting, group gifting, e-invites, and refunds.",
-      outcome: "Implemented communications; no engagement or revenue improvements are claimed.",
-      evidence: "giftitEmailLifecycle"
-    },
-    {
-      name: "Giftit Saudi Arabic Website",
-      status: "Ongoing development; no public launch confirmed.",
-      focus: "Arabic localization, responsive frontend implementation, and right-to-left layout considerations.",
-      evidence: "giftitSaudiArabic"
-    },
-    {
-      name: "Ramadan Campaign | One Table",
-      status: "Campaign concept only; not launched.",
-      focus: "A proposed Instagram Reel concept using the message Gifting for All to connect Ramadan togetherness with collective gifting. Blaze.ai and Sora were explored during concept development.",
-      outcome: "No finished video, launch, donation, or engagement result is confirmed.",
-      evidence: "giftitOneTable"
-    },
-    {
-      name: "Giftit Saudi Arabia Market Entry Strategy",
-      status: "March–April 2025 marketing strategy proposal; not commercially implemented.",
-      focus: "Market research, competitive positioning, localization, four Ps, customer funnel, and proposed channels and seasonal opportunities.",
-      evidence: "giftitMarketEntry"
-    }
-  ],
+    };
+    const verification = Object.fromEntries((project.verification || []).map(([label, value]) => [label.toLowerCase(), value]));
+    return {
+      name: project.title,
+      role: project.role,
+      timeline: project.displayDate || undefined,
+      category: project.category,
+      status: project.status || project.featuredStatus,
+      appStore: project.appStoreUrl,
+      focus: project.summary,
+      problem: verification.problem || verification.need || verification.opportunity || verification.context,
+      contribution: verification.contribution,
+      delivery: verification.delivery || verification.deliverable,
+      outcome: verification.outcome,
+      process: verification.process,
+      publicSections: (project.sections || []).slice(0, 3).map(section => ({
+        title: section.title,
+        summary: section.text?.slice(0, 280),
+        evidence: section.facts?.slice(0, 2).map(fact => fact.slice(0, 180))
+      })),
+      evidence: sourceId
+    };
+  }),
     skills: {
     productAndDesign: ["UI/UX design", "product thinking", "accessibility", "design systems", "responsive design", "wireframing", "prototyping", "product prototyping", "user flow testing", "Figma", "Arabic localization", "RTL design"],
     frontendAndWeb: ["HTML", "CSS", "JavaScript", "Vue.js", "Vue 3", "Vite", "React Native", "Tailwind CSS", "PHP", "Flask", "SendGrid"],

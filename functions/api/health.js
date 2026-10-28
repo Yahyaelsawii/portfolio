@@ -11,9 +11,10 @@ export function onRequestGet({ env }) {
   );
   return Response.json({
     ok: true,
-    ready: aiReady && privacyControlsReady && contactReady,
+    ready: aiReady && privacyControlsReady,
     ai: aiReady,
-    contactDelivery: contactReady,
+    contactConfigured: contactReady,
+    contactDeliveryState: contactReady ? "configured_unverified" : "not_configured",
     logging: Boolean(env.DB),
     privacyHashing: privacyControlsReady,
     atomicRateLimiting: privacyControlsReady,
