@@ -80,7 +80,7 @@ const base = `http://127.0.0.1:${address.port}`;
 const browser = await chromium.launch({ headless: true });
 const failures = [];
 const giftitRoutes = ["/work/giftit-saudi-market-entry", "/work/giftit-one-table", "/work/giftit-email-lifecycle", "/work/giftit-saudi-arabic", "/work/giftit-app-positioning"];
-const routes = ["/", "/work", "/about", "/recruiter", "/resume", "/contact", "/terminal", "/privacy", "/terms", "/work/gift-it", "/work/rit-app", "/work/passwordless", "/work/vehicle-rental", "/work/mood-insights", "/work/network-automation", "/work/vr-neuroanatomy", ...giftitRoutes, "/admin/log/"];
+const routes = ["/", "/work", "/about", "/recruiter", "/resume", "/contact", "/terminal", "/privacy", "/terms", "/work/gift-it", "/work/rit-app", "/work/passwordless", "/work/vehicle-rental", "/work/mood-insights", "/work/network-automation", "/work/vr-neuroanatomy", ...giftitRoutes];
 const viewports = [
   { name: "desktop", width: 1440, height: 900 },
   { name: "tablet", width: 820, height: 1024 },
@@ -91,6 +91,7 @@ const viewports = [
 try {
   for (const viewport of viewports) {
     const context = await browser.newContext({ viewport });
+    await context.addInitScript(() => localStorage.setItem("portfolio-cookie-choice-v1", "no"));
     for (const route of routes) {
       const page = await context.newPage();
       const runtimeErrors = [];
@@ -107,7 +108,7 @@ try {
         }
       });
 
-      const response = await page.goto(`${base}${route}`, { waitUntil: "networkidle" });
+      const response = await page.goto(`${base}${route}`, { waitUntil: "load" });
       if (!response?.ok()) failures.push(`${viewport.name} ${route}: HTTP ${response?.status()}`);
       const state = await page.evaluate(() => ({
         h1: [...document.querySelectorAll("h1")].filter(node => node.getClientRects().length).length,
@@ -123,6 +124,8 @@ try {
       if (!state.title.trim()) failures.push(`${viewport.name} ${route}: empty title`);
       if (runtimeErrors.length) failures.push(`${viewport.name} ${route}: ${runtimeErrors.join(" | ")}`);
 
+      await page.evaluate(() => document.querySelectorAll(".reveal").forEach(node => node.classList.add("visible")));
+      await page.waitForTimeout(350);
       await page.addScriptTag({ path: axePath });
       const axe = await page.evaluate(async () => globalThis.axe.run(document, {
         runOnly: { type: "tag", values: ["wcag2a", "wcag2aa", "wcag21aa"] }
@@ -137,8 +140,9 @@ try {
   }
 
   const interactionContext = await browser.newContext({ viewport: { width: 390, height: 844 } });
+  await interactionContext.addInitScript(() => localStorage.setItem("portfolio-cookie-choice-v1", "no"));
   const interactionPage = await interactionContext.newPage();
-  await interactionPage.goto(`${base}/work`, { waitUntil: "networkidle" });
+  await interactionPage.goto(`${base}/work`, { waitUntil: "load" });
   if (!await interactionPage.locator("#professional-experience-panel").isVisible()) failures.push("work tabs: Professional Experience is not open by default");
   if (await interactionPage.locator("#case-studies-panel").isVisible()) failures.push("work tabs: Case Studies should be closed by default");
   await interactionPage.getByRole("tab", { name: /Case studies/ }).click();
@@ -149,14 +153,15 @@ try {
   if (await interactionPage.locator("#all-projects a.project-art").count() !== 12) failures.push("project cards: every cover should link to its case study");
   if (await interactionPage.locator("dialog.image-lightbox").count()) failures.push("project cards: general work imagery initialized a lightbox");
 
-  await interactionPage.goto(`${base}/`, { waitUntil: "networkidle" });
+  await interactionPage.goto(`${base}/`, { waitUntil: "load" });
   const menu = interactionPage.getByRole("button", { name: "Toggle navigation" });
   await menu.click();
   if (await menu.getAttribute("aria-expanded") !== "true") failures.push("mobile menu: did not expose its open state");
   await interactionPage.keyboard.press("Escape");
   if (await menu.getAttribute("aria-expanded") !== "false") failures.push("mobile menu: Escape did not close it");
 
-  await interactionPage.goto(`${base}/work/network-automation`, { waitUntil: "networkidle" });
+  await interactionPage.goto(`${base}/work/network-automation`, { waitUntil: "load" });
+  await interactionPage.waitForTimeout(400);
   await interactionPage.getByRole("button", { name: "Introduce fault" }).click();
   if (await interactionPage.locator("#network-demo").getAttribute("data-state") !== "fault") failures.push("network demo: fault state did not activate");
   await interactionPage.getByRole("button", { name: "Recover" }).click();
@@ -193,8 +198,9 @@ try {
   await noScriptContext.close();
 
   const detailContext = await browser.newContext({ viewport: { width: 1440, height: 900 } });
+  await detailContext.addInitScript(() => localStorage.setItem("portfolio-cookie-choice-v1", "no"));
   const detailPage = await detailContext.newPage();
-  await detailPage.goto(`${base}/work`, { waitUntil: "networkidle" });
+  await detailPage.goto(`${base}/work`, { waitUntil: "load" });
   await detailPage.getByRole("tab", { name: /Case studies/ }).click();
   const projectOrder = await detailPage.locator("#all-projects .project-card").evaluateAll(cards => cards.map(card => new URL(card.dataset.projectUrl, location.origin).pathname));
   const expectedOrder = ["/work/gift-it", "/work/network-automation", "/work/rit-app", "/work/giftit-app-positioning", "/work/vr-neuroanatomy", "/work/giftit-email-lifecycle", "/work/giftit-saudi-arabic", "/work/giftit-one-table", "/work/giftit-saudi-market-entry", "/work/passwordless", "/work/mood-insights", "/work/vehicle-rental"];
@@ -207,12 +213,12 @@ try {
   if (!await credoExperience.count() || !await credoExperience.locator(".company-logo").count()) failures.push("Credo experience: missing role card or official logo");
 
   for (const route of ["/work/mood-insights", "/work/passwordless", "/work/rit-app"]) {
-    await detailPage.goto(`${base}${route}`, { waitUntil: "networkidle" });
+    await detailPage.goto(`${base}${route}`, { waitUntil: "load" });
     if (!await detailPage.getByRole("link", { name:"Open Figma file" }).isVisible()) failures.push(`${route}: missing Figma action`);
   }
 
   for (const route of ["/work/gift-it", "/work/passwordless"]) {
-    await detailPage.goto(`${base}${route}`, { waitUntil: "networkidle" });
+    await detailPage.goto(`${base}${route}`, { waitUntil: "load" });
     const croppedGallery = detailPage.locator("#section-5 .gallery-screen-crop");
     if (await croppedGallery.count() !== 1 || await croppedGallery.locator("img").count() !== 3) failures.push(`${route}: Final UI device-frame crop is missing`);
     await croppedGallery.locator("img").first().click();
@@ -223,48 +229,51 @@ try {
     if (!await croppedGallery.locator("img").first().evaluate(node => node === document.activeElement)) failures.push(`${route}: modal did not return focus to its trigger`);
   }
 
-  await detailPage.goto(`${base}/work/network-automation`, { waitUntil: "networkidle" });
+  await detailPage.goto(`${base}/work/network-automation`, { waitUntil: "load" });
   await detailPage.locator(".case-figure img").first().click();
   if (!await detailPage.locator("dialog.image-lightbox[open]").isVisible()) failures.push("network automation: case-study image did not open in the lightbox");
   await detailPage.keyboard.press("Escape");
 
   for (const route of ["/work/gift-it", "/work/rit-app", "/work/passwordless", "/work/vehicle-rental", "/work/mood-insights", "/work/network-automation"]) {
-    await detailPage.goto(`${base}${route}`, { waitUntil: "networkidle" });
+    await detailPage.goto(`${base}${route}`, { waitUntil: "load" });
     const proofCards = await detailPage.locator(".project-proof-card").count();
     if (proofCards !== 5) failures.push(`${route}: expected 5 verified project-record cards, found ${proofCards}`);
   }
   for (const route of giftitRoutes) {
-    await detailPage.goto(`${base}${route}`, { waitUntil:"networkidle" });
+    await detailPage.goto(`${base}${route}`, { waitUntil:"load" });
     if (await detailPage.locator(".project-proof-card").count() !== 5 || !await detailPage.locator(".story-block").count()) failures.push(`${route}: case study content is incomplete`);
   }
 
-  await detailPage.goto(`${base}/work/vr-neuroanatomy`, { waitUntil: "networkidle" });
+  await detailPage.goto(`${base}/work/vr-neuroanatomy`, { waitUntil: "load" });
   if (await detailPage.locator(".project-proof-card").count()) failures.push("locked project: proof details must not be shown");
   if (!await detailPage.getByText("This is an ongoing research project. Further details cannot be disclosed at this stage.").isVisible()) failures.push("locked project: approved disclosure message is missing");
 
-  await detailPage.goto(`${base}/recruiter`, { waitUntil: "networkidle" });
+  await detailPage.goto(`${base}/recruiter`, { waitUntil: "load" });
   if (!await detailPage.locator("#product-role-panel").isVisible()) failures.push("recruiter roles: Product & UX should be open by default");
   if (await detailPage.locator("#frontend-role-panel").isVisible()) failures.push("recruiter roles: inactive panel should be hidden");
   await detailPage.getByRole("tab", { name:"Frontend" }).click();
   if (!await detailPage.locator("#frontend-role-panel").isVisible()) failures.push("recruiter roles: Frontend panel did not open");
   if (new URL(detailPage.url()).searchParams.get("role") !== "frontend") failures.push("recruiter roles: role selection was not reflected in the URL");
-  await detailPage.goto(`${base}/recruiter?role=frontend`, { waitUntil: "networkidle" });
+  await detailPage.goto(`${base}/recruiter?role=frontend`, { waitUntil: "load" });
   if (!await detailPage.locator("#frontend-role-panel").isVisible()) failures.push("recruiter roles: URL-selected Frontend panel did not open");
   const recruiterPackLink = detailPage.getByRole("link", { name:"Open recruiter pack" });
   if (!await recruiterPackLink.isVisible()) failures.push("recruiter brief: primary link is missing");
   const recruiterPackHref = await recruiterPackLink.getAttribute("href");
   if (!recruiterPackHref?.endsWith("Yahya_ElSawi_Recruiter_Pack.pdf")) failures.push("recruiter brief: link does not target the generated PDF");
 
-  await detailPage.goto(`${base}/resume`, { waitUntil: "networkidle" });
+  await detailPage.goto(`${base}/resume`, { waitUntil: "load" });
+  await detailPage.evaluate(() => document.fonts.ready);
+  await detailPage.waitForTimeout(350);
   if (await detailPage.locator("#resume-skills").isVisible() || await detailPage.locator("#resume-credentials").isVisible()) failures.push("resume tabs: detail panels should be hidden initially");
   await detailPage.getByRole("tab", { name:"Credentials by Category" }).click();
   const credentialPreviews = detailPage.locator("#resume-credentials .certificate picture");
   if (await credentialPreviews.count() !== 11) failures.push(`resume credentials: expected 11 previews, found ${await credentialPreviews.count()}`);
+  await detailPage.locator("#resume-credentials .certificate img").evaluateAll(images => images.forEach(image => { image.loading = "eager"; }));
   await detailPage.waitForFunction(() => [...document.querySelectorAll("#resume-credentials .certificate img")].every(image => image.complete && image.naturalWidth > 0));
   await detailPage.getByRole("tab", { name:"Skills Reflected in the Work" }).click();
   if (!await detailPage.locator("#resume-skills").isVisible()) failures.push("resume tabs: skills panel did not open");
 
-  await detailPage.goto(`${base}/terminal`, { waitUntil: "networkidle" });
+  await detailPage.goto(`${base}/terminal`, { waitUntil: "load" });
   await detailPage.waitForFunction(() => document.querySelector("#ai-mode-indicator")?.textContent.trim() === "Offline / Prefilled answers");
   if (!await detailPage.locator("#ai-mode-indicator.is-offline").isVisible()) failures.push("terminal availability: offline fallback state was not shown");
   const terminalHeights = await detailPage.evaluate(() => ({
@@ -338,7 +347,7 @@ try {
       messages:[{ created_at:"2026-08-24T12:00:00Z", question:"Would Yahya fit this product role?", answer:"Yahya combines product thinking with implementation-aware UX.", flag:"none", model:"policy", response_ms:42 }]
     })
   }));
-  await detailPage.goto(`${base}/admin/`, { waitUntil:"networkidle" });
+  await detailPage.goto(`${base}/admin/`, { waitUntil:"load" });
   await detailPage.waitForFunction(() => document.querySelector("#dashboard-content")?.hidden === false);
   if (!await detailPage.locator("#website-analytics-panel").isVisible()) failures.push("admin analytics: Website Analytics did not open by default");
   if (await detailPage.locator("#ai-analytics-panel").isVisible()) failures.push("admin analytics: AI Analytics should be hidden by default");
@@ -363,7 +372,7 @@ try {
   await detailPage.unroute("**/admin/api/session?session=a1b2c3d4e5f60718");
 
   await detailPage.route("**/api/contact", route => route.fulfill({ status:200, contentType:"application/json", body:JSON.stringify({ ok:true }) }));
-  await detailPage.goto(`${base}/contact`, { waitUntil: "networkidle" });
+  await detailPage.goto(`${base}/contact`, { waitUntil: "load" });
   await detailPage.getByLabel("Your name").fill("Local Test");
   await detailPage.getByLabel("Email address").fill("local@example.com");
   await detailPage.getByLabel("Message", { exact:true }).fill("This is a local browser delivery test.");
@@ -386,7 +395,7 @@ try {
   await detailPage.unroute("**/api/contact");
   await detailPage.unroute("https://formsubmit.co/**");
 
-  await detailPage.goto(`${base}/`, { waitUntil: "networkidle" });
+  await detailPage.goto(`${base}/`, { waitUntil: "load" });
   const featuredCards = detailPage.locator("#featured-projects .project-card");
   if (await featuredCards.count() !== 5) failures.push(`home projects: expected 5 featured cards, found ${await featuredCards.count()}`);
   const featuredProjectOrder = await featuredCards.evaluateAll(cards => cards.map(card => new URL(card.dataset.projectUrl, location.origin).pathname));
@@ -404,11 +413,26 @@ try {
   if (featuredScrollWidth <= 0) failures.push("home projects: featured rail does not overflow for the next-card peek");
   const peek = await featuredCards.nth(4).evaluate(card => ({ left:card.getBoundingClientRect().left, right:card.getBoundingClientRect().right, width:card.getBoundingClientRect().width, viewport:innerWidth }));
   if (!(peek.left < peek.viewport && peek.right > peek.viewport && peek.width > 0)) failures.push("home projects: fifth featured card is not partially visible on desktop");
+  const wideRail = await featuredTrack.evaluate(track => {
+    const rail = track.getBoundingClientRect();
+    const cards = [...track.querySelectorAll(".project-card")].map(card => {
+      const rect = card.getBoundingClientRect();
+      return { width:rect.width, visible:Math.max(0, Math.min(rect.right, rail.right) - Math.max(rect.left, rail.left)) / rect.width };
+    });
+    return { cards, center:cards[2].visible, edges:[cards[0].visible, cards[4].visible], viewport:track.ownerDocument.defaultView.innerWidth };
+  });
+  if (wideRail.viewport >= 1200 && (wideRail.center < .98 || wideRail.edges.some(visible => visible < .22 || visible > .42))) failures.push(`home projects: wide rail should show centered project 3 and roughly one-third of edge cards (${JSON.stringify(wideRail)})`);
+  const smartMallBadge = await featuredCards.nth(1).evaluate(card => {
+    const art = card.querySelector(".project-art").getBoundingClientRect();
+    const status = card.querySelector(".project-status").getBoundingClientRect();
+    return { art, status, isInMetadata:status.top >= art.bottom };
+  });
+  if (!smartMallBadge.isInMetadata) failures.push("SmartMall demo status should sit in card metadata, outside the cover art");
   await detailPage.getByRole("button", { name:"Next featured projects" }).click();
   await detailPage.waitForFunction(() => document.querySelector("#featured-projects")?.scrollLeft > 0);
   const featuredTops = await featuredCards.evaluateAll(cards => cards.map(card => Math.round(card.getBoundingClientRect().top)));
   if (Math.max(...featuredTops) - Math.min(...featuredTops) > 2) failures.push(`home projects: cards are not on one desktop row (${featuredTops.join(", ")})`);
-  const primaryButton = detailPage.locator(".btn-primary").first();
+  const primaryButton = detailPage.locator(".hero .btn-primary").first();
   const arrowBefore = await primaryButton.evaluate(node => getComputedStyle(node, "::after").opacity);
   await primaryButton.hover();
   await detailPage.waitForTimeout(220);
@@ -437,8 +461,9 @@ try {
   await detailContext.close();
 
   const reducedContext = await browser.newContext({ viewport:{ width:430, height:932 }, reducedMotion:"reduce" });
+  await reducedContext.addInitScript(() => localStorage.setItem("portfolio-cookie-choice-v1", "no"));
   const reducedPage = await reducedContext.newPage();
-  await reducedPage.goto(`${base}/`, { waitUntil:"networkidle" });
+  await reducedPage.goto(`${base}/`, { waitUntil:"load" });
   const reducedMotionState = await reducedPage.evaluate(() => ({
     preference:matchMedia("(prefers-reduced-motion: reduce)").matches,
     lenis:document.documentElement.classList.contains("lenis") || document.documentElement.classList.contains("lenis-smooth"),
